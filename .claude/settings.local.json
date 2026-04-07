@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "mcp__plugin_figma_figma__get_metadata",
+      "Bash(python3 -c \":*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5174/)",
+      "mcp__plugin_figma_figma__use_figma",
+      "mcp__plugin_figma_figma__generate_figma_design",
+      "Bash(open:*)",
+      "mcp__plugin_figma_figma__get_screenshot",
+      "Bash(lsof -ti:5173,5174,5175,5176)",
+      "Bash(lsof -i:5175 -i:5176)",
+      "Bash(lsof -i:5173,5174,5175,5176)"
+    ]
+  }
+}
