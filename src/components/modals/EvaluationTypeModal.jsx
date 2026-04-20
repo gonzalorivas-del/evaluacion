@@ -443,6 +443,7 @@ export default function EvaluationTypeModal() {
           {/* Campo nombre */}
           <InputField
             label="Nombre de la evaluación *"
+            placeholder="ej. Evaluación Anual 2025"
             value={name}
             onChange={e => {
               setName(e.target.value);

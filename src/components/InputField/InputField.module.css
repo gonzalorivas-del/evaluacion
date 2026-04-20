@@ -88,7 +88,8 @@
 }
 
 .input::placeholder {
-  color: #666666;                      /* colors.gris-oscuro — placeholder en estado Default */
+  color: #999999;                      /* colors.gris-textos — placeholder */
+  opacity: 1;
   font-weight: 400;
 }
 

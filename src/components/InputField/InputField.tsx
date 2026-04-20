@@ -77,6 +77,7 @@ export const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
       onFocus,
       onBlur,
       className,
+      placeholder: customPlaceholder,
       ...rest
     },
     ref,
@@ -98,8 +99,8 @@ export const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
     // Interaction state
     const [isFocused, setIsFocused] = useState(false);
 
-    // Label is visible when focused OR has value (and not pure default+empty)
-    const showLabel = isFocused || hasValue;
+    // When a custom placeholder is provided, label always shows above the input
+    const showLabel = isFocused || hasValue || !!customPlaceholder;
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
       if (!isControlled) setInternalValue(e.target.value);
@@ -154,7 +155,7 @@ export const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
               id={inputId}
               className={styles.input}
               value={isControlled ? value : internalValue}
-              placeholder={showLabel ? '' : label.replace(/\s*\*$/, '')}
+              placeholder={isFocused ? '' : (customPlaceholder ?? (showLabel ? '' : label.replace(/\s*\*$/, '')))}
               disabled={isDisabled}
               aria-invalid={fieldState === 'error' || undefined}
               aria-describedby={supportingText ? supportId : undefined}
