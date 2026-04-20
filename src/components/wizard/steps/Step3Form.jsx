@@ -170,9 +170,18 @@ export default function Step3Form() {
         ...prev,
         potentialQuestions: exists
           ? prev.potentialQuestions.filter(pq => pq.id !== q.id)
-          : [...prev.potentialQuestions, { ...q, scale: prev.scale }],
+          : [...prev.potentialQuestions, { ...q, scale: prev.scale, percentage: 0 }],
       };
     });
+  };
+
+  const updatePotentialPercentage = (id, percentage) => {
+    updateCurrentEval(prev => ({
+      ...prev,
+      potentialQuestions: prev.potentialQuestions.map(q =>
+        q.id === id ? { ...q, percentage } : q,
+      ),
+    }));
   };
 
   /* ── Render ── */
@@ -473,7 +482,7 @@ export default function Step3Form() {
           <p style={{ fontSize: '12px', color: '#999999', margin: 0 }}>
             Selecciona las preguntas de potencial a incluir en el formulario.
           </p>
-          <PotentialPanel
+          <BloquesSeleccion
             available={MOCK_POTENTIAL_QUESTIONS}
             selected={ev.potentialQuestions}
             onToggle={togglePotentialQuestion}
@@ -485,6 +494,7 @@ export default function Step3Form() {
                 ),
               }))
             }
+            onUpdatePercentage={updatePotentialPercentage}
             scaleOptions={SCALE_OPTIONS}
             currentScale={ev.scale}
           />
@@ -619,111 +629,6 @@ export default function Step3Form() {
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-/* ─── PotentialPanel ─────────────────────────────────────────────────────── */
-/* Panel simple para preguntas de potencial (sin BloquesSeleccion).          */
-
-function PotentialPanel({ available, selected, onToggle, onUpdateScale, scaleOptions, currentScale }) {
-  const [search, setSearch] = useState('');
-
-  const filteredAvailable = available.filter(
-    q =>
-      !selected.find(s => s.id === q.id) &&
-      (!search || q.text.toLowerCase().includes(search.toLowerCase())),
-  );
-
-  return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-      {/* Disponibles */}
-      <div style={{ border: '1px solid #B6CEE7', borderRadius: '8px', overflow: 'hidden' }}>
-        <div style={{ padding: '8px 12px', background: '#F6F9FA', borderBottom: '1px solid #B6CEE7' }}>
-          <p style={{ fontSize: '12px', fontWeight: 500, color: '#666666', margin: '0 0 4px 0' }}>
-            Disponibles ({filteredAvailable.length})
-          </p>
-          <input
-            type="text"
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            placeholder="Buscar..."
-            style={{
-              width: '100%',
-              border: '1px solid #CCCCCC',
-              padding: '4px 8px',
-              fontSize: '12px',
-              borderRadius: '4px',
-              fontFamily: 'Roboto, sans-serif',
-              boxSizing: 'border-box',
-            }}
-          />
-        </div>
-        <div style={{ maxHeight: '192px', overflowY: 'auto' }}>
-          {filteredAvailable.length === 0 && (
-            <p style={{ fontSize: '12px', color: '#999999', textAlign: 'center', padding: '16px', margin: 0 }}>Sin resultados</p>
-          )}
-          {filteredAvailable.map(q => (
-            <label
-              key={q.id}
-              style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '8px 12px', borderBottom: '1px solid #F0F0F0', cursor: 'pointer' }}
-            >
-              <input
-                type="checkbox"
-                checked={false}
-                onChange={() => onToggle(q)}
-                style={{ marginTop: '2px', flexShrink: 0 }}
-              />
-              <p style={{ fontSize: '12px', color: '#333333', margin: 0 }}>{q.text}</p>
-            </label>
-          ))}
-        </div>
-      </div>
-
-      {/* Seleccionadas */}
-      <div style={{ border: '1px solid #B6CEE7', borderRadius: '8px', overflow: 'hidden' }}>
-        <div style={{ padding: '8px 12px', background: '#F6F9FA', borderBottom: '1px solid #B6CEE7' }}>
-          <p style={{ fontSize: '12px', fontWeight: 500, color: '#666666', margin: 0 }}>
-            Seleccionadas ({selected.length})
-          </p>
-        </div>
-        <div style={{ maxHeight: '192px', overflowY: 'auto' }}>
-          {selected.length === 0 && (
-            <p style={{ fontSize: '12px', color: '#999999', textAlign: 'center', padding: '16px', margin: 0 }}>Ninguna seleccionada</p>
-          )}
-          {selected.map(q => (
-            <div key={q.id} style={{ padding: '8px 12px', borderBottom: '1px solid #F0F0F0' }}>
-              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '8px', marginBottom: '4px' }}>
-                <p style={{ fontSize: '12px', color: '#333333', margin: 0, flex: 1 }}>{q.text}</p>
-                <button
-                  type="button"
-                  onClick={() => onToggle(q)}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px', flexShrink: 0 }}
-                  aria-label="Eliminar pregunta"
-                >
-                  <TrashIcon color="#E24C4C" size={16} />
-                </button>
-              </div>
-              <select
-                value={q.scale || currentScale}
-                onChange={e => onUpdateScale(q.id, e.target.value)}
-                style={{
-                  width: '100%',
-                  border: '1px solid #CCCCCC',
-                  padding: '2px 4px',
-                  fontSize: '12px',
-                  borderRadius: '4px',
-                  fontFamily: 'Roboto, sans-serif',
-                }}
-              >
-                {scaleOptions.map(s => (
-                  <option key={s.value} value={s.value}>{s.label}</option>
-                ))}
-              </select>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

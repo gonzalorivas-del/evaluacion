@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './Button.module.css';
 
 /** Variantes visuales del botón Zafiro */

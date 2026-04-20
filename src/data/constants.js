@@ -155,10 +155,10 @@ export const MOCK_TRANSVERSAL_COMPETENCIES = [
 ];
 
 export const MOCK_POTENTIAL_QUESTIONS = [
-  { id: 1, text: '¿Cuál es el potencial de crecimiento de este colaborador en los próximos 2 años?' },
-  { id: 2, text: '¿El colaborador tiene habilidades para asumir roles de mayor responsabilidad?' },
-  { id: 3, text: '¿Qué nivel de adaptabilidad demuestra ante nuevos desafíos?' },
-  { id: 4, text: '¿El colaborador muestra disposición para aprender nuevas competencias?' },
+  { id: 1, text: '¿Cuál es el potencial de crecimiento de este colaborador en los próximos 2 años?', name: '¿Cuál es el potencial de crecimiento de este colaborador en los próximos 2 años?' },
+  { id: 2, text: '¿El colaborador tiene habilidades para asumir roles de mayor responsabilidad?', name: '¿El colaborador tiene habilidades para asumir roles de mayor responsabilidad?' },
+  { id: 3, text: '¿Qué nivel de adaptabilidad demuestra ante nuevos desafíos?', name: '¿Qué nivel de adaptabilidad demuestra ante nuevos desafíos?' },
+  { id: 4, text: '¿El colaborador muestra disposición para aprender nuevas competencias?', name: '¿El colaborador muestra disposición para aprender nuevas competencias?' },
 ];
 
 export const MOCK_PERIODS = [
