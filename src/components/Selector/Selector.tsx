@@ -1,5 +1,18 @@
 import React, { useId, useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import styles from './Selector.module.css';
+
+/* ─── Label con asterisco requerido ─────────────────────────────────────── */
+function RequiredLabel({ text }: { text: string }) {
+  if (!text.endsWith('*')) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, -1).trimEnd()}
+      {' '}
+      <span style={{ color: '#E24C4C' }} aria-hidden="true">*</span>
+    </>
+  );
+}
 
 /* ─── Chevron icons (32×32 icon slot) ───────────────────────────────────── */
 function ChevronDown() {
@@ -97,19 +110,42 @@ export function Selector({
   const selectedValue = isControlled ? (value ?? '') : internalValue;
 
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
 
   const wrapperRef = useRef<HTMLDivElement>(null);
+
+  function updateDropdownPosition() {
+    if (!wrapperRef.current) return;
+    const rect = wrapperRef.current.getBoundingClientRect();
+    setDropdownStyle({
+      position: 'fixed',
+      top: rect.bottom,
+      left: rect.left,
+      width: rect.width,
+      zIndex: 9999,
+    });
+  }
 
   // Cierra al hacer clic fuera
   useEffect(() => {
     if (!isOpen) return;
+    updateDropdownPosition();
     function onPointerDown(e: PointerEvent) {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
         setIsOpen(false);
       }
     }
+    function onScrollOrResize() {
+      updateDropdownPosition();
+    }
     document.addEventListener('pointerdown', onPointerDown);
-    return () => document.removeEventListener('pointerdown', onPointerDown);
+    window.addEventListener('scroll', onScrollOrResize, true);
+    window.addEventListener('resize', onScrollOrResize);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('scroll', onScrollOrResize, true);
+      window.removeEventListener('resize', onScrollOrResize);
+    };
   }, [isOpen]);
 
   const selectedOption = options.find((o) => o.value === selectedValue);
@@ -167,7 +203,7 @@ export function Selector({
         onClick={handleToggle}
         onKeyDown={handleKeyDown}
       >
-        <span className={styles.label}>{label}</span>
+        <span className={styles.label}><RequiredLabel text={label} /></span>
 
         <div className={styles.content}>
           <div className={styles.placeholderRow}>
@@ -196,8 +232,14 @@ export function Selector({
         )}
       </button>
 
-      {isOpen && options.length > 0 && (
-        <ul id={listId} role="listbox" className={styles.dropdown} aria-label={label}>
+      {isOpen && options.length > 0 && createPortal(
+        <ul
+          id={listId}
+          role="listbox"
+          className={styles.dropdown}
+          aria-label={label.replace(/\s*\*$/, '')}
+          style={dropdownStyle}
+        >
           {options.map((option) => (
             <li
               key={option.value}
@@ -213,7 +255,8 @@ export function Selector({
               {option.label}
             </li>
           ))}
-        </ul>
+        </ul>,
+        document.body,
       )}
     </div>
   );

@@ -35,6 +35,10 @@
   border-color: #00b4ff; /* importante */
 }
 
+.card.error {
+  border-color: #E24C4C; /* error */
+}
+
 .card.interactive {
   cursor: pointer;
   transition: box-shadow 0.15s ease;

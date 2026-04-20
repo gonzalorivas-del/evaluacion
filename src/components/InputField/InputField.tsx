@@ -23,6 +23,18 @@ export interface InputFieldProps
   id?: string;
 }
 
+/* ─── Label con asterisco requerido ─────────────────────────────────────── */
+function RequiredLabel({ text }: { text: string }) {
+  if (!text.endsWith('*')) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, -1).trimEnd()}
+      {' '}
+      <span style={{ color: '#E24C4C' }} aria-hidden="true">*</span>
+    </>
+  );
+}
+
 /* ─── Default icon: Info (Figma Zafiro) ────────────────────────────────── */
 function IconInfo({ className }: { className?: string }) {
   return (
@@ -131,7 +143,7 @@ export const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
       <div className={wrapperClass}>
         {/* Label — siempre en DOM para reservar espacio, opacity 0→1 */}
         <label htmlFor={inputId} className={styles.label}>
-          {label}
+          <RequiredLabel text={label} />
         </label>
 
         {/* Input base */}
@@ -142,7 +154,7 @@ export const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
               id={inputId}
               className={styles.input}
               value={isControlled ? value : internalValue}
-              placeholder={showLabel ? '' : label}
+              placeholder={showLabel ? '' : label.replace(/\s*\*$/, '')}
               disabled={isDisabled}
               aria-invalid={fieldState === 'error' || undefined}
               aria-describedby={supportingText ? supportId : undefined}

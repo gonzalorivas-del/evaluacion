@@ -246,11 +246,6 @@
    position: absolute para no desplazar el layout al abrirse.
    El wrapper tiene position: relative como punto de anclaje.               */
 .dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  z-index: 200;
   list-style: none;
   margin: 0;
   padding: 0;

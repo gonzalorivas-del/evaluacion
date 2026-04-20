@@ -144,7 +144,6 @@
 /* El ancho del selector se controla vía inline style en index.jsx            */
 .selectorWrap {
   min-width: 0;
-  overflow: hidden;
 }
 
 /* ─── Competency % input wrapper ─────────────────────────────────────────── */

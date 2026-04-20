@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useEvaluation } from '../../../context/EvaluationContext';
 import { InputField } from '../../InputField';
 import { Selector } from '../../Selector';
-import { Switch } from '../../Switch';
 import { Checkbox } from '../../Checkbox';
 import { Button } from '../../Button';
 import { Textarea } from '../../Textarea';
@@ -82,7 +81,6 @@ export default function Step3Form() {
   const [errors, setErrors] = useState({});
   const [showPreview, setShowPreview] = useState(false);
   const [activeFormTab, setActiveFormTab] = useState(null);
-  const [distributionEnabled, setDistributionEnabled] = useState(true);
 
   if (!currentEval) return null;
   const ev = currentEval;
@@ -103,7 +101,7 @@ export default function Step3Form() {
       ) {
         errs.competencies = 'Selecciona al menos una competencia transversal.';
       }
-      if (distributionEnabled && compTotal !== 100) {
+      if (compTotal !== 100) {
         errs.compPercentage = `Las competencias deben sumar 100%. Actualmente: ${compTotal}%.`;
       }
     }
@@ -288,25 +286,15 @@ export default function Step3Form() {
           {/* Distribución por tipo + Competencias Transversales */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '24px' }}>
 
-            {/* Switch row */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Switch
-                checked={distributionEnabled}
-                onChange={setDistributionEnabled}
-                aria-label="Activar distribución por tipo"
-              />
-              <p style={groupTitle}>Distribución por tipo</p>
-            </div>
+            <p style={groupTitle}>Distribución por tipo</p>
 
-            {/* Distribución inputs + BloquesSeleccion — visibles solo cuando switch está ON */}
-            {distributionEnabled && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 {/* Inputs Funcionales / Transversales + totalizador */}
                 <div style={{
                   display: 'flex',
                   alignItems: 'flex-start',
                   gap: '24px',
-                  paddingLeft: '50px',
+                  paddingLeft: '0',
                   flexWrap: 'wrap',
                 }}>
                   <div style={{ width: '140px' }}>
@@ -390,8 +378,7 @@ export default function Step3Form() {
                     currentScale={ev.scale || 'likert1-5'}
                   />
                 </div>
-              </div>
-            )}
+            </div>
           </div>
 
           {errors.competencies && (

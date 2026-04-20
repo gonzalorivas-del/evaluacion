@@ -35,6 +35,8 @@ export interface CardOptionProps {
   selectedLabel?: string;
   /** Callback al hacer clic. Si se provee, la card se renderiza como `<button>`. */
   onClick?: () => void;
+  /** Estado de error — añade borde rojo para indicar que este campo es requerido. */
+  error?: boolean;
   className?: string;
 }
 
@@ -79,11 +81,13 @@ export function CardOption({
   selected = false,
   selectedLabel = 'Seleccionada',
   onClick,
+  error = false,
   className,
 }: CardOptionProps) {
   const rootClass = [
     styles.card,
     selected ? styles.selected : '',
+    !selected && error ? styles.error : '',
     onClick ? styles.interactive : '',
     className ?? '',
   ]

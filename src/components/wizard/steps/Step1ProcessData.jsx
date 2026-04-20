@@ -921,7 +921,7 @@ export default function Step1ProcessData() {
             {ev.responsibles.length > 0 && (
               <div style={{ display:'flex', flexWrap:'wrap', gap:'8px' }}>
                 {ev.responsibles.map(u => (
-                  <UserTag key={u.id} name={u.name} onRemove={() => removeUser('responsibles', u.id)} />
+                  <Chip key={u.id} label={u.name} active onRemove={() => removeUser('responsibles', u.id)} />
                 ))}
               </div>
             )}
@@ -954,7 +954,7 @@ export default function Step1ProcessData() {
               {ev.managers.length > 0 && (
                 <div style={{ display:'flex', flexWrap:'wrap', gap:'8px', marginTop:'4px' }}>
                   {ev.managers.map(u => (
-                    <UserTag key={u.id} name={u.name} onRemove={() => removeUser('managers', u.id)} />
+                    <Chip key={u.id} label={u.name} active onRemove={() => removeUser('managers', u.id)} />
                   ))}
                 </div>
               )}
@@ -982,7 +982,7 @@ export default function Step1ProcessData() {
               {ev.viewers.length > 0 && (
                 <div style={{ display:'flex', flexWrap:'wrap', gap:'8px', marginTop:'4px' }}>
                   {ev.viewers.map(u => (
-                    <UserTag key={u.id} name={u.name} onRemove={() => removeUser('viewers', u.id)} />
+                    <Chip key={u.id} label={u.name} active onRemove={() => removeUser('viewers', u.id)} />
                   ))}
                 </div>
               )}

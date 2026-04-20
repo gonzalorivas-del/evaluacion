@@ -25,6 +25,8 @@ export interface ChipProps {
   /** Deshabilita la interacción. Default: false */
   disabled?: boolean;
   onClick?: () => void;
+  /** Cuando se provee, muestra un botón ✕ en lugar del chevron */
+  onRemove?: () => void;
   className?: string;
 }
 
@@ -79,6 +81,7 @@ export function Chip({
   expanded = false,
   disabled = false,
   onClick,
+  onRemove,
   className,
 }: ChipProps) {
   const rootClass = [
@@ -98,7 +101,7 @@ export function Chip({
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
       aria-pressed={active}
-      aria-expanded={expanded}
+      aria-expanded={onRemove ? undefined : expanded}
     >
       <span className={styles.labelText}>
         {label}
@@ -110,10 +113,23 @@ export function Chip({
         )}
       </span>
 
-      {/* Contenedor 24×24 para el chevron (fiel al Figma) */}
-      <span className={styles.iconWrap} aria-hidden="true">
-        <ChevronIcon />
-      </span>
+      {onRemove ? (
+        <span
+          className={styles.iconWrap}
+          role="button"
+          aria-label={`Quitar ${label}`}
+          onClick={(e) => { e.stopPropagation(); onRemove(); }}
+          style={{ cursor: 'pointer' }}
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+            <path d="M1 1L9 9M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          </svg>
+        </span>
+      ) : (
+        <span className={styles.iconWrap} aria-hidden="true">
+          <ChevronIcon />
+        </span>
+      )}
     </button>
   );
 }

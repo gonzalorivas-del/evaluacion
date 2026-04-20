@@ -7,6 +7,7 @@ import { Button } from '../../Button';
 import ActivationModal from '../../modals/ActivationModal';
 import { TEMPLATE_CONFIGS, DIRECTION_LABELS, SCALE_OPTIONS } from '../../../data/constants';
 import { CheckFillIcon } from '../../../assets/icons/CheckFillIcon';
+import { CheckIcon } from '../../../assets/icons/CheckIcon';
 import { XIcon } from '../../../assets/icons/XIcon';
 
 /*
@@ -127,7 +128,7 @@ export default function Step4Summary() {
   );
   const [showParticipants, setShowParticipants] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [showEditable, setShowEditable] = useState(false);
+  const [showEditable, setShowEditable] = useState(true);
 
   if (!currentEval) return null;
   const ev = currentEval;
@@ -438,7 +439,7 @@ export default function Step4Summary() {
         {/* Chip expandible "Ver qué puede editarse" */}
         <div style={{ display: 'inline-block' }}>
           <Chip
-            label="Ver que puede editarse después de activar o guardar"
+            label={showEditable ? 'Ocultar' : 'Ver que puede editarse después de activar o guardar'}
             expanded={showEditable}
             onClick={() => setShowEditable(e => !e)}
           />
@@ -496,8 +497,8 @@ export default function Step4Summary() {
           <Button
             variant="primary"
             size="lg"
-            style={{ background: '#ACCA54', borderColor: '#ACCA54', color: '#333333' }}
-            icon={<CheckCircleIcon size={20} color="#333333" />}
+            style={{ background: '#ACCA54', borderColor: '#ACCA54', color: '#1E5591' }}
+            icon={<CheckIcon size={20} color="#1E5591" />}
             iconPosition="right"
             onClick={() => setShowActivationModal(true)}
           >

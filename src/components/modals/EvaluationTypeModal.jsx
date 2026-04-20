@@ -18,6 +18,18 @@ import { TEMPLATE_CONFIGS } from '../../data/constants';
  *   Background/Admin:  #EDF2F4  — fondo banner
  */
 
+/* ── Asterisco requerido ──────────────────────────────────────────────────── */
+function RequiredLabel({ text }) {
+  if (!text.endsWith('*')) return text;
+  return (
+    <>
+      {text.slice(0, -1).trimEnd()}
+      {' '}
+      <span style={{ color: '#E24C4C' }} aria-hidden="true">*</span>
+    </>
+  );
+}
+
 /* ── Ícono calendario (Icon/Calendar — Figma Zafiro) ──────────────────────── */
 function CalendarIcon({ color = '#00B4FF' }) {
   return (
@@ -153,7 +165,7 @@ function DateField({ label, value, onChange, error, supportingText }) {
         margin: '0 0 4px',
         lineHeight: '16px',
       }}>
-        {label}
+        <RequiredLabel text={label} />
       </p>
 
       {/* Fila: input texto + ícono calendario */}
@@ -170,7 +182,7 @@ function DateField({ label, value, onChange, error, supportingText }) {
           placeholder="-- Seleccionar --"
           onChange={handleTextChange}
           maxLength={10}
-          aria-label={label}
+          aria-label={label.replace(/\s*\*$/, '')}
           style={{
             flex: 1,
             border: 'none',
@@ -294,7 +306,6 @@ export default function EvaluationTypeModal() {
     setErrors({});
   };
 
-  const isValid = !!(selectedTemplate && name.trim() && startDate && endDate && endDate > startDate);
 
   const templates = [
     { id: '90',     ...TEMPLATE_CONFIGS['90'] },
@@ -398,6 +409,7 @@ export default function EvaluationTypeModal() {
                 recommended={!!tpl.badge}
                 recommendedLabel={tpl.badge ?? 'Recomendada'}
                 selected={selectedTemplate === tpl.id}
+                error={!!errors.template}
                 onClick={() => {
                   setSelectedTemplate(tpl.id);
                   setErrors(e => ({ ...e, template: undefined }));
@@ -492,7 +504,6 @@ export default function EvaluationTypeModal() {
             variant="primary"
             size="md"
             onClick={handleCreate}
-            disabled={!isValid}
             icon={<ArrowRightIcon />}
             iconPosition="right"
           >
