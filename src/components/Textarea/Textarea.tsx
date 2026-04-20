@@ -1,4 +1,4 @@
-import React, { useId, useState, useRef } from 'react';
+import React, { useId, useState } from 'react';
 import styles from './Textarea.module.css';
 
 /* ─── Types ──────────────────────────────────────────────────────────────── */
