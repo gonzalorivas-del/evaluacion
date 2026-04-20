@@ -1,104 +1,165 @@
 import { useEvaluation } from '../../../context/EvaluationContext';
+import { Checkbox } from '../../Checkbox';
+import { Button } from '../../Button';
+import { ArrowRightIcon } from '../../../assets/icons/ArrowRightIcon';
+
+/*
+ * Tokens Zafiro usados (src/tokens/tokens.json):
+ *   panel:       #5780AD  — títulos de sección
+ *   negro-textos:#333333  — label activo (vía Checkbox CSS)
+ *   gris-oscuro: #666666  — descripción bajo checkbox
+ *   neutral-99:  #999999  — descripción sub-opción dependiente
+ *   elevation-2: 0px 5px 8px 0px rgba(0,0,0,0.15)
+ */
 
 export default function Step6Feedback() {
-  const { currentEval, updateCurrentEval, saveCurrentEval, setActiveStep } = useEvaluation();
+  const {
+    currentEval,
+    updateCurrentEval,
+    saveCurrentEval,
+    setActiveStep,
+    saveDraft,
+  } = useEvaluation();
 
   if (!currentEval) return null;
   const ev = currentEval;
+
+  const mustConfirmReading = ev.feedbackOptions?.collaboratorMustConfirmReading ?? false;
+  const requireDigitalSign = ev.advancedOptions?.requireDigitalSignature ?? false;
+  const accessesResults    = ev.feedbackOptions?.collaboratorAccessesResults ?? false;
+  const enableComments     = ev.advancedOptions?.enableGeneralComments ?? false;
+
+  const updateFeedback = (key, value) =>
+    updateCurrentEval(prev => ({
+      ...prev,
+      feedbackOptions: { ...prev.feedbackOptions, [key]: value },
+    }));
+
+  const updateAdvanced = (key, value) =>
+    updateCurrentEval(prev => ({
+      ...prev,
+      advancedOptions: { ...prev.advancedOptions, [key]: value },
+    }));
 
   const handleSaveAndContinue = () => {
     saveCurrentEval(6);
     setActiveStep(7);
   };
 
-  const handleCancel = () => {
-    setActiveStep(2);
+  const sectionStyle = {
+    background: '#FFFFFF',
+    borderRadius: '16px',
+    boxShadow: '0px 5px 8px 0px rgba(0,0,0,0.15)',
+    padding: '24px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '24px',
+    width: '100%',
+    boxSizing: 'border-box',
   };
 
-  const mustConfirmReading = ev.feedbackOptions.collaboratorMustConfirmReading;
+  const sectionTitleStyle = {
+    fontFamily: 'Roboto, sans-serif',
+    fontWeight: 500,
+    fontSize: '16px',
+    lineHeight: '1.3',
+    color: '#5780AD',
+    margin: 0,
+  };
+
+  const descStyle = {
+    fontFamily: 'Roboto, sans-serif',
+    fontWeight: 400,
+    fontSize: '12px',
+    lineHeight: '1',
+    color: '#666666',
+    margin: 0,
+  };
+
+  const subDescStyle = { ...descStyle, color: '#999999' };
 
   return (
-    <div className="space-y-6">
-      {/* Acceso a resultados */}
-      <section className="border border-gray-300 p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-3 pb-2 border-b border-gray-200">Acceso a resultados</h3>
-        <div className="space-y-4">
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="checkbox"
+    <>
+      {/* ── Sección 1: Acceso a resultados ───────────────────────────── */}
+      <div style={sectionStyle}>
+        <p style={sectionTitleStyle}>Acceso a resultados</p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+          {/* Opción 1 + sub-opción 1.2 */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Checkbox
+              label={<span style={{ color: '#333333' }}>El colaborador debe confirmar haber leído su evaluación para que quede registrada como entregada</span>}
               checked={mustConfirmReading}
-              onChange={e => {
-                const val = e.target.checked;
-                updateCurrentEval(prev => ({
-                  ...prev,
-                  feedbackOptions: { ...prev.feedbackOptions, collaboratorMustConfirmReading: val },
-                  advancedOptions: { ...prev.advancedOptions, requireDigitalSignature: val },
-                }));
-              }}
-              className="mt-0.5"
+              onChange={val => updateFeedback('collaboratorMustConfirmReading', val)}
             />
-            <div>
-              <p className="text-sm text-gray-900">
-                El colaborador debe confirmar haber leído su evaluación para que quede registrada como entregada.
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
+            <div style={{ paddingLeft: '32px' }}>
+              <p style={descStyle}>
                 Cuando el colaborador abra su evaluación en el Portal del Colaborador, deberá aceptar explícitamente que ha leído los resultados.
               </p>
             </div>
-          </label>
 
-          {mustConfirmReading && (
-            <div className="flex items-start gap-3 ml-6 opacity-60">
-              <input
-                type="checkbox"
-                checked
+            {/* Sub-opción 1.2 — siempre visible, deshabilitada si padre no activo */}
+            <div style={{ paddingLeft: '32px', paddingTop: '8px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <Checkbox
+                label={<span style={{ color: '#666666' }}>El colaborador debe firmar digitalmente para aceptar los resultados.</span>}
+                checked={requireDigitalSign}
                 disabled
-                className="mt-0.5 cursor-not-allowed"
               />
-              <div>
-                <p className="text-sm text-gray-900">El colaborador debe firmar digitalmente para aceptar los resultados.</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Requerido cuando la confirmación de lectura está activa.
-                </p>
+              <div style={{ paddingLeft: '32px' }}>
+                <p style={subDescStyle}>Requerido cuando la confirmación de lectura está activa.</p>
               </div>
             </div>
-          )}
-        </div>
-      </section>
+          </div>
 
-      {/* Comentarios generales */}
-      <section className="border border-gray-300 p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-3 pb-2 border-b border-gray-200">Comentarios generales</h3>
-        <label className="flex items-start gap-3 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={ev.advancedOptions.enableGeneralComments}
-            onChange={e => updateCurrentEval(prev => ({
-              ...prev,
-              advancedOptions: { ...prev.advancedOptions, enableGeneralComments: e.target.checked },
-            }))}
-            className="mt-0.5"
+          {/* Opción 2 */}
+          <Checkbox
+            label="El colaborador accede a resultados en confirmacion"
+            checked={accessesResults}
+            onChange={val => updateFeedback('collaboratorAccessesResults', val)}
           />
-          <div>
-            <p className="text-sm text-gray-900">Habilitar comentarios generales al final del formulario.</p>
-            <p className="text-xs text-gray-500 mt-1">
+        </div>
+      </div>
+
+      {/* ── Sección 2: Comentarios generales ─────────────────────────── */}
+      <div style={sectionStyle}>
+        <p style={sectionTitleStyle}>Comentarios generales</p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <Checkbox
+            label="Habilitar comentarios generales al final del formulario"
+            checked={enableComments}
+            onChange={val => updateAdvanced('enableGeneralComments', val)}
+          />
+          <div style={{ paddingLeft: '32px' }}>
+            <p style={descStyle}>
               Agrega un campo de texto libre al final del formulario de evaluación para que el evaluador pueda incluir observaciones generales.
             </p>
           </div>
-        </label>
-      </section>
-
-      <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-        <button onClick={handleCancel} className="px-4 py-2 text-sm border border-gray-400 text-gray-700 hover:bg-gray-50">
-          Cancelar
-        </button>
-        <button
-          onClick={handleSaveAndContinue}
-          className="px-5 py-2 text-sm font-medium bg-gray-900 text-white border border-gray-900 hover:bg-gray-700"
-        >
-          Guardar y continuar →
-        </button>
+        </div>
       </div>
-    </div>
+
+      {/* ── Botones de acción ─────────────────────────────────────────── */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: '24px',
+        paddingTop: '8px',
+      }}>
+        <Button variant="secondary" size="md" onClick={saveDraft}>
+          Guardar borrador
+        </Button>
+        <Button
+          variant="primary"
+          size="md"
+          onClick={handleSaveAndContinue}
+          icon={<ArrowRightIcon size={16} color="#B6CEE7" />}
+          iconPosition="right"
+        >
+          Guardar y continuar
+        </Button>
+      </div>
+    </>
   );
 }

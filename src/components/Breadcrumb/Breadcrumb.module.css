@@ -1,0 +1,148 @@
+/*
+ * Breadcrumb — Sistema de diseño Zafiro (Rex+)
+ * Fuente: Figma 83u3jh4oyEwvJ2MtoH7L2o · nodo 1221:20488
+ *
+ * Tokens usados (src/tokens/tokens.json):
+ *   general:           #B2E5FF  — ícono Home
+ *   gris-oscuro:       #666666  — ruta de migas
+ *   primario-oscuro:   #0A396C  — título H5 + flecha volver
+ *   importante:        #00B4FF  — borde badge
+ *   importante-oscuro: #019BE5  — texto badge
+ *   gris-textos:       #999999  — subtítulo
+ *   intermedio:        #0069FF  — focus outline
+ *
+ * Tipografía:
+ *   ruta:    Roboto Regular 10px, line-height 16px
+ *   título:  Roboto Medium  25px, line-height 1     (H5)
+ *   badge:   Roboto Regular 14px, line-height 1.3
+ *   subhead: Roboto Regular 14px, line-height 1.3
+ */
+
+/* ── Raíz ──────────────────────────────────────────────────────────────────── */
+
+.root {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+}
+
+/* ── Fila 1: ruta de migas ──────────────────────────────────────────────────── */
+
+.path {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding-left: 32px; /* alineado con el texto del título (ancho de flecha) */
+}
+
+.homeIcon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: #B2E5FF; /* general */
+  overflow: hidden;
+}
+
+.pathText {
+  font-family: 'Roboto', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 16px;
+  color: #666666; /* gris-oscuro */
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* ── Fila 2: flecha + título + badge ────────────────────────────────────────── */
+
+.titleRow {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Grupo: flecha + texto título */
+.comebackGroup {
+  display: flex;
+  align-items: center;
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: #00B4FF; /* importante */
+  overflow: hidden;
+  border-radius: 4px;
+  transition: background-color 0.12s ease;
+}
+
+.backButton:hover {
+  background-color: rgba(10, 57, 108, 0.06);
+}
+
+.backButton:focus-visible {
+  outline: 2px solid #0069FF; /* intermedio */
+  outline-offset: 2px;
+}
+
+.title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 25px;         /* H5 — Headline/Encabezados H5 */
+  font-weight: 500;
+  line-height: 1;
+  color: #0A396C;          /* primario-oscuro */
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* Badge de estado */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  padding: 0 8px;
+  border: 2px solid #00B4FF; /* importante */
+  border-radius: 16px;
+  flex-shrink: 0;
+}
+
+.badgeText {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #019BE5; /* importante-oscuro */
+  white-space: nowrap;
+}
+
+/* ── Fila 3: subtítulo ──────────────────────────────────────────────────────── */
+
+.subhead {
+  padding-left: 32px; /* alineado con el texto del título */
+}
+
+.subheadText {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.3;
+  color: #999999; /* gris-textos */
+  white-space: pre;
+  margin: 0;
+}

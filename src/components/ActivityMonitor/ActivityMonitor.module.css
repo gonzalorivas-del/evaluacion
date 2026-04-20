@@ -1,0 +1,86 @@
+/*
+ * ActivityMonitor — Zafiro Design System (Rex+)
+ *
+ * Tokens usados (src/tokens/tokens.json):
+ *   colors.primario        → #1E5591  (label y estado Default)
+ *   colors.exito           → #ACCA54  (estado Success)
+ *   colors.alerta          → #FFB800  (estado Alert)
+ *   colors.error           → #E24C4C  (estado Error)
+ *   colors.importante      → #00B4FF  (estado Important)
+ *   colors.intermedio      → #0069FF  (estado Intermediate)
+ *   colors.negro-textos    → #333333  (número principal)
+ *   colors.blanco          → #FFFFFF  (fondo de la tarjeta)
+ *   zafiro.padding.p-4     → 16px     (padding interno)
+ *   zafiro.border-radius.br-4 → 16px  (border-radius)
+ *   zafiro.margin.m-3      → 8px      (gap fila título)
+ *   typography.font-size.14 → 14px    (label)
+ *   typography.font-size.32 → 32px    (número principal)
+ *   effects.elevation-1    → 0px 2px 4px rgba(0,0,0,0.15)
+ */
+
+/* ─── Card base ───────────────────────────────────────────────────────────── */
+.card {
+  background-color: #FFFFFF;           /* colors.blanco */
+  border-radius: 16px;                 /* zafiro.border-radius.br-4 */
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.15); /* effects.elevation-1 */
+  padding: 16px;                       /* zafiro.padding.p-4 */
+  width: 156px;
+  min-width: 156px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* ─── Title row ───────────────────────────────────────────────────────────── */
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;                            /* zafiro.margin.m-3 */
+  width: 100%;
+}
+
+/* ─── Icon ────────────────────────────────────────────────────────────────── */
+.icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Estado → color del ícono */
+.state_Default      { color: #1E5591; } /* colors.primario */
+.state_Success      { color: #ACCA54; } /* colors.exito */
+.state_Alert        { color: #FFB800; } /* colors.alerta */
+.state_Error        { color: #E24C4C; } /* colors.error */
+.state_Important    { color: #00B4FF; } /* colors.importante */
+.state_Intermediate { color: #0069FF; } /* colors.intermedio */
+
+/* ─── Label ───────────────────────────────────────────────────────────────── */
+.label {
+  flex: 1;
+  font-size: 14px;                     /* typography.font-size.14 */
+  font-weight: 500;
+  line-height: 1;
+  color: #1E5591;                      /* colors.primario */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: 0;
+}
+
+/* ─── Number ──────────────────────────────────────────────────────────────── */
+.number {
+  font-size: 32px;                     /* typography.font-size.32 */
+  font-weight: 500;
+  line-height: 1;
+  color: #333333;                      /* colors.negro-textos */
+  text-align: right;
+  width: 100%;
+  margin: 0;
+}

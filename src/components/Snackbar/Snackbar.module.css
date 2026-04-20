@@ -1,0 +1,186 @@
+/*
+ * Snackbar — Zafiro Design System (Rex+)
+ * Fuente: Figma WgljvPA598MTRm4p5tREGr · nodo 1:2076
+ *
+ * Tokens usados (src/tokens/tokens.json):
+ *   colors.primario     → #1E5591  icon container primary / texto primary + important
+ *   colors.importante   → #00B4FF  icon container important
+ *   colors.error        → #E24C4C  icon container error
+ *   colors.alerta       → #FFB800  icon container alert
+ *   colors.negro-textos → #333333  texto alert + error
+ *   colors.blanco       → #FFFFFF  ícono en todos los icon containers (excepto alert)
+ *
+ * Colores de fondo (tints del design system Figma, no en tokens.json):
+ *   primary/important bg  → #E1F2FA
+ *   success bg            → #F7FCDE
+ *   alert bg              → #FFF6CC
+ *   error bg              → #FDDBDB
+ *
+ * Colores success (design system Figma):
+ *   icon container success → #9FB853  (Success/400)
+ *   texto success          → #57751A  (Success/600)
+ *
+ * Elevación 2 (manifest Card/Snackbar):
+ *   box-shadow: 0px 5px 8px rgba(0,0,0,0.15)
+ *
+ * Layout exacto desde Figma:
+ *   border-radius: 16px · gap: 16px · padding-right: 24px
+ *   icon container: padding: 19px 24px · border-radius izquierdo: 15px
+ */
+
+/* ─── Base ────────────────────────────────────────────────────────────────── */
+.snackbar {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  border-radius: 16px;
+  box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.15);  /* Elevación 2 */
+  overflow: hidden;
+  padding-right: 24px;
+  min-width: 223px;
+  max-width: 480px;
+}
+
+/* ─── Icon container ─────────────────────────────────────────────────────── */
+.iconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 19px 24px;
+  flex-shrink: 0;
+  /* Las esquinas izquierdas redondeadas (15px) quedan dentro del overflow:hidden del padre */
+  border-radius: 15px 0 0 15px;
+  color: #FFFFFF;                              /* ícono blanco en todos los estados */
+  align-self: stretch;
+}
+
+/* ─── Mensaje ─────────────────────────────────────────────────────────────── */
+.message {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;                             /* typography.font-size.16 */
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  flex: 1;
+}
+
+/* ─── Botón cerrar ────────────────────────────────────────────────────────── */
+.closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+}
+
+.closeBtn:hover {
+  opacity: 1;
+}
+
+.closeBtn:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 4px;
+  opacity: 1;
+}
+
+/* ─── Botón de acción opcional ───────────────────────────────────────────── */
+.actionBtn {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  opacity: 0.85;
+  transition: opacity 0.15s ease;
+  flex-shrink: 0;
+}
+
+.actionBtn:hover {
+  opacity: 1;
+}
+
+/* ─── Variante: primary ───────────────────────────────────────────────────── */
+/* Figma: State=Primary · nodo 1:2097 */
+.primary {
+  background-color: #E1F2FA;                   /* Primary/Auxiliar tint */
+}
+
+.primary .iconContainer {
+  background-color: #1E5591;                   /* colors.primario */
+}
+
+.primary .message,
+.primary .closeBtn,
+.primary .actionBtn {
+  color: #1E5591;                              /* colors.primario */
+}
+
+/* ─── Variante: success ───────────────────────────────────────────────────── */
+/* Figma: State=Success · nodo 1:2092 */
+.success {
+  background-color: #F7FCDE;                   /* Success tint */
+}
+
+.success .iconContainer {
+  background-color: #9FB853;                   /* Success/400 — Figma design token */
+}
+
+.success .message,
+.success .closeBtn,
+.success .actionBtn {
+  color: #57751A;                              /* Success/600 — Figma design token */
+}
+
+/* ─── Variante: alert ─────────────────────────────────────────────────────── */
+/* Figma: State=Alert · nodo 1:2082 */
+.alert {
+  background-color: #FFF6CC;                   /* Alert tint */
+}
+
+.alert .iconContainer {
+  background-color: #FFB800;                   /* colors.alerta */
+  color: #333333;                              /* colors.negro-textos — el ícono es oscuro sobre amarillo */
+}
+
+.alert .message,
+.alert .closeBtn,
+.alert .actionBtn {
+  color: #333333;                              /* colors.negro-textos */
+}
+
+/* ─── Variante: error ─────────────────────────────────────────────────────── */
+/* Figma: State=Error · nodo 1:2087 */
+.error {
+  background-color: #FDDBDB;                   /* Error/100 — Figma design token */
+}
+
+.error .iconContainer {
+  background-color: #E24C4C;                   /* colors.error */
+}
+
+.error .message,
+.error .closeBtn,
+.error .actionBtn {
+  color: #333333;                              /* colors.negro-textos */
+}
+
+/* ─── Variante: important ─────────────────────────────────────────────────── */
+/* Figma: State=Important · nodo 267:6580 */
+.important {
+  background-color: #E1F2FA;                   /* Mismo tint que primary */
+}
+
+.important .iconContainer {
+  background-color: #00B4FF;                   /* colors.importante */
+}
+
+.important .message,
+.important .closeBtn,
+.important .actionBtn {
+  color: #1E5591;                              /* colors.primario */
+}

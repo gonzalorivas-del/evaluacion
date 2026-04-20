@@ -1,0 +1,66 @@
+/*
+ * Badge — Zafiro Design System (Rex+)
+ *
+ * Tokens usados (src/tokens/tokens.json):
+ *   colors.exito    → #ACCA54   fondo solid-success
+ *   colors.error    → #E24C4C   fondo solid-error
+ *   colors.alerta   → #FFB800   fondo solid-alert
+ *   colors.primario → #1E5591   fondo solid-primary
+ *   colors.blanco   → #FFFFFF   texto en todas las variantes
+ *   colors.negro-textos → #333333  texto solid-alert (contraste sobre amarillo)
+ *   zafiro.padding.p-1   → 5px   padding vertical md
+ *   zafiro.padding.p-0   → 4px   padding vertical sm
+ *   zafiro.padding.p-2   → 11px  padding horizontal md
+ *   zafiro.padding.p-1-5 → 8px   padding horizontal sm
+ *   typography.font-size.14 → 14px  texto md
+ *   typography.font-size.12 → 12px  texto sm
+ *   border-radius pill fijo: 12px  (según manifest Badge)
+ */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;              /* pill fijo — manifest Badge */
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+/* ─── Tamaños ────────────────────────────────────────────────────────────── */
+
+/* md: padding 5px 11px · font 14px */
+.size-md {
+  padding: 5px 11px;                /* p-1 vertical · p-2 horizontal */
+  font-size: 14px;                  /* typography.font-size.14 */
+}
+
+/* sm: padding 4px 8px · font 12px */
+.size-sm {
+  padding: 4px 8px;                 /* p-0 vertical · p-1-5 horizontal */
+  font-size: 12px;                  /* typography.font-size.12 */
+}
+
+/* ─── Variantes ──────────────────────────────────────────────────────────── */
+
+.solid-success {
+  background-color: #ACCA54;        /* colors.exito */
+  color: #FFFFFF;                   /* colors.blanco */
+}
+
+.solid-error {
+  background-color: #E24C4C;        /* colors.error */
+  color: #FFFFFF;                   /* colors.blanco */
+}
+
+.solid-alert {
+  background-color: #FFB800;        /* colors.alerta */
+  color: #333333;                   /* colors.negro-textos — mejor contraste sobre amarillo */
+}
+
+.solid-primary {
+  background-color: #1E5591;        /* colors.primario */
+  color: #FFFFFF;                   /* colors.blanco */
+}

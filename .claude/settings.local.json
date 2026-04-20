@@ -12,7 +12,25 @@
       "mcp__plugin_figma_figma__get_screenshot",
       "Bash(lsof -ti:5173,5174,5175,5176)",
       "Bash(lsof -i:5175 -i:5176)",
-      "Bash(lsof -i:5173,5174,5175,5176)"
+      "Bash(lsof -i:5173,5174,5175,5176)",
+      "mcp__plugin_figma_figma__get_design_context",
+      "Bash(ls:*)",
+      "Bash(wc -l /Users/grivas/Desempeno/src/components/*/*.tsx /Users/grivas/Desempeno/src/components/*/*.jsx)",
+      "Bash(npx tsc:*)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(echo \"exit:$?\")",
+      "Bash(python3 -c \"import sys,json; data=json.load\\(sys.stdin\\); text=data[0]['text']; print\\(text[8000:20000]\\)\")",
+      "Bash(npx vite:*)",
+      "Bash(awk '{print $NF}')",
+      "Bash(python3 *)",
+      "mcp__plugin_figma_figma__get_variable_defs",
+      "mcp__plugin_figma_figma__search_design_system",
+      "Bash(jq '.[0].text' /Users/grivas/.claude/projects/-Users-grivas-Desempeno/d236e65e-cafb-4dcc-96ca-dd7a1e85c892/tool-results/mcp-plugin_figma_figma-get_design_context-1776462607334.txt)",
+      "Read(//tmp/**)",
+      "Bash(curl -s http://localhost:5174)",
+      "Bash(kill %1)",
+      "Bash(grep -n \"height\\\\|flex\\\\|align\" /Users/grivas/Desempeno/src/components/CardOption/index.*)",
+      "Bash(xargs -n1 basename)"
     ]
   }
 }

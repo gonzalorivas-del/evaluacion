@@ -1,0 +1,288 @@
+/*
+ * Selector — Zafiro Design System (Rex+)
+ * Fuente: Figma WgljvPA598MTRm4p5tREGr · nodo 1:1429
+ *
+ * Estructura exacta:
+ *   [label: 12px, Roboto Regular]
+ *   [display text 16px] [chevron 32×32]
+ *   [separador: 1px, border-radius 16px]
+ *   [supporting text: 12px, Roboto Regular]
+ *   Gap: 4px · Ancho default: 280px
+ *
+ * Tokens usados (src/tokens/tokens.json):
+ *   colors.importante        → #00B4FF  chevron (siempre) + label + separator en Active
+ *   colors.dark-success      → #6C7E01  label + supporting en Success
+ *   colors.exito             → #ACCA54  separator + chevron en Success (Success/300)
+ *   colors.alerta            → #FFB800  separator + chevron en Alert (Alert/300)
+ *   colors.error             → #E24C4C  label + separator + supporting + chevron en Error
+ *   colors.gris-oscuro       → #666666  label + placeholder en Default
+ *   colors.gris-textos       → #999999  separator Default; supporting Default/Active; disabled text
+ *   colors.gris-deshabilitado→ #CCCCCC  separator + chevron en Disabled
+ *   colors.negro-textos      → #333333  valor seleccionado en Active/Focus/states
+ *   colors.primario          → #1E5591  texto de ítems del desplegable
+ *   colors.panel             → #5780AD  fondo del ítem seleccionado (selected)
+ *   colors.auxiliar          → #B6CEE7  border-bottom de ítems
+ *   colors.blanco            → #FFFFFF  fondo en Expanded · texto ítem seleccionado
+ *   effects.elevation-1      → 0px 2px 4px 0px rgba(0,0,0,0.15)  sombra Expanded
+ *   Alert/400: #B77900 — amber oscuro para label/supporting en Alert (legibilidad; no está aún en tokens.json)
+ */
+
+/* ─── Wrapper ─────────────────────────────────────────────────────────────── */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 83px;
+  width: 280px;
+  position: relative;
+}
+
+/* ─── Trigger (button) ────────────────────────────────────────────────────── */
+.trigger {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  min-height: 63px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  text-align: left;
+  font-family: 'Roboto', sans-serif;
+}
+
+.trigger:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ─── Label ───────────────────────────────────────────────────────────────── */
+.label {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;              /* typography.font-size.12 */
+  font-weight: 400;
+  line-height: 1;
+  color: #666666;               /* colors.gris-oscuro — Default */
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ─── Content (row + separator) ───────────────────────────────────────────── */
+.content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ─── Placeholder row ─────────────────────────────────────────────────────── */
+.placeholderRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 24px;
+  width: 100%;
+}
+
+/* ─── Display text (placeholder / valor seleccionado) ────────────────────── */
+.displayText {
+  flex: 1;
+  min-width: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;              /* typography.font-size.16 */
+  font-weight: 400;
+  line-height: 1.3;
+  color: #666666;               /* colors.gris-oscuro — sin selección */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Cuando hay un valor seleccionado */
+.hasValue {
+  color: #333333;               /* colors.negro-textos */
+}
+
+/* ─── Chevron ─────────────────────────────────────────────────────────────── */
+.chevron {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  color: #00B4FF;               /* colors.importante — siempre */
+  transition: color 0.12s ease;
+}
+
+/* ─── Separador (línea inferior) ──────────────────────────────────────────── */
+.separator {
+  height: 1px;
+  border-radius: 16px;
+  background-color: #999999;    /* colors.gris-textos — Default */
+  transition: background-color 0.12s ease;
+  width: 100%;
+}
+
+/* ─── Supporting text ─────────────────────────────────────────────────────── */
+.supportingText {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;              /* typography.font-size.12 */
+  font-weight: 400;
+  line-height: 1;
+  color: #999999;               /* colors.gris-textos */
+  transition: color 0.12s ease;
+  display: block;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ESTADOS INTERACTIVOS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Active: tiene valor seleccionado ──────────────────────────────────────
+   colors.importante → #00B4FF */
+.active .label {
+  color: #00B4FF;
+}
+.active .separator {
+  background-color: #00B4FF;
+}
+
+/* ─── Expanded: dropdown abierto ────────────────────────────────────────────
+   El wrapper muestra la parte superior del card (esquinas arriba redondeadas).
+   El dropdown flota absolutamente debajo, sin desplazar el contenido. */
+.expanded {
+  background-color: #FFFFFF;
+  border-radius: 16px 16px 0 0;
+}
+.expanded .trigger {
+  padding: 16px 16px 0 16px;
+}
+.expanded .label {
+  color: #666666;               /* colors.gris-oscuro */
+}
+.expanded .separator {
+  background-color: #999999;
+}
+.expanded .dropdown {
+  padding: 0 16px 16px 16px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ESTADOS DE VALIDACIÓN EXTERNOS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Success ──────────────────────────────────────────────────────────────
+   colors.dark-success → #6C7E01 (textos) · colors.exito → #ACCA54 (separator/chevron) */
+.success .label {
+  color: #6C7E01;
+}
+.success .separator {
+  background-color: #ACCA54;
+}
+.success .chevron {
+  color: #ACCA54;
+}
+.success .supportingText {
+  color: #6C7E01;
+}
+
+/* ─── Alert ────────────────────────────────────────────────────────────────
+   Label/supporting: Alert/400 #B77900 (legibilidad)
+   Separator/chevron: colors.alerta #FFB800 (Alert/300) */
+.alert .label {
+  color: #B77900;               /* Alert/400 — más oscuro para legibilidad */
+}
+.alert .separator {
+  background-color: #FFB800;    /* colors.alerta = Alert/300 */
+}
+.alert .chevron {
+  color: #FFB800;
+}
+.alert .supportingText {
+  color: #B77900;
+}
+
+/* ─── Error ────────────────────────────────────────────────────────────────
+   colors.error → #E24C4C */
+.error .label {
+  color: #E24C4C;
+}
+.error .separator {
+  background-color: #E24C4C;
+}
+.error .chevron {
+  color: #E24C4C;
+}
+.error .supportingText {
+  color: #E24C4C;
+}
+
+/* ─── Disabled ─────────────────────────────────────────────────────────────
+   colors.gris-textos → #999999 · colors.gris-deshabilitado → #CCCCCC */
+.disabled .label {
+  color: #999999;               /* colors.gris-textos */
+}
+.disabled .displayText {
+  color: #999999;
+}
+.disabled .separator {
+  background-color: #CCCCCC;    /* colors.gris-deshabilitado */
+}
+.disabled .chevron {
+  color: #CCCCCC;
+}
+.disabled .trigger {
+  cursor: not-allowed;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   DROPDOWN
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Lista de opciones — flota sobre el contenido ──────────────────────────
+   position: absolute para no desplazar el layout al abrirse.
+   El wrapper tiene position: relative como punto de anclaje.               */
+.dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 200;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background-color: #FFFFFF;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0px 5px 8px 0px rgba(0, 0, 0, 0.15);
+}
+
+/* ─── Ítem del desplegable ─────────────────────────────────────────────────── */
+.item {
+  display: flex;
+  align-items: center;
+  height: 48px;
+  padding: 0 8px 0 12px;       /* px-8px · pl-4px del texto interno */
+  border-bottom: 1px solid #B6CEE7; /* colors.auxiliar */
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;              /* typography.font-size.16 */
+  font-weight: 400;
+  line-height: 1.3;
+  color: #1E5591;               /* colors.primario */
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: background-color 0.1s ease;
+}
+
+.item:hover {
+  background-color: #F6F9FA;    /* colors.fondo */
+}
+
+.item[aria-selected='true'] {
+  background-color: #5780AD;    /* colors.panel */
+  color: #FFFFFF;               /* colors.blanco */
+}

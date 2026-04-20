@@ -1,0 +1,1257 @@
+{
+  "$metadata": {
+    "name": "Zafiro Design System",
+    "product": "Rex+ Remuneraciones",
+    "company": "Rex+",
+    "version": "1.3.0",
+    "description": "Manifest oficial del sistema de diseño Zafiro para Rex+. Incluye componentes implementados, variantes, props, estados y tokens de referencia.",
+    "createdAt": "2026-03-06",
+    "updatedAt": "2026-04-14",
+    "tokenFile": "tokens.json",
+    "fonts": ["Roboto", "Montserrat"],
+    "implementedComponents": ["Button", "InputField", "Badge", "Card", "Snackbar", "ActivityMonitor", "Megamenú portal colaborador", "DataTable", "Selector", "FilterApp", "Tabs", "Textarea", "Radiobutton", "Checkbox", "Chip", "Uploader", "Section", "Totalizador", "Breadcrumb", "BloquesSeleccion"],
+    "pendingComponents": ["Modal", "Dropdown"]
+  },
+
+  "components": [
+
+    {
+      "name": "Button",
+      "status": "implemented",
+      "file": "src/components/Button/Button.tsx",
+      "description": "Componente de acción principal. Soporta 5 variantes visuales, 3 tamaños, ícono opcional con posición configurable y estados interactivos. Los botones sm y md usan border-radius 24px. Los botones lg y la variante 'ia' usan border-radius pill (9999px). La variante 'ia' está reservada para acciones de inteligencia artificial (Smart Rex) con gradiente azul.",
+      "variants": [
+        {
+          "name": "primary",
+          "description": "Acción principal. Fondo #1E5591 (primario), texto blanco. Hover oscurece a primario-oscuro."
+        },
+        {
+          "name": "secondary",
+          "description": "Acción secundaria. Borde 2px #1E5591, fondo transparente, texto primario."
+        },
+        {
+          "name": "tertiary",
+          "description": "Acción de menor jerarquía. Sin borde, fondo transparente, texto primario."
+        },
+        {
+          "name": "link",
+          "description": "Apariencia de enlace. Texto subrayado en primario, sin fondo ni borde. Sin padding horizontal."
+        },
+        {
+          "name": "ia",
+          "description": "Acciones de IA (Smart Rex). Gradiente horizontal importante→intermedio (#00B4FF→#0069FF). Siempre pill (9999px) independientemente del size."
+        }
+      ],
+      "sizes": [
+        { "name": "sm", "description": "Fuente 12px · padding 4px 11px · min-height 28px · border-radius 24px." },
+        { "name": "md", "description": "Fuente 14px · padding 8px 16px · min-height 36px · border-radius 24px. Tamaño por defecto." },
+        { "name": "lg", "description": "Fuente 16px · padding 8px 24px · min-height 44px · border-radius pill 9999px (CTA)." }
+      ],
+      "states": [
+        { "name": "default", "description": "Estado de reposo." },
+        { "name": "hover", "description": "Oscurecimiento del fondo. Primary: primario-oscuro. IA: gradiente más oscuro." },
+        { "name": "pressed", "description": "Oscurecimiento mayor que hover." },
+        { "name": "focus-visible", "description": "Outline 3px #5780AD (panel) para navegación por teclado." },
+        { "name": "loading", "description": "Spinner CSS visible, ícono oculto. pointer-events: none. aria-busy=true." },
+        { "name": "disabled", "description": "Fondo #CCCCCC, texto #999999. pointer-events: none. Incluye loading=true." }
+      ],
+      "props": [
+        {
+          "name": "variant",
+          "type": "ButtonVariant",
+          "values": ["primary", "secondary", "tertiary", "link", "ia"],
+          "default": "primary",
+          "required": false,
+          "description": "Variante visual del botón."
+        },
+        {
+          "name": "size",
+          "type": "ButtonSize",
+          "values": ["sm", "md", "lg"],
+          "default": "md",
+          "required": false,
+          "description": "Tamaño del botón."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "default": false,
+          "required": false,
+          "description": "Muestra spinner, oculta ícono y bloquea interacción. aria-busy=true."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "default": false,
+          "required": false,
+          "description": "Deshabilita el botón. disabled=true OR loading=true activan el estado disabled visual."
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Ícono opcional. Se oculta durante loading. Posición controlada por iconPosition."
+        },
+        {
+          "name": "iconPosition",
+          "type": "string",
+          "values": ["left", "right"],
+          "default": "left",
+          "required": false,
+          "description": "Posición del ícono respecto al texto."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "required": true,
+          "description": "Texto o contenido del botón."
+        },
+        {
+          "name": "onClick",
+          "type": "function",
+          "required": false,
+          "description": "Callback al hacer clic. No se dispara en disabled ni loading."
+        }
+      ],
+      "tokens": [
+        { "token": "colors.primario", "value": "#1E5591", "usage": "Fondo primary / borde secondary / texto secondary y tertiary" },
+        { "token": "colors.primario-oscuro", "value": "#0A396C", "usage": "Fondo hover+pressed en primary" },
+        { "token": "colors.blanco", "value": "#FFFFFF", "usage": "Texto en primary e ia" },
+        { "token": "colors.importante", "value": "#00B4FF", "usage": "Inicio del gradiente en ia" },
+        { "token": "colors.intermedio", "value": "#0069FF", "usage": "Fin del gradiente en ia" },
+        { "token": "colors.gris-deshabilitado", "value": "#CCCCCC", "usage": "Fondo en disabled (todas las variantes)" },
+        { "token": "colors.gris-textos", "value": "#999999", "usage": "Texto en disabled" },
+        { "token": "colors.panel", "value": "#5780AD", "usage": "Outline focus-visible" },
+        { "token": "colors.auxiliar", "value": "#B6CEE7", "usage": "Color del ícono decorativo dentro del botón primary (ej. Arrow Right)" },
+        { "token": "zafiro.padding.p-0", "value": "4px", "usage": "Padding vertical sm" },
+        { "token": "zafiro.padding.p-1-5", "value": "8px", "usage": "Padding vertical md y lg" },
+        { "token": "zafiro.padding.p-2", "value": "11px", "usage": "Padding horizontal sm" },
+        { "token": "zafiro.padding.p-4", "value": "16px", "usage": "Padding horizontal md" },
+        { "token": "zafiro.padding.p-5", "value": "24px", "usage": "Padding horizontal lg" },
+        { "token": "zafiro.border-radius.br-5", "value": "24px", "usage": "Border-radius sm y md" }
+      ],
+      "notes": "Extiende React.ButtonHTMLAttributes<HTMLButtonElement>. El type por defecto es 'button' (no 'submit'). Exporta tipos: ButtonProps, ButtonVariant, ButtonSize."
+    },
+
+    {
+      "name": "InputField",
+      "status": "implemented",
+      "file": "src/components/InputField/InputField.tsx",
+      "figmaNode": "267:7946",
+      "figmaFile": "WgljvPA598MTRm4p5tREGr",
+      "description": "Campo de entrada de texto del sistema Zafiro. Estructura: label estático (12px) encima del campo → input row (16px + ícono info 24px) → separador inferior (1px) → supporting text (12px). El label es invisible en estado default y aparece cuando el campo está activo o tiene valor. El separador inferior cambia de color según el estado. ÚNICO estado con borde completo: Focus (teclado, 2px #0069FF, border-radius 4px).",
+      "states": [
+        {
+          "name": "default",
+          "description": "Vacío sin foco. Label invisible. Texto del label actúa como placeholder nativo (16px, #666). Separador #999.",
+          "internal": true
+        },
+        {
+          "name": "activated",
+          "description": "Con foco, campo vacío. Label aparece en #00B4FF (importante). Separador #00B4FF.",
+          "internal": true
+        },
+        {
+          "name": "filled",
+          "description": "Sin foco, tiene valor. Label visible en #666 (gris-oscuro). Separador #999.",
+          "internal": true
+        },
+        {
+          "name": "focus",
+          "description": "Con foco Y tiene valor (foco de teclado). Borde completo 2px #0069FF (intermedio), border-radius 4px, padding 2px 4px. Label #666.",
+          "internal": true
+        },
+        {
+          "name": "success",
+          "description": "Validación exitosa. Label y separador en #ACCA54 (exito / Success/300). Supporting text #999.",
+          "external": true,
+          "prop": "fieldState='success'"
+        },
+        {
+          "name": "alert",
+          "description": "Advertencia. Label y separador en #FFB800 (alerta / Alert/300). Supporting text #999.",
+          "external": true,
+          "prop": "fieldState='alert'"
+        },
+        {
+          "name": "error",
+          "description": "Error de validación. Label y separador en #E24C4C (error / Error/300). Supporting text TAMBIÉN en #E24C4C (único estado donde el supporting text cambia de color).",
+          "external": true,
+          "prop": "fieldState='error'"
+        },
+        {
+          "name": "disabled",
+          "description": "Deshabilitado. Label #666, separador #CCC (gris-deshabilitado), texto del campo #999. pointer-events: none.",
+          "external": true,
+          "prop": "fieldState='disabled'"
+        },
+        {
+          "name": "blocked",
+          "description": "Bloqueado (solo lectura bloqueado). Label #999, separador #CCC, texto del campo #666. pointer-events: none.",
+          "external": true,
+          "prop": "fieldState='blocked'"
+        }
+      ],
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "description": "Etiqueta del campo. En estado default actúa como placeholder nativo. Al activarse sube como label 12px encima del campo."
+        },
+        {
+          "name": "supportingText",
+          "type": "string",
+          "required": false,
+          "description": "Texto de apoyo bajo el campo. En estado error se colorea con #E24C4C. Resto de estados: #999."
+        },
+        {
+          "name": "fieldState",
+          "type": "InputFieldState",
+          "values": ["default", "success", "alert", "error", "disabled", "blocked"],
+          "default": "default",
+          "required": false,
+          "description": "Estado externo controlado por el padre. Los estados activated/filled/focus son internos (interacción del usuario)."
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "required": false,
+          "description": "Ícono derecho personalizado. Por defecto muestra el ícono Info del sistema Zafiro."
+        },
+        {
+          "name": "hideIcon",
+          "type": "boolean",
+          "default": false,
+          "required": false,
+          "description": "Oculta el ícono derecho."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "required": false,
+          "description": "Valor controlado (modo controlled)."
+        },
+        {
+          "name": "defaultValue",
+          "type": "string",
+          "required": false,
+          "description": "Valor inicial (modo uncontrolled)."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "required": false,
+          "description": "ID del input. Si se omite se genera con useId()."
+        }
+      ],
+      "tokens": [
+        { "token": "colors.importante", "value": "#00B4FF", "usage": "Label y separador en estado activated" },
+        { "token": "colors.intermedio", "value": "#0069FF", "usage": "Borde completo en estado focus (teclado)" },
+        { "token": "colors.exito", "value": "#ACCA54", "usage": "Label, separador e ícono en estado success (Success/300)" },
+        { "token": "colors.alerta", "value": "#FFB800", "usage": "Label, separador e ícono en estado alert (Alert/300)" },
+        { "token": "colors.error", "value": "#E24C4C", "usage": "Label, separador, ícono y supporting text en estado error (Error/300)" },
+        { "token": "colors.negro-textos", "value": "#333333", "usage": "Texto ingresado en activated/filled/focus/states externos" },
+        { "token": "colors.gris-oscuro", "value": "#666666", "usage": "Placeholder en default · label en filled · label en disabled · texto en blocked" },
+        { "token": "colors.gris-textos", "value": "#999999", "usage": "Separador default · supporting text · ícono default · texto en disabled" },
+        { "token": "colors.gris-deshabilitado", "value": "#CCCCCC", "usage": "Separador en disabled y blocked" },
+        { "token": "zafiro.border-radius.br-2", "value": "4px", "usage": "Border-radius del borde completo en estado focus" },
+        { "token": "typography.font-size.12", "value": "12px", "usage": "Label encima del campo y supporting text" },
+        { "token": "typography.font-size.16", "value": "16px", "usage": "Texto del campo (placeholder y valor)" }
+      ],
+      "layout": {
+        "height": "~63px",
+        "structure": "flex-col · gap 4px",
+        "inputRow": "height 24px · flex-row · gap 8px",
+        "separator": "height 1px · border-radius 16px",
+        "focusBoxBorder": "2px solid #0069FF · border-radius 4px · padding 2px 4px"
+      },
+      "notes": "Extiende React.InputHTMLAttributes<HTMLInputElement>. Implementa React.forwardRef. Exporta tipos: InputFieldProps, InputFieldState. Los estados activated/filled/focus son automáticos por interacción; los estados success/alert/error/disabled/blocked se controlan vía prop fieldState."
+    },
+
+    {
+      "name": "Badge",
+      "status": "implemented",
+      "file": "src/components/Badge/Badge.tsx",
+      "description": "Etiqueta compacta para representar estados en tablas y listas. Siempre border-radius pill fijo de 12px. Dos tamaños disponibles. La variante solid-alert usa texto oscuro (#333) por razones de contraste WCAG (ratio ~8.6:1 vs ~2.1:1 con blanco).",
+      "variants": [
+        {
+          "name": "solid-success",
+          "description": "Fondo #ACCA54 (exito), texto blanco. Para estados positivos o completados."
+        },
+        {
+          "name": "solid-error",
+          "description": "Fondo #E24C4C (error), texto blanco. Para alertas críticas o estados fallidos."
+        },
+        {
+          "name": "solid-alert",
+          "description": "Fondo #FFB800 (alerta), texto #333333 (negro-textos) por contraste. Para advertencias o pendientes."
+        },
+        {
+          "name": "solid-primary",
+          "description": "Fondo #1E5591 (primario), texto blanco. Para estados activos o vigentes."
+        }
+      ],
+      "states": [
+        { "name": "default", "description": "Estado único. El badge es puramente presentacional, sin estados interactivos." }
+      ],
+      "props": [
+        {
+          "name": "variant",
+          "type": "BadgeVariant",
+          "values": ["solid-success", "solid-error", "solid-alert", "solid-primary"],
+          "required": true,
+          "description": "Variante de color del badge."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": true,
+          "description": "Texto visible del badge."
+        },
+        {
+          "name": "size",
+          "type": "BadgeSize",
+          "values": ["sm", "md"],
+          "default": "md",
+          "required": false,
+          "description": "Tamaño del badge. md: 14px · 5px 11px padding. sm: 12px · 4px 8px padding."
+        }
+      ],
+      "tokens": [
+        { "token": "colors.exito", "value": "#ACCA54", "usage": "Fondo solid-success" },
+        { "token": "colors.error", "value": "#E24C4C", "usage": "Fondo solid-error" },
+        { "token": "colors.alerta", "value": "#FFB800", "usage": "Fondo solid-alert" },
+        { "token": "colors.primario", "value": "#1E5591", "usage": "Fondo solid-primary" },
+        { "token": "colors.blanco", "value": "#FFFFFF", "usage": "Texto en solid-success, solid-error, solid-primary" },
+        { "token": "colors.negro-textos", "value": "#333333", "usage": "Texto en solid-alert (contraste WCAG AA sobre amarillo)" },
+        { "token": "zafiro.padding.p-0", "value": "4px", "usage": "Padding vertical sm" },
+        { "token": "zafiro.padding.p-1", "value": "5px", "usage": "Padding vertical md" },
+        { "token": "zafiro.padding.p-1-5", "value": "8px", "usage": "Padding horizontal sm" },
+        { "token": "zafiro.padding.p-2", "value": "11px", "usage": "Padding horizontal md" },
+        { "token": "typography.font-size.12", "value": "12px", "usage": "Texto size sm" },
+        { "token": "typography.font-size.14", "value": "14px", "usage": "Texto size md" }
+      ],
+      "notes": "Border-radius fijo: 12px (no usa el sistema br de Zafiro). role='status' + aria-label para lectores de pantalla. Exporta tipos: BadgeProps, BadgeVariant, BadgeSize."
+    },
+
+    {
+      "name": "Card",
+      "status": "implemented",
+      "file": "src/components/Card/Card.tsx",
+      "description": "Contenedor con elevación para agrupar información. Tres variantes estructurales: default (contenido libre), platform (acceso a plataformas Rex+ con logo circular, título, descripción y CTA), kpi (métricas numéricas con ícono, valor, título y tendencia). La tendencia usa colores semánticos: positiva (dark-success), negativa (error), plana (gris-deshabilitado).",
+      "variants": [
+        {
+          "name": "default",
+          "description": "Contenedor genérico. Título opcional, children libres. Renderiza como <div>."
+        },
+        {
+          "name": "platform",
+          "description": "Tarjeta de plataforma Rex+. Logo circular 56×56px, título (1 línea), descripción (2 líneas max con clamp), botón CTA primario sm. Renderiza como <button> si onClick está presente."
+        },
+        {
+          "name": "kpi",
+          "description": "Métrica de dashboard. Ícono 32×32px en fondo fondo, título en mayúsculas 13px, valor en Montserrat Bold 32px, tendencia porcentual con ícono de flecha y etiqueta de contexto."
+        }
+      ],
+      "states": [
+        { "name": "default", "description": "Reposo. shadow-1: 0px 2px 4px rgba(0,0,0,0.15)." },
+        { "name": "hover", "description": "Cursor sobre la card. shadow-2: 0px 4px 16px rgba(0,0,0,0.12) + translateY(-1px). Solo en cards interactivas (onClick o platform)." },
+        { "name": "focus-visible", "description": "Outline 3px #5780AD para navegación por teclado. Solo en cards interactivas." }
+      ],
+      "props": {
+        "common": [
+          {
+            "name": "variant",
+            "type": "string",
+            "values": ["default", "platform", "kpi"],
+            "default": "default",
+            "required": false,
+            "description": "Variante estructural de la card."
+          },
+          {
+            "name": "onClick",
+            "type": "function",
+            "required": false,
+            "description": "Convierte la card en <button> interactivo con hover lift."
+          },
+          {
+            "name": "className",
+            "type": "string",
+            "required": false,
+            "description": "Clase CSS adicional."
+          }
+        ],
+        "default": [
+          { "name": "title", "type": "string", "required": false, "description": "Título en la cabecera de la card." },
+          { "name": "children", "type": "ReactNode", "required": false, "description": "Contenido libre." }
+        ],
+        "platform": [
+          { "name": "logo", "type": "ReactNode", "required": true, "description": "Logo de la plataforma. SVG, img u otro elemento. Se muestra en contenedor circular 56×56px." },
+          { "name": "title", "type": "string", "required": true, "description": "Nombre de la plataforma." },
+          { "name": "description", "type": "string", "required": true, "description": "Descripción breve (máx. 2 líneas con -webkit-line-clamp)." },
+          { "name": "ctaLabel", "type": "string", "default": "Ir a plataforma", "required": false, "description": "Texto del botón CTA." },
+          { "name": "onCtaClick", "type": "function", "required": false, "description": "Callback del botón CTA." }
+        ],
+        "kpi": [
+          { "name": "icon", "type": "ReactNode", "required": true, "description": "Ícono de la métrica en contenedor 32×32px con fondo fondo (#F6F9FA)." },
+          { "name": "title", "type": "string", "required": true, "description": "Nombre de la métrica. Se muestra en uppercase 13px." },
+          { "name": "value", "type": "string | number", "required": true, "description": "Valor numérico principal. Font Montserrat Bold 32px." },
+          { "name": "trend", "type": "number", "required": false, "description": "Tendencia porcentual. >0 verde (dark-success), <0 rojo (error), =0 gris." },
+          { "name": "trendLabel", "type": "string", "default": "vs período anterior", "required": false, "description": "Texto de contexto junto a la tendencia." }
+        ]
+      },
+      "tokens": [
+        { "token": "colors.blanco", "value": "#FFFFFF", "usage": "Fondo de todas las cards" },
+        { "token": "colors.fondo", "value": "#F6F9FA", "usage": "Fondo del ícono KPI · logo platform · área de cards" },
+        { "token": "colors.gris-secundario", "value": "#E5E5E5", "usage": "Borde sutil de la card" },
+        { "token": "colors.primario", "value": "#1E5591", "usage": "Color del ícono KPI" },
+        { "token": "colors.negro-textos", "value": "#333333", "usage": "Título y valor KPI" },
+        { "token": "colors.gris-oscuro", "value": "#666666", "usage": "Descripción platform" },
+        { "token": "colors.gris-textos", "value": "#999999", "usage": "Label KPI y trendLabel" },
+        { "token": "colors.dark-success", "value": "#6C7E01", "usage": "Tendencia positiva KPI (mejor contraste que exito sobre blanco)" },
+        { "token": "colors.error", "value": "#E24C4C", "usage": "Tendencia negativa KPI" },
+        { "token": "colors.gris-deshabilitado", "value": "#CCCCCC", "usage": "Tendencia plana KPI" },
+        { "token": "zafiro.border-radius.br-3", "value": "8px", "usage": "Border-radius de la card" },
+        { "token": "zafiro.padding.p-4", "value": "16px", "usage": "Padding interno" },
+        { "token": "zafiro.margin.m-3", "value": "8px", "usage": "Gap interno entre elementos" }
+      ],
+      "effects": {
+        "shadow-1": {
+          "description": "Sombra en reposo",
+          "value": "0px 2px 4px rgba(0, 0, 0, 0.15)"
+        },
+        "shadow-2": {
+          "description": "Sombra en hover",
+          "value": "0px 4px 16px rgba(0, 0, 0, 0.12)"
+        }
+      },
+      "notes": "Usa discriminated union TypeScript: CardDefaultProps | CardPlatformProps | CardKpiProps. Exporta tipos: CardProps, CardDefaultProps, CardPlatformProps, CardKpiProps. El valor KPI usa Montserrat (fuente heading) por ser un título de alto nivel."
+    },
+
+    {
+      "name": "Snackbar",
+      "status": "implemented",
+      "file": "src/components/Snackbar/Snackbar.tsx",
+      "figmaNode": "1:2076",
+      "figmaFile": "WgljvPA598MTRm4p5tREGr",
+      "description": "Notificación temporal en forma de píldora. Estructura: contenedor izquierdo con fondo sólido (ícono blanco 24px) + zona derecha con mensaje (Roboto 16px) + botón cerrar opcional. Cinco variantes según el contexto semántico de la notificación. Auto-cierre configurable. Apilable en la esquina inferior derecha.",
+      "variants": [
+        {
+          "name": "primary",
+          "description": "Notificación informativa general. Ícono container #1E5591 (primario), fondo cuerpo #E1F2FA, texto #1E5591. Ícono: info circle.",
+          "figmaNode": "1:2097"
+        },
+        {
+          "name": "success",
+          "description": "Notificación de éxito. Ícono container #9FB853 (Success/400), fondo cuerpo #F7FCDE, texto #57751A (Success/600). Ícono: check circle.",
+          "figmaNode": "1:2092"
+        },
+        {
+          "name": "alert",
+          "description": "Notificación de advertencia. Ícono container #FFB800 (alerta), ícono oscuro (#333) por contraste, fondo cuerpo #FFF6CC, texto #333333. Ícono: triángulo de alerta.",
+          "figmaNode": "1:2082"
+        },
+        {
+          "name": "error",
+          "description": "Notificación de error. Ícono container #E24C4C (error), fondo cuerpo #FDDBDB (Error/100), texto #333333. Ícono: info circle.",
+          "figmaNode": "1:2087"
+        },
+        {
+          "name": "important",
+          "description": "Notificación destacada/importante. Ícono container #00B4FF (importante), fondo cuerpo #E1F2FA, texto #1E5591. Ícono: info circle.",
+          "figmaNode": "267:6580"
+        }
+      ],
+      "states": [
+        { "name": "visible", "description": "Visible. Animación de entrada slideIn desde abajo (0.22s ease)." },
+        { "name": "hidden", "description": "No visible. Fuera del DOM (controlled por el padre vía onClose)." }
+      ],
+      "props": [
+        {
+          "name": "variant",
+          "type": "SnackbarVariant",
+          "values": ["primary", "success", "alert", "error", "important"],
+          "required": true,
+          "description": "Variante visual. Define colores del ícono container, fondo y texto."
+        },
+        {
+          "name": "message",
+          "type": "string",
+          "required": true,
+          "description": "Texto del mensaje de notificación."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "default": 4000,
+          "required": false,
+          "description": "Ms antes de llamar onClose automáticamente. 0 = persistente. Requiere onClose para funcionar."
+        },
+        {
+          "name": "onClose",
+          "type": "function",
+          "required": false,
+          "description": "Callback al cerrar (botón × o auto-close). Muestra el botón × cuando está definido."
+        },
+        {
+          "name": "action",
+          "type": "object",
+          "required": false,
+          "description": "Acción opcional: { label: string, onClick: () => void }. Se muestra como texto subrayado antes del botón ×."
+        }
+      ],
+      "tokens": [
+        { "token": "colors.primario", "value": "#1E5591", "usage": "Ícono container primary · texto primary e important" },
+        { "token": "colors.importante", "value": "#00B4FF", "usage": "Ícono container important" },
+        { "token": "colors.error", "value": "#E24C4C", "usage": "Ícono container error" },
+        { "token": "colors.alerta", "value": "#FFB800", "usage": "Ícono container alert" },
+        { "token": "colors.negro-textos", "value": "#333333", "usage": "Texto en alert y error" },
+        { "token": "colors.blanco", "value": "#FFFFFF", "usage": "Ícono en todos los containers (excepto alert que usa #333)" }
+      ],
+      "coloresNoEnTokens": [
+        { "color": "#E1F2FA", "usage": "Fondo cuerpo primary e important" },
+        { "color": "#F7FCDE", "usage": "Fondo cuerpo success" },
+        { "color": "#FFF6CC", "usage": "Fondo cuerpo alert" },
+        { "color": "#FDDBDB", "usage": "Fondo cuerpo error (Error/100 Figma)" },
+        { "color": "#9FB853", "usage": "Ícono container success (Success/400 Figma)" },
+        { "color": "#57751A", "usage": "Texto success (Success/600 Figma)" }
+      ],
+      "layout": {
+        "borderRadius": "16px",
+        "shadow": "0px 5px 8px rgba(0,0,0,0.15)",
+        "gap": "16px",
+        "paddingRight": "24px",
+        "iconContainer": "padding 19px 24px · border-radius izquierdo 15px · align-self stretch",
+        "icon": "24×24px · color blanco (negro en alert)",
+        "message": "Roboto Medium 16px · line-height 1.3"
+      },
+      "positioning": "Esquina inferior derecha. position: fixed · bottom: 24px · right: 24px. Stack vertical con gap 10px. Animación slideIn al aparecer.",
+      "notes": "role='alert' para variantes error y alert (aria-live assertive). role='status' para primary, success, important (aria-live polite). Máximo recomendado: 3 snackbars simultáneos. Exporta tipos: SnackbarProps, SnackbarVariant."
+    },
+
+    {
+      "name": "Modal",
+      "status": "pending",
+      "description": "Capa de diálogo superpuesta al contenido principal. Bloquea la interacción con el fondo. Soporta múltiples tipos según el propósito: informativos, de confirmación, de acción o paneles laterales.",
+      "variants": [
+        { "name": "default", "description": "Modal informativo genérico." },
+        { "name": "success", "description": "Confirmación exitosa con ícono verde." },
+        { "name": "alert", "description": "Advertencia con ícono amarillo." },
+        { "name": "error", "description": "Error con ícono rojo." },
+        { "name": "input", "description": "Modal con formulario de entrada." },
+        { "name": "side-panel", "description": "Panel lateral desde la derecha." },
+        { "name": "decision", "description": "Decisión crítica con confirmar/cancelar." }
+      ],
+      "tokens": [
+        { "token": "colors.blanco", "usage": "Fondo del modal" },
+        { "token": "colors.negro-8", "usage": "Overlay de fondo (opacity 0.4)" },
+        { "token": "colors.exito", "usage": "Ícono en tipo success" },
+        { "token": "colors.alerta", "usage": "Ícono en tipo alert" },
+        { "token": "colors.error", "usage": "Ícono en tipo error" },
+        { "token": "zafiro.border-radius.br-3", "usage": "Border-radius del modal (8px)" },
+        { "token": "zafiro.padding.p-5", "usage": "Padding interno (24px)" }
+      ]
+    },
+
+    {
+      "name": "DataTable",
+      "status": "implemented",
+      "file": "src/components/DataTable/DataTable.tsx",
+      "figmaNode": "5041:16963",
+      "figmaFile": "WgljvPA598MTRm4p5tREGr",
+      "description": "Tabla de datos del portal (Type=Portal). Incluye header con filtro y búsqueda, cuerpo de tabla con 6 tipos de columna, y paginador con contador de registros. Tarjeta contenedora con border-radius 24px y sombra elevation-1.",
+      "columnTypes": [
+        { "name": "checkbox",    "description": "Checkbox de selección de fila (y seleccionar-todo en header)." },
+        { "name": "avatar-text", "description": "Avatar circular 24px + texto en la misma celda." },
+        { "name": "text",        "description": "Texto plano. Soporta ordenamiento por columna." },
+        { "name": "check-icon",  "description": "Ícono check-circle (primario) si value !== false." },
+        { "name": "progress",    "description": "Barra de progreso 103×8px. Valor 0-100 desde row[key]." },
+        { "name": "actions",     "description": "Botón de tres puntos (más acciones) por fila." }
+      ],
+      "props": [
+        { "name": "columns",           "type": "DataTableColumn[]",           "required": true,  "description": "Definición de columnas." },
+        { "name": "rows",              "type": "DataTableRow[]",              "required": true,  "description": "Datos de filas." },
+        { "name": "total",             "type": "number",                      "required": false, "description": "Total de registros para el texto del paginador." },
+        { "name": "currentPage",       "type": "number",                      "default": 1,      "required": false, "description": "Página actual (1-based)." },
+        { "name": "onPageChange",      "type": "function",                    "required": false, "description": "Callback al cambiar página." },
+        { "name": "onSearch",          "type": "function",                    "required": false, "description": "Callback al escribir en el buscador." },
+        { "name": "onFilter",          "type": "function",                    "required": false, "description": "Callback al hacer clic en 'Filtro'." },
+        { "name": "onSort",            "type": "function",                    "required": false, "description": "Callback al hacer clic en un header ordenable." },
+        { "name": "onRowAction",       "type": "function",                    "required": false, "description": "Callback al hacer clic en el botón de acciones de una fila." },
+        { "name": "onSelectionChange", "type": "function",                    "required": false, "description": "Callback al cambiar la selección de checkboxes." },
+        { "name": "className",         "type": "string",                      "required": false, "description": "Clase CSS adicional." }
+      ],
+      "tokens": [
+        { "token": "colors.auxiliar",          "value": "#B6CEE7", "usage": "Bordes de header y celdas" },
+        { "token": "colors.blanco",            "value": "#FFFFFF", "usage": "Fondo tarjeta, headers y celdas" },
+        { "token": "colors.negro-textos",      "value": "#333333", "usage": "Texto de celdas" },
+        { "token": "colors.gris-oscuro",       "value": "#666666", "usage": "Texto filtro y placeholder búsqueda" },
+        { "token": "colors.gris-deshabilitado","value": "#CCCCCC", "usage": "Borde input búsqueda y fondo barra progreso" },
+        { "token": "colors.primario",          "value": "#1E5591", "usage": "accent-color checkbox, ícono check-circle, sort activo" },
+        { "token": "colors.importante",        "value": "#00B4FF", "usage": "Página activa paginador, botón más-acciones" },
+        { "token": "colors.progress-fill",      "value": "#6DD400", "usage": "Relleno de la barra de progreso" },
+        { "token": "zafiro.border-radius.br-5", "value": "24px",    "usage": "Border-radius tarjeta y pill búsqueda" },
+        { "token": "zafiro.padding.p-5",         "value": "24px",    "usage": "padding-left de celdas de texto genéricas (.tdText)" },
+        { "token": "effects.elevation-1",        "value": "0px 2px 4px rgba(0,0,0,0.15)", "usage": "Sombra tarjeta" },
+        { "token": "typography.font-size.14",    "value": "14px",    "usage": "Texto headers y celdas" },
+        { "token": "typography.font-size.16",    "value": "16px",    "usage": "Texto filtro, búsqueda y paginador" }
+      ],
+      "layout": {
+        "maxWidth": "1256px",
+        "structure": "card (flex-col) > header (filter + search) + tableWrapper (table) + paginator",
+        "headerHeight": "48px",
+        "rowHeight": "48px",
+        "paginatorHeight": "64px",
+        "cellAlignment": "text-align: left en todas las celdas excepto checkbox y actions (centradas)",
+        "rowWidth": "width: 100% en celdas (.td)"
+      },
+      "notes": "Exporta tipos: DataTableProps, DataTableColumn, DataTableRow, DataTableColumnType. El paginador calcula totalPages a partir de total ÷ rows.length. El estado de selección y ordenamiento es controlado internamente; usar callbacks para sincronizar con estado externo. Columnas checkbox y actions mantienen text-align: center; el resto usa text-align: left (heredado de .td base)."
+    },
+
+    {
+      "name": "ActivityMonitor",
+      "status": "implemented",
+      "file": "src/components/ActivityMonitor/ActivityMonitor.tsx",
+      "figmaNode": "3791:36328",
+      "figmaFile": "WgljvPA598MTRm4p5tREGr",
+      "description": "Tarjeta de monitoreo de actividad. Muestra un ícono de estado semántico con label y un número/métrica principal. Seis estados visuales disponibles controlados por la prop 'state'.",
+      "variants": [
+        { "name": "Default",      "description": "Ícono en primario (#1E5591)." },
+        { "name": "Success",      "description": "Ícono en exito (#ACCA54)." },
+        { "name": "Alert",        "description": "Ícono en alerta (#FFB800)." },
+        { "name": "Error",        "description": "Ícono en error (#E24C4C)." },
+        { "name": "Important",    "description": "Ícono en importante (#00B4FF)." },
+        { "name": "Intermediate", "description": "Ícono en intermedio (#0069FF)." }
+      ],
+      "props": [
+        {
+          "name": "labelText",
+          "type": "string",
+          "default": "Label text",
+          "required": false,
+          "description": "Texto de la etiqueta junto al ícono."
+        },
+        {
+          "name": "number",
+          "type": "string",
+          "default": "00",
+          "required": false,
+          "description": "Métrica o número principal mostrado en grande."
+        },
+        {
+          "name": "state",
+          "type": "ActivityMonitorState",
+          "values": ["Default", "Success", "Alert", "Error", "Important", "Intermediate"],
+          "default": "Default",
+          "required": false,
+          "description": "Estado semántico. Controla el color del ícono de alerta."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Clase CSS adicional."
+        }
+      ],
+      "tokens": [
+        { "token": "colors.primario",     "value": "#1E5591", "usage": "Color ícono Default y label" },
+        { "token": "colors.exito",        "value": "#ACCA54", "usage": "Color ícono Success" },
+        { "token": "colors.alerta",       "value": "#FFB800", "usage": "Color ícono Alert" },
+        { "token": "colors.error",        "value": "#E24C4C", "usage": "Color ícono Error" },
+        { "token": "colors.importante",   "value": "#00B4FF", "usage": "Color ícono Important" },
+        { "token": "colors.intermedio",   "value": "#0069FF", "usage": "Color ícono Intermediate" },
+        { "token": "colors.negro-textos", "value": "#333333", "usage": "Color del número principal" },
+        { "token": "colors.blanco",       "value": "#FFFFFF", "usage": "Fondo de la tarjeta" },
+        { "token": "zafiro.padding.p-4",              "value": "16px", "usage": "Padding interno" },
+        { "token": "zafiro.border-radius.br-4",       "value": "16px", "usage": "Border-radius" },
+        { "token": "zafiro.margin.m-3",               "value": "8px",  "usage": "Gap entre ícono y label" },
+        { "token": "typography.font-size.14",         "value": "14px", "usage": "Tamaño label" },
+        { "token": "typography.font-size.32",         "value": "32px", "usage": "Tamaño número principal" },
+        { "token": "effects.elevation-1", "value": "0px 2px 4px rgba(0,0,0,0.15)", "usage": "Sombra de la tarjeta" }
+      ],
+      "layout": {
+        "width": "156px",
+        "structure": "flex-col · gap implícito entre titleRow y number"
+      },
+      "notes": "Usa inline SVG (AlertIcon) para el ícono — sin dependencias externas. El color del ícono se aplica vía currentColor desde la clase .state_*. Exporta tipos: ActivityMonitorProps, ActivityMonitorState."
+    },
+
+    {
+      "name": "Megamenú portal colaborador",
+      "status": "implemented",
+      "file": "src/components/MenuPortal/MenuPortal.tsx",
+      "figmaNode": "11661:3942",
+      "figmaFile": "WgljvPA598MTRm4p5tREGr",
+      "description": "Barra de navegación lateral del portal Rex+. Dos estados principales: expandido (272px) y colapsado (64px). Dos tipos de usuario: Supervisor (9 secciones) y Colaborador (8 secciones). Incluye logo, avatar con saludo personalizado y lista de secciones expandibles con ícono.",
+      "variants": [
+        {
+          "name": "Open=true / Type=Supervisor",
+          "description": "Menú expandido con 9 secciones: Supervisor, Ver, Solicitudes, Firmas pendientes, Documentos, Evaluaciones, Mi bitacora, Capacitaciones, Ajustes."
+        },
+        {
+          "name": "Open=true / Type=Colaborador",
+          "description": "Menú expandido con 8 secciones: Ver, Solicitudes, Firmas pendientes, Documentos, Evaluaciones, Mi bitacora, Capacitaciones, Ajustes."
+        },
+        {
+          "name": "Open=false / Type=Supervisor",
+          "description": "Barra colapsada (64px) con iconos de sección y botón de apertura."
+        },
+        {
+          "name": "Open=false / Type=Colaborador",
+          "description": "Barra colapsada (64px) con iconos de sección y botón de apertura."
+        }
+      ],
+      "props": [
+        {
+          "name": "open",
+          "type": "boolean",
+          "default": true,
+          "required": false,
+          "description": "Controla si el menú está expandido (272px) o colapsado (64px)."
+        },
+        {
+          "name": "type",
+          "type": "MenuPortalType",
+          "values": ["Supervisor", "Colaborador"],
+          "default": "Supervisor",
+          "required": false,
+          "description": "Tipo de usuario. Determina el conjunto de secciones mostradas y el avatar."
+        },
+        {
+          "name": "onToggle",
+          "type": "function",
+          "required": false,
+          "description": "Callback al hacer clic en el botón de colapsar/expandir."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "required": false,
+          "description": "Clase CSS adicional para el contenedor raíz."
+        }
+      ],
+      "tokens": [
+        { "token": "colors.primario", "value": "#1E5591", "usage": "Fondo del sidebar" },
+        { "token": "colors.panel", "value": "#5780AD", "usage": "Fondo sección avatar y separadores de ítems" },
+        { "token": "colors.blanco", "value": "#FFFFFF", "usage": "Texto de los ítems de menú" },
+        { "token": "colors.exito", "value": "#ACCA54", "usage": "Texto '¡Hola!' en el saludo del avatar" },
+        { "token": "colors.general", "value": "#B2E5FF", "usage": "Texto del nombre de usuario en el saludo" },
+        { "token": "colors.primario-oscuro", "value": "#0A396C", "usage": "Borde de la foto de avatar" },
+        { "token": "typography.font-size.14", "value": "14px", "usage": "Texto de ítems de menú y saludo" }
+      ],
+      "layout": {
+        "widthOpen": "272px",
+        "widthClosed": "64px (+ 13px del botón toggle)",
+        "height": "1024px",
+        "structure": "nav > sidebar (flex-col) + toggle button (absolute)"
+      },
+      "notes": "Los assets de iconos (ASSETS en MenuPortal.tsx) son URLs temporales del servidor Figma MCP (expiran en 7 días). Para producción, descargarlos a src/assets/icons/ y actualizar las rutas. Exporta tipos: MenuPortalProps, MenuPortalType."
+    },
+
+    {
+      "name": "Selector",
+      "status": "implemented",
+      "file": "src/components/Selector/Selector.tsx",
+      "figmaNode": "WgljvPA598MTRm4p5tREGr · nodo 1:1429",
+      "description": "Campo selector desplegable del sistema Zafiro. Estructura: label (12px) → [valor + chevron 32×32] → separador (1px) → supporting text (12px). Estado Expanded con sombra elevation-1, padding interior 16px, ítems con ítem seleccionado en color panel (#5780AD). Soporta modo controlado y no controlado.",
+      "variants": [
+        { "name": "default",  "description": "Campo vacío sin interacción. Label y placeholder en gris-oscuro (#666)." },
+        { "name": "active",   "description": "Tiene valor seleccionado. Label, separador y chevron en importante (#00B4FF). Texto del valor en negro-textos (#333)." },
+        { "name": "expanded", "description": "Dropdown abierto. Fondo blanco, border-radius 16px, sombra elevation-1, padding 16px interior. Ítem seleccionado con fondo panel (#5780AD) y texto blanco." },
+        { "name": "success",  "description": "Validación correcta. Label/supporting en dark-success (#6C7E01), separador/chevron en exito (#ACCA54)." },
+        { "name": "alert",    "description": "Advertencia. Label/supporting en Alert/400 (#B77900), separador/chevron en alerta (#FFB800)." },
+        { "name": "error",    "description": "Error de validación. Label, separador, chevron y supporting en error (#E24C4C)." },
+        { "name": "disabled", "description": "No interactivo. Label/placeholder en gris-textos (#999), separador/chevron en gris-deshabilitado (#CCC)." }
+      ],
+      "states": [
+        { "name": "default",  "description": "Campo vacío, sin foco." },
+        { "name": "active",   "description": "Tiene valor seleccionado." },
+        { "name": "expanded", "description": "Dropdown abierto. Se cierra al hacer clic fuera o pulsar Escape." },
+        { "name": "disabled", "description": "pointer-events: none. fieldState='disabled'." }
+      ],
+      "props": [
+        { "name": "label",         "type": "string",            "required": true,  "description": "Etiqueta del campo, siempre visible." },
+        { "name": "supportingText", "type": "string",           "required": false, "description": "Texto de apoyo bajo el separador." },
+        { "name": "fieldState",    "type": "SelectorFieldState","required": false, "default": "default", "values": ["default","success","alert","error","disabled"], "description": "Estado de validación externo." },
+        { "name": "options",       "type": "SelectorOption[]",  "required": false, "default": "[]",     "description": "Opciones del desplegable. Cada opción: { value: string, label: string }." },
+        { "name": "value",         "type": "string",            "required": false, "description": "Valor seleccionado en modo controlado." },
+        { "name": "defaultValue",  "type": "string",            "required": false, "description": "Valor inicial en modo no controlado." },
+        { "name": "onChange",      "type": "(value: string) => void", "required": false, "description": "Callback al seleccionar una opción." },
+        { "name": "placeholder",   "type": "string",            "required": false, "default": "Seleccionar", "description": "Texto cuando no hay opción seleccionada." },
+        { "name": "id",            "type": "string",            "required": false, "description": "ID del trigger (button). Auto-generado si se omite." },
+        { "name": "className",     "type": "string",            "required": false, "description": "Clase CSS extra en el wrapper." }
+      ],
+      "tokens": [
+        { "token": "colors.importante",        "value": "#00B4FF", "usage": "Label, separador y chevron en estado active" },
+        { "token": "colors.panel",             "value": "#5780AD", "usage": "Fondo del ítem seleccionado en Expanded" },
+        { "token": "colors.dark-success",      "value": "#6C7E01", "usage": "Label y supporting en Success" },
+        { "token": "colors.exito",             "value": "#ACCA54", "usage": "Separador y chevron en Success" },
+        { "token": "colors.alerta",            "value": "#FFB800", "usage": "Separador y chevron en Alert" },
+        { "token": "colors.error",             "value": "#E24C4C", "usage": "Label, separador, chevron y supporting en Error" },
+        { "token": "colors.primario",          "value": "#1E5591", "usage": "Texto de ítems del desplegable" },
+        { "token": "colors.auxiliar",          "value": "#B6CEE7", "usage": "Border-bottom de ítems" },
+        { "token": "colors.blanco",            "value": "#FFFFFF", "usage": "Fondo en Expanded · texto ítem seleccionado" },
+        { "token": "colors.fondo",             "value": "#F6F9FA", "usage": "Fondo ítem en hover" },
+        { "token": "colors.gris-oscuro",       "value": "#666666", "usage": "Label y placeholder en Default/Expanded" },
+        { "token": "colors.gris-textos",       "value": "#999999", "usage": "Separador Default · supporting Default/Active · disabled text" },
+        { "token": "colors.gris-deshabilitado","value": "#CCCCCC", "usage": "Separador y chevron en Disabled" },
+        { "token": "colors.negro-textos",      "value": "#333333", "usage": "Texto del valor seleccionado" },
+        { "token": "effects.elevation-1",      "value": "0px 2px 4px 0px rgba(0,0,0,0.15)", "usage": "Sombra del wrapper en estado Expanded" },
+        { "token": "zafiro.border-radius.br-4","value": "16px",    "usage": "Border-radius del wrapper en Expanded" },
+        { "token": "typography.font-size.12",  "value": "12px",    "usage": "Label y supporting text" },
+        { "token": "typography.font-size.16",  "value": "16px",    "usage": "Texto del valor y de los ítems" }
+      ],
+      "notes": "El Dropdown (pendiente) será una variante avanzada con búsqueda y selección múltiple. El Selector es la variante base implementada. Alert/400 (#B77900) se usa para label/supporting en estado alert por legibilidad; no está en tokens.json aún."
+    },
+
+    {
+      "name": "FilterApp",
+      "status": "implemented",
+      "file": "src/components/FilterApp/FilterApp.tsx",
+      "figmaNode": "WgljvPA598MTRm4p5tREGr · nodo 11680:4031",
+      "description": "Componente de filtrado del sistema Zafiro. Dos variantes: Default (trigger compacto con etiqueta e ícono de filtro) y Expanded (panel flotante con título y campos de filtro seleccionables). Soporta modo controlado y no controlado para el estado expanded.",
+      "variants": [
+        {
+          "name": "default",
+          "description": "Trigger compacto. Muestra etiqueta 'Filtro' (16px Roboto Regular, gris-oscuro #666) + ícono de filtro 24×24. Alineación inline-flex, gap 8px."
+        },
+        {
+          "name": "expanded",
+          "description": "Panel flotante. Fondo blanco, border-radius 16px, padding 24px, gap 24px, sombra elevation-3. Título 'Filtrar por' (14px Roboto Medium, negro). Campos de filtro: 189px ancho, 24px alto, border-bottom 1px #666, texto 14px Roboto Regular #333 + chevron 24×24."
+        }
+      ],
+      "props": [
+        { "name": "label",           "type": "string",                              "required": false, "default": "Filtro",       "description": "Etiqueta del trigger en estado colapsado." },
+        { "name": "title",           "type": "string",                              "required": false, "default": "Filtrar por",  "description": "Título del panel expandido." },
+        { "name": "fields",          "type": "FilterField[]",                       "required": false, "description": "Campos de filtro. Cada campo: { key, label, value? }. Default: Empresa, Centro de costo, Por tipo." },
+        { "name": "expanded",        "type": "boolean",                             "required": false, "description": "Estado expandido en modo controlado." },
+        { "name": "defaultExpanded", "type": "boolean",                             "required": false, "default": "false",        "description": "Estado expandido inicial en modo no controlado." },
+        { "name": "onToggle",        "type": "() => void",                          "required": false, "description": "Callback al alternar el panel." },
+        { "name": "onFieldClick",    "type": "(key: string, field: FilterField) => void", "required": false, "description": "Callback al hacer clic en un campo de filtro." },
+        { "name": "className",       "type": "string",                              "required": false, "description": "Clase CSS extra en el elemento raíz." }
+      ],
+      "tokens": [
+        { "token": "colors.gris-oscuro",   "value": "#666666", "usage": "Etiqueta trigger, borde inferior campos, ícono chevron" },
+        { "token": "colors.negro-textos",  "value": "#333333", "usage": "Texto de los campos de filtro" },
+        { "token": "colors.negro-8",       "value": "#000000", "usage": "Título del panel expandido" },
+        { "token": "colors.blanco",        "value": "#FFFFFF", "usage": "Fondo del panel expandido" },
+        { "token": "effects.elevation-3",  "value": "0px 4px 16px 0px rgba(0,0,0,0.15)", "usage": "Sombra del panel expandido" },
+        { "token": "zafiro.border-radius.br-4", "value": "16px", "usage": "Border-radius del panel" },
+        { "token": "typography.font-size.16",   "value": "16px", "usage": "Etiqueta trigger" },
+        { "token": "typography.font-size.14",   "value": "14px", "usage": "Título panel y texto de campos" },
+        { "token": "typography.font-weight.medium", "value": "500", "usage": "Peso del título del panel" }
+      ],
+      "notes": "El token effects.elevation-3 fue añadido en esta implementación (0px 4px 16px rgba(0,0,0,0.15)). Difiere de elevation-2 solo en la opacidad (0.15 vs 0.12). Los íconos Filter y SelectDown son SVGs inline; no dependen de assets externos."
+    },
+
+    {
+      "name": "Tabs",
+      "status": "implemented",
+      "file": "src/components/Tabs/Tabs.tsx",
+      "description": "Barra de pestañas del sistema Zafiro. Dos variantes: 'text' (indicador azul bajo la pestaña activa) e 'icon' (todas las pestañas muestran ícono check verde + texto, para flujos de pasos completados). Borde inferior continuo en auxiliar (#B6CEE7).",
+      "variants": [
+        { "name": "text", "description": "Pestaña activa con indicador azul (#00B4FF) bajo el texto. Pestañas inactivas en gris-deshabilitado (#CCCCCC)." },
+        { "name": "icon", "description": "Todas las pestañas muestran ícono check (#ACCA54) + texto en panel (#5780AD). Usado para estados de pasos completados." }
+      ],
+      "states": [
+        { "name": "active",   "description": "Pestaña seleccionada. Indicador #00B4FF visible (variante text)." },
+        { "name": "default",  "description": "Pestaña inactiva. Texto #CCCCCC." },
+        { "name": "disabled", "description": "No interactiva. pointer-events: none. Texto #CCCCCC." }
+      ],
+      "props": [
+        { "name": "tabs",       "type": "TabDef[]",     "required": true,  "description": "Lista de pestañas. Cada ítem: { key: string, label: string, disabled?: boolean }." },
+        { "name": "activeKey",  "type": "string",       "required": false, "description": "Clave de la pestaña activa (solo variante 'text')." },
+        { "name": "variant",    "type": "TabsVariant",  "required": false, "default": "text", "values": ["text", "icon"], "description": "Variante visual de la barra de pestañas." },
+        { "name": "onTabClick", "type": "(key: string) => void", "required": false, "description": "Callback al hacer clic en una pestaña." },
+        { "name": "className",  "type": "string",       "required": false, "description": "Clase CSS adicional." }
+      ],
+      "tokens": [
+        { "token": "colors.importante",        "value": "#00B4FF", "usage": "Indicador bajo pestaña activa (variante text)" },
+        { "token": "colors.blanco",            "value": "#FFFFFF", "usage": "Fondo de la barra" },
+        { "token": "colors.auxiliar",          "value": "#B6CEE7", "usage": "Borde inferior continuo de la barra" },
+        { "token": "colors.gris-deshabilitado","value": "#CCCCCC", "usage": "Texto de pestañas inactivas y disabled" },
+        { "token": "colors.panel",             "value": "#5780AD", "usage": "Texto de pestañas en variante icon" },
+        { "token": "colors.exito",             "value": "#ACCA54", "usage": "Fill del ícono check (variante icon)" },
+        { "token": "colors.intermedio",        "value": "#0069FF", "usage": "Outline focus-visible" }
+      ],
+      "notes": "Exporta tipos: TabsProps, TabDef, TabsVariant. La variante 'icon' no requiere activeKey; todas las pestañas se muestran como completadas."
+    },
+
+    {
+      "name": "Textarea",
+      "status": "implemented",
+      "file": "src/components/Textarea/Textarea.tsx",
+      "description": "Campo de texto multilínea del sistema Zafiro. Estructura: label (12px) encima del área → textarea (Roboto 16px, fondo fondo #F6F9FA, border-radius 4px) → separador inferior (1px) → supporting text (12px) + contador de caracteres opcional. Soporta 6 estados de validación.",
+      "states": [
+        { "name": "default",  "description": "Reposo. Borde completo #F6F9FA (solo fondo visible). Separador #999." },
+        { "name": "focused",  "description": "Borde azul 2px #0069FF, border-radius 4px." },
+        { "name": "success",  "description": "Borde/separador/supporting en exito (#ACCA54). Label en dark-success (#6C7E01)." },
+        { "name": "alert",    "description": "Borde/separador en alerta (#FFB800). Label/supporting en alerta oscuro." },
+        { "name": "error",    "description": "Borde/separador/label/supporting en error (#E24C4C)." },
+        { "name": "disabled", "description": "Opacidad reducida. No interactivo." },
+        { "name": "blocked",  "description": "Fondo gris (#E5E5E5). Solo lectura (readOnly)." }
+      ],
+      "props": [
+        { "name": "label",         "type": "string",               "required": false, "description": "Etiqueta encima del área." },
+        { "name": "placeholder",   "type": "string",               "required": false, "default": "Escribe aquí", "description": "Texto de placeholder." },
+        { "name": "supportingText","type": "string",               "required": false, "description": "Texto de apoyo bajo el separador." },
+        { "name": "fieldState",    "type": "TextareaFieldState",   "required": false, "default": "default", "values": ["default","success","alert","error","disabled","blocked"], "description": "Estado de validación." },
+        { "name": "value",         "type": "string",               "required": false, "description": "Valor controlado." },
+        { "name": "defaultValue",  "type": "string",               "required": false, "description": "Valor inicial no controlado." },
+        { "name": "onChange",      "type": "(value: string) => void", "required": false, "description": "Callback al cambiar el valor." },
+        { "name": "maxLength",     "type": "number",               "required": false, "description": "Máximo de caracteres. Muestra contador si se define." },
+        { "name": "hideCounter",   "type": "boolean",              "required": false, "default": "false", "description": "Oculta el contador de caracteres." },
+        { "name": "id",            "type": "string",               "required": false, "description": "ID del textarea." },
+        { "name": "className",     "type": "string",               "required": false, "description": "Clase CSS adicional." }
+      ],
+      "tokens": [
+        { "token": "colors.fondo",             "value": "#F6F9FA", "usage": "Fondo del área de texto" },
+        { "token": "colors.negro-textos",      "value": "#333333", "usage": "Label y texto escrito" },
+        { "token": "colors.gris-textos",       "value": "#999999", "usage": "Placeholder y separador default" },
+        { "token": "colors.gris-oscuro",       "value": "#666666", "usage": "Supporting text default" },
+        { "token": "colors.gris-deshabilitado","value": "#CCCCCC", "usage": "Label en disabled" },
+        { "token": "colors.intermedio",        "value": "#0069FF", "usage": "Borde focused" },
+        { "token": "colors.exito",             "value": "#ACCA54", "usage": "Borde/separador en success" },
+        { "token": "colors.alerta",            "value": "#FFB800", "usage": "Borde/separador en alert" },
+        { "token": "colors.error",             "value": "#E24C4C", "usage": "Borde/separador/label en error" }
+      ],
+      "notes": "Exporta tipos: TextareaProps, TextareaFieldState. El contador de caracteres se muestra alineado a la derecha bajo el separador cuando maxLength está definido y hideCounter es false."
+    },
+
+    {
+      "name": "Radiobutton",
+      "status": "implemented",
+      "file": "src/components/Radiobutton/Radiobutton.tsx",
+      "description": "Control de selección única del sistema Zafiro. Círculo 20×20px con borde primario (#1E5591). Cuando está marcado muestra un punto central. Soporta modo controlado y no controlado. Se agrupa mediante la prop 'name' a nivel HTML.",
+      "states": [
+        { "name": "default",      "description": "No marcado. Círculo con borde #1E5591 (2px)." },
+        { "name": "checked",      "description": "Marcado. Borde + punto interior en #1E5591." },
+        { "name": "hover",        "description": "Borde y punto oscurecen a primario-oscuro (#0A396C)." },
+        { "name": "disabled",     "description": "Borde, punto y label en gris-deshabilitado (#CCCCCC). pointer-events: none." },
+        { "name": "focus-visible","description": "Outline 2px #0069FF (solo navegación teclado)." }
+      ],
+      "props": [
+        { "name": "label",        "type": "React.ReactNode", "required": true,  "description": "Etiqueta visible junto al control." },
+        { "name": "value",        "type": "string",          "required": false, "description": "Valor HTML del radio." },
+        { "name": "name",         "type": "string",          "required": false, "description": "Nombre HTML para agrupar radios." },
+        { "name": "checked",      "type": "boolean",         "required": false, "description": "Estado marcado controlado." },
+        { "name": "defaultChecked","type": "boolean",        "required": false, "description": "Estado inicial no controlado." },
+        { "name": "disabled",     "type": "boolean",         "required": false, "default": "false", "description": "Deshabilita la interacción." },
+        { "name": "onChange",     "type": "(value: string) => void", "required": false, "description": "Callback al marcar." },
+        { "name": "id",           "type": "string",          "required": false, "description": "ID del input radio." },
+        { "name": "className",    "type": "string",          "required": false, "description": "Clase CSS adicional." }
+      ],
+      "tokens": [
+        { "token": "colors.primario",          "value": "#1E5591", "usage": "Borde y punto interior" },
+        { "token": "colors.primario-oscuro",   "value": "#0A396C", "usage": "Borde y punto en hover" },
+        { "token": "colors.negro-textos",      "value": "#333333", "usage": "Texto del label" },
+        { "token": "colors.gris-deshabilitado","value": "#CCCCCC", "usage": "Borde, punto y label en disabled" },
+        { "token": "colors.intermedio",        "value": "#0069FF", "usage": "Outline focus-visible" }
+      ],
+      "notes": "Exporta tipos: RadiobuttonProps. El input nativo está oculto visualmente (opacity:0, position:absolute); el control visual se dibuja con CSS puro usando ::before y ::after."
+    },
+
+    {
+      "name": "Checkbox",
+      "status": "implemented",
+      "file": "src/components/Checkbox/Checkbox.tsx",
+      "description": "Control de selección múltiple del sistema Zafiro. Cuadro 20×20px con borde-radius 4px y borde primario (#1E5591). Tres estados visuales: sin marcar, marcado (check blanco) e indeterminado (guion blanco). Soporta modo controlado y no controlado.",
+      "states": [
+        { "name": "default",       "description": "No marcado. Cuadro con borde #1E5591 (2px), fondo transparente." },
+        { "name": "checked",       "description": "Marcado. Fondo #1E5591, check blanco SVG." },
+        { "name": "indeterminate", "description": "Parcialmente seleccionado. Fondo #1E5591, guion blanco SVG." },
+        { "name": "hover",         "description": "Borde/fondo oscurecen a primario-oscuro (#0A396C)." },
+        { "name": "disabled",      "description": "Borde, fondo y label en gris-deshabilitado (#CCCCCC). pointer-events: none." },
+        { "name": "focus-visible", "description": "Outline 2px #0069FF (solo navegación teclado)." }
+      ],
+      "props": [
+        { "name": "label",         "type": "React.ReactNode", "required": true,  "description": "Etiqueta visible junto al control." },
+        { "name": "name",          "type": "string",          "required": false, "description": "Nombre HTML del input." },
+        { "name": "checked",       "type": "boolean",         "required": false, "description": "Estado marcado controlado." },
+        { "name": "defaultChecked","type": "boolean",         "required": false, "description": "Estado inicial no controlado." },
+        { "name": "indeterminate", "type": "boolean",         "required": false, "default": "false", "description": "Muestra guion en lugar de check." },
+        { "name": "disabled",      "type": "boolean",         "required": false, "default": "false", "description": "Deshabilita la interacción." },
+        { "name": "onChange",      "type": "(checked: boolean) => void", "required": false, "description": "Callback al cambiar estado." },
+        { "name": "id",            "type": "string",          "required": false, "description": "ID del input checkbox." },
+        { "name": "className",     "type": "string",          "required": false, "description": "Clase CSS adicional." }
+      ],
+      "tokens": [
+        { "token": "colors.primario",          "value": "#1E5591", "usage": "Borde y fondo (checked/indeterminate)" },
+        { "token": "colors.primario-oscuro",   "value": "#0A396C", "usage": "Borde/fondo en hover" },
+        { "token": "colors.blanco",            "value": "#FFFFFF", "usage": "Color del check y guion SVG" },
+        { "token": "colors.negro-textos",      "value": "#333333", "usage": "Texto del label" },
+        { "token": "colors.gris-deshabilitado","value": "#CCCCCC", "usage": "Borde, fondo y label en disabled" },
+        { "token": "colors.intermedio",        "value": "#0069FF", "usage": "Outline focus-visible" }
+      ],
+      "notes": "Exporta tipos: CheckboxProps. El estado indeterminate se aplica vía ref.current.indeterminate = true en el input nativo. El ícono (check o guion) se renderiza como SVG inline. El input nativo está oculto visualmente."
+    },
+
+    {
+      "name": "Chip",
+      "status": "implemented",
+      "file": "src/components/Chip/Chip.tsx",
+      "description": "Elemento de filtro en forma de pill del sistema Zafiro. Muestra una etiqueta con contador opcional e ícono (chevron u ojo). Dos variantes visuales: default (borde dash) y active (borde importante). El ícono es siempre importante (#00B4FF) independientemente del estado. El chevron rota 180° cuando expanded=true.",
+      "variants": [
+        { "name": "default", "description": "Borde 1px dash (#5780AD), texto dash. Hover: borde y texto primario (#1E5591). Ícono siempre importante (#00B4FF)." },
+        { "name": "active",  "description": "Borde 1px importante (#00B4FF), texto importante. Hover: borde y texto importante-oscuro (#019BE5). Ícono siempre importante (#00B4FF)." }
+      ],
+      "states": [
+        { "name": "default",       "description": "Sin selección. Borde/texto dash (#5780AD). Ícono importante (#00B4FF)." },
+        { "name": "hover-default", "description": "Hover sobre chip no activo. Borde/texto primario (#1E5591). Ícono importante (#00B4FF)." },
+        { "name": "active",        "description": "Seleccionado. Borde/texto importante (#00B4FF). Ícono importante (#00B4FF)." },
+        { "name": "hover-active",  "description": "Hover sobre chip activo. Borde/texto importante-oscuro (#019BE5). Ícono importante (#00B4FF)." },
+        { "name": "disabled",      "description": "Borde/texto gris-deshabilitado (#CCCCCC). pointer-events: none." },
+        { "name": "expanded",      "description": "Chevron rotado 180°. Compatible con cualquier variante." }
+      ],
+      "props": [
+        { "name": "label",    "type": "string",           "required": true,  "description": "Texto principal del chip." },
+        { "name": "count",    "type": "number | string",  "required": false, "description": "Contador opcional. Se muestra entre paréntesis: '(N)'." },
+        { "name": "active",   "type": "boolean",          "required": false, "default": "false", "description": "Activa la variante visual active (borde y texto importante)." },
+        { "name": "expanded", "type": "boolean",          "required": false, "default": "false", "description": "Rota el chevron 180°." },
+        { "name": "disabled", "type": "boolean",          "required": false, "default": "false", "description": "Deshabilita la interacción." },
+        { "name": "onClick",  "type": "() => void",       "required": false, "description": "Callback al hacer clic." },
+        { "name": "className","type": "string",           "required": false, "description": "Clase CSS adicional." }
+      ],
+      "tokens": [
+        { "token": "colors.dash",              "value": "#5780AD", "usage": "Borde y texto en default (alias semántico de panel)" },
+        { "token": "colors.primario",          "value": "#1E5591", "usage": "Borde y texto en hover-default" },
+        { "token": "colors.importante",        "value": "#00B4FF", "usage": "Ícono (siempre) + borde y texto en active" },
+        { "token": "colors.importante-oscuro", "value": "#019BE5", "usage": "Borde y texto en hover-active" },
+        { "token": "colors.gris-deshabilitado","value": "#CCCCCC", "usage": "Borde y texto en disabled" }
+      ],
+      "notes": "Exporta tipos: ChipProps, ChipVariant. El pill usa border-radius 16px. El ícono (iconWrap) siempre usa importante (#00B4FF) independientemente del estado. El chevron es un SVG inline que se transforma con CSS rotate(180deg) cuando expanded=true."
+    },
+
+    {
+      "name": "Uploader",
+      "status": "implemented",
+      "file": "src/components/Uploader/Uploader.tsx",
+      "description": "Componente de carga de archivos del sistema Zafiro. Estructura: tarjeta con borde importante (#00B4FF), título + descripción de formato, zona de drop (drag-and-drop) y botón de descarga de plantilla. Dos estados: empty (sin archivo) y hasFile (archivo cargado con nombre, tamaño y botón eliminar).",
+      "states": [
+        { "name": "empty",    "description": "Zona de drop vacía con ícono de nube y texto descriptivo." },
+        { "name": "hasFile",  "description": "Muestra info del archivo: ícono check, nombre, tamaño, botón eliminar (papelera roja)." },
+        { "name": "dragOver", "description": "Borde de la dropzone se vuelve importante (#00B4FF) mientras se arrastra un archivo." },
+        { "name": "disabled", "description": "Opacidad 0.6, pointer-events: none." }
+      ],
+      "props": [
+        { "name": "title",              "type": "string",          "required": false, "default": "Formato esperado del archivo", "description": "Título de la tarjeta." },
+        { "name": "description",        "type": "string | string[]","required": false, "description": "Líneas descriptivas del formato esperado." },
+        { "name": "supportText",        "type": "string",          "required": false, "default": "Excel, PDF, Word / 5mb máximo.", "description": "Texto de soporte bajo la descripción." },
+        { "name": "dropzoneText",       "type": "string",          "required": false, "description": "Texto dentro de la zona de drop vacía." },
+        { "name": "file",               "type": "UploaderFile | null","required": false, "description": "Archivo cargado en modo controlado. { name: string, size: string }." },
+        { "name": "onFileChange",       "type": "(file: File) => void","required": false, "description": "Callback al seleccionar o soltar un archivo." },
+        { "name": "onFileRemove",       "type": "() => void",      "required": false, "description": "Callback al eliminar el archivo." },
+        { "name": "onDownloadTemplate", "type": "() => void",      "required": false, "description": "Callback al hacer clic en 'Descargar plantilla'." },
+        { "name": "accept",             "type": "string",          "required": false, "default": ".xlsx,.xls,.pdf,.doc,.docx", "description": "Tipos de archivo aceptados (atributo accept del input)." },
+        { "name": "disabled",           "type": "boolean",         "required": false, "default": "false", "description": "Deshabilita la interacción." },
+        { "name": "className",          "type": "string",          "required": false, "description": "Clase CSS adicional." }
+      ],
+      "tokens": [
+        { "token": "colors.importante",        "value": "#00B4FF", "usage": "Borde tarjeta y estado dragOver" },
+        { "token": "colors.importante-oscuro", "value": "#019BE5", "usage": "Borde/texto botón Descargar plantilla" },
+        { "token": "colors.panel",             "value": "#5780AD", "usage": "Título y texto de la dropzone" },
+        { "token": "colors.auxiliar",          "value": "#B6CEE7", "usage": "Borde discontinuo de la dropzone" },
+        { "token": "colors.general",           "value": "#B2E5FF", "usage": "Fill del ícono nube SVG" },
+        { "token": "colors.exito",             "value": "#ACCA54", "usage": "Ícono check al tener archivo" },
+        { "token": "colors.error",             "value": "#E24C4C", "usage": "Ícono papelera (eliminar archivo)" },
+        { "token": "colors.gris-oscuro",       "value": "#666666", "usage": "Descripción y supportText" },
+        { "token": "colors.negro-textos",      "value": "#333333", "usage": "Nombre del archivo cargado" },
+        { "token": "colors.gris-textos",       "value": "#999999", "usage": "Tamaño del archivo" },
+        { "token": "colors.blanco",            "value": "#FFFFFF", "usage": "Fondo de la tarjeta" }
+      ],
+      "notes": "Exporta tipos: UploaderProps, UploaderFile. Soporta drag-and-drop nativo (onDragOver, onDrop). La dropzone también acepta clic para abrir el selector de archivos del sistema. El ícono de nube es un SVG inline."
+    },
+
+    {
+      "name": "Section",
+      "status": "implemented",
+      "file": "src/components/Section/Section.tsx",
+      "description": "Sección configurable de evaluación del sistema Zafiro. Tarjeta con header (título + switch toggle) y contenido expansible (porcentaje, privacidad, programación de etapas). El switch activa/desactiva la sección. Cuando está abierto muestra: campo porcentaje (%), checkbox 'Privada' con ícono info, y botón 'Programar etapas'.",
+      "states": [
+        { "name": "closed",   "description": "Solo header visible. Switch en OFF (track gris-deshabilitado #CCCCCC)." },
+        { "name": "open",     "description": "Header + contenido expandido. Switch en ON (track exito #ACCA54)." },
+        { "name": "disabled", "description": "Sin interacción. Todos los controles internos deshabilitados." }
+      ],
+      "props": [
+        { "name": "title",              "type": "string",     "required": false, "default": "Descendente", "description": "Nombre de la sección (ej: Descendente, Par, Autoevaluación)." },
+        { "name": "description",        "type": "string",     "required": false, "default": "El jefe directo evalúa al colaborador.", "description": "Texto descriptivo bajo el título." },
+        { "name": "open",               "type": "boolean",    "required": false, "default": "false", "description": "Estado del accordion (controlado)." },
+        { "name": "onToggle",           "type": "(open: boolean) => void", "required": false, "description": "Callback al alternar el switch." },
+        { "name": "percentage",         "type": "string",     "required": false, "description": "Valor del campo porcentaje (modo controlado)." },
+        { "name": "onPercentageChange", "type": "(value: string) => void", "required": false, "description": "Callback al cambiar el porcentaje." },
+        { "name": "isPrivate",          "type": "boolean",    "required": false, "default": "false", "description": "Estado del checkbox 'Privada'." },
+        { "name": "onPrivateChange",    "type": "(checked: boolean) => void", "required": false, "description": "Callback al cambiar la privacidad." },
+        { "name": "onInfoClick",        "type": "() => void", "required": false, "description": "Callback al hacer clic en el ícono info." },
+        { "name": "onScheduleOpen",     "type": "() => void", "required": false, "description": "Callback al hacer clic en 'Programar etapas'." },
+        { "name": "disabled",           "type": "boolean",    "required": false, "default": "false", "description": "Deshabilita todos los controles." },
+        { "name": "className",          "type": "string",     "required": false, "description": "Clase CSS adicional." }
+      ],
+      "tokens": [
+        { "token": "colors.primario-oscuro",   "value": "#0A396C", "usage": "Título de la sección" },
+        { "token": "colors.gris-oscuro",       "value": "#666666", "usage": "Descripción y labels internos" },
+        { "token": "colors.gris-deshabilitado","value": "#CCCCCC", "usage": "Track del switch en OFF" },
+        { "token": "colors.gris-textos",       "value": "#999999", "usage": "Separador del input porcentaje" },
+        { "token": "colors.negro-textos",      "value": "#333333", "usage": "Valor del input porcentaje" },
+        { "token": "colors.exito",             "value": "#ACCA54", "usage": "Track del switch en ON" },
+        { "token": "colors.importante",        "value": "#00B4FF", "usage": "Botón 'Programar etapas' y ícono reloj" },
+        { "token": "colors.importante-oscuro", "value": "#019BE5", "usage": "Hover del botón Programar" },
+        { "token": "colors.panel",             "value": "#5780AD", "usage": "Ícono info" },
+        { "token": "colors.blanco",            "value": "#FFFFFF", "usage": "Fondo tarjeta y thumb del switch" },
+        { "token": "colors.primario",          "value": "#1E5591", "usage": "Separador focused del input porcentaje" }
+      ],
+      "notes": "Exporta tipos: SectionProps. El switch es un componente interno sin dependencias externas (toggle CSS puro). El campo porcentaje acepta solo dígitos (0-100). Se usa en conjunto con el componente Totalizador para validar que la suma sea 100%."
+    },
+
+    {
+      "name": "Totalizador",
+      "status": "implemented",
+      "file": "src/components/Totalizador/Totalizador.tsx",
+      "description": "Indicador de suma de porcentajes del sistema Zafiro. Muestra el total acumulado de todas las secciones activas. Dos estados: error (total ≠ 100, borde/texto rojo) y success (total = 100, borde verde oscuro, número exito). Se usa en conjunto con el componente Section.",
+      "variants": [
+        { "name": "error",   "description": "Total distinto de 100. Texto: 'Total: N% - Deben sumar 100%'. Borde/número/alerta en error (#E24C4C)." },
+        { "name": "success", "description": "Total igual a 100. Texto: 'Total:'. Borde dark-success (#6C7E01), número exito (#ACCA54), ícono check." }
+      ],
+      "props": [
+        { "name": "total",    "type": "number", "required": false, "default": "0", "description": "Suma de porcentajes de secciones activas (0-100)." },
+        { "name": "className","type": "string", "required": false, "description": "Clase CSS adicional." }
+      ],
+      "tokens": [
+        { "token": "colors.error",        "value": "#E24C4C", "usage": "Borde, label y número en variante error" },
+        { "token": "colors.dark-success", "value": "#6C7E01", "usage": "Borde en variante success" },
+        { "token": "colors.negro-textos", "value": "#333333", "usage": "Label 'Total:' en variante success" },
+        { "token": "colors.exito",        "value": "#ACCA54", "usage": "Número y check en variante success" },
+        { "token": "colors.blanco",       "value": "#FFFFFF", "usage": "Fondo de la tarjeta" }
+      ],
+      "notes": "Exporta tipos: TotalizadorProps. El ícono de alerta (error) y el check (success) son SVGs inline. El componente es 100% controlado: su única prop de dato es 'total'."
+    },
+
+    {
+      "name": "Breadcrumb",
+      "status": "implemented",
+      "file": "src/components/Breadcrumb/Breadcrumb.tsx",
+      "description": "Encabezado de página del sistema Zafiro (Rex+). Estructura de tres filas: (1) ruta de migas con ícono Home — Roboto Regular 10px, gris-oscuro; (2) flecha volver (opcional, color importante #00B4FF) + título H5 25px primario-oscuro + badge de estado; (3) subtítulo 14px gris-textos con soporte de espacios preformateados.",
+      "props": [
+        { "name": "breadcrumb", "type": "string",       "required": false, "description": "Ruta de navegación. Ej: '/ Evaluaciones /'. Incluye ícono Home al inicio." },
+        { "name": "title",      "type": "string",       "required": true,  "description": "Título principal de la página (H1 estilizado como H5 Zafiro)." },
+        { "name": "badge",      "type": "string",       "required": false, "description": "Texto del badge de estado (ej: 'Borrador', 'Activo'). Borde importante, texto importante-oscuro." },
+        { "name": "subhead",    "type": "string",       "required": false, "description": "Información secundaria bajo el título. Soporta espacios preformateados (white-space: pre)." },
+        { "name": "onBack",     "type": "() => void",  "required": false, "description": "Callback del botón volver. Si no se provee, la flecha no se renderiza." },
+        { "name": "backLabel",  "type": "string",       "required": false, "default": "Volver", "description": "Aria-label del botón volver." },
+        { "name": "className",  "type": "string",       "required": false, "description": "Clase CSS adicional." }
+      ],
+      "tokens": [
+        { "token": "colors.general",           "value": "#B2E5FF", "usage": "Ícono Home en la ruta de migas" },
+        { "token": "colors.gris-oscuro",       "value": "#666666", "usage": "Texto de la ruta de migas" },
+        { "token": "colors.primario-oscuro",   "value": "#0A396C", "usage": "Título H5" },
+        { "token": "colors.importante",        "value": "#00B4FF", "usage": "Color del botón volver y borde del badge" },
+        { "token": "colors.importante-oscuro", "value": "#019BE5", "usage": "Texto del badge" },
+        { "token": "colors.gris-textos",       "value": "#999999", "usage": "Texto del subtítulo" },
+        { "token": "colors.intermedio",        "value": "#0069FF", "usage": "Outline focus-visible del botón volver" }
+      ],
+      "layout": {
+        "structure": "flex-col · gap 4px entre filas",
+        "backButtonSize": "32×32px (arrow left 24×24 centrado)",
+        "pathIndent": "32px (alineado con texto del título cuando hay flecha)",
+        "titleFontSize": "25px · Roboto Medium 500",
+        "badgeHeight": "24px · padding 0 8px · border-radius 16px · borde 2px"
+      },
+      "notes": "Exporta tipos: BreadcrumbProps. Sin flecha (onBack no definido), el grupo título recibe padding-left: 32px para alinearse con la ruta de migas y el subtítulo. El ícono Arrow left usa viewBox 0 0 24 24 con paths M19 12H5 (línea horizontal) + M12 5L5 12L12 19 (punta de flecha)."
+    },
+
+    {
+      "name": "BloquesSeleccion",
+      "status": "implemented",
+      "file": "src/components/BloquesSeleccion/index.jsx",
+      "description": "Selector dual de competencias. Panel izquierdo: lista de competencias disponibles con buscador y checkboxes para seleccionar. Panel derecho: competencias seleccionadas en filas, cada fila con [InputField % (flex)] [Selector escala (128px)] [TrashIcon para eliminar].",
+      "variants": [
+        {
+          "name": "default",
+          "description": "Panel izquierdo filtrables con buscador. Panel derecho con porcentaje editable, selector de escala e ícono eliminar."
+        }
+      ],
+      "states": [
+        { "name": "available", "description": "Competencias en panel izquierdo, filtradas por búsqueda, no están en seleccionadas." },
+        { "name": "selected", "description": "Competencias en panel derecho con porcentaje, escala y botón eliminar." },
+        { "name": "empty-left", "description": "Sin resultados de búsqueda — muestra texto 'Sin resultados'." },
+        { "name": "empty-right", "description": "Sin competencias seleccionadas — muestra 'Ninguna competencia seleccionada'." }
+      ],
+      "props": [
+        {
+          "name": "available",
+          "type": "Array<{id: string|number, name: string, description?: string}>",
+          "default": "[]",
+          "required": false,
+          "description": "Competencias disponibles en el panel izquierdo."
+        },
+        {
+          "name": "selected",
+          "type": "Array<{id: string|number, name: string, scale: string, percentage: number}>",
+          "default": "[]",
+          "required": false,
+          "description": "Competencias seleccionadas en el panel derecho."
+        },
+        {
+          "name": "onToggle",
+          "type": "(comp: object) => void",
+          "required": true,
+          "description": "Callback para agregar o quitar una competencia."
+        },
+        {
+          "name": "onUpdateScale",
+          "type": "(id: string|number, scale: string) => void",
+          "required": true,
+          "description": "Callback para cambiar la escala de una competencia seleccionada."
+        },
+        {
+          "name": "onUpdatePercentage",
+          "type": "(id: string|number, percentage: number) => void",
+          "required": false,
+          "description": "Callback para actualizar el porcentaje de ponderación de una competencia seleccionada."
+        },
+        {
+          "name": "scaleOptions",
+          "type": "Array<{value: string, label: string}>",
+          "default": "[]",
+          "required": false,
+          "description": "Opciones del selector de escala."
+        },
+        {
+          "name": "currentScale",
+          "type": "string",
+          "default": "\"likert1-5\"",
+          "required": false,
+          "description": "Escala por defecto al agregar una competencia."
+        }
+      ],
+      "layout": {
+        "structure": "flex-row · gap 24px entre paneles",
+        "panelBorder": "1px solid #B6CEE7 (auxiliar) · border-radius 16px · padding 16px",
+        "selectedItemRow": "flex-row gap 8px: [InputField flex:1] [Selector 128px] [TrashIcon 20px rojo]",
+        "maxHeight": "380px con overflow-y auto en ambas listas"
+      },
+      "tokens": [
+        { "token": "colors.auxiliar", "value": "#B6CEE7", "usage": "Borde de paneles y separador de header" },
+        { "token": "colors.error",    "value": "#E24C4C", "usage": "Color del ícono TrashIcon" }
+      ]
+    },
+
+    {
+      "name": "Dropdown",
+      "status": "pending",
+      "description": "Selector desplegable con soporte para búsqueda y selección múltiple.",
+      "variants": [
+        { "name": "default", "description": "Lista simple de opciones." },
+        { "name": "searchable", "description": "Con input de búsqueda para filtrar." },
+        { "name": "multi", "description": "Selección múltiple con chips." }
+      ],
+      "tokens": [
+        { "token": "colors.primario", "usage": "Borde trigger open/filled" },
+        { "token": "colors.auxiliar", "usage": "Fondo opción en hover" },
+        { "token": "colors.general", "usage": "Fondo opción seleccionada" },
+        { "token": "zafiro.border-radius.br-2", "usage": "Border-radius trigger y panel (4px)" }
+      ]
+    }
+
+  ]
+}

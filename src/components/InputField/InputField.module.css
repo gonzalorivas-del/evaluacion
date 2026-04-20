@@ -1,0 +1,230 @@
+/*
+ * InputField — Zafiro Design System (Rex+)
+ * Fuente: Figma WgljvPA598MTRm4p5tREGr · nodo 267:7946
+ *
+ * Estructura exacta del diseño:
+ *   [label: 12px, Roboto Regular]     ← visible solo cuando focused o tiene valor
+ *   [input text 16px] [icon 24×24px]
+ *   [separador: 1px, border-radius 16px]
+ *   [supporting text: 12px, Roboto Regular]
+ *   Gap entre bloques: 4px · Gap input row / separador: 2px
+ *
+ * Tokens usados (src/tokens/tokens.json):
+ *   colors.importante        → #00B4FF  label + separator en estado Activated
+ *   colors.intermedio        → #0069FF  border completo en estado Focus (teclado)
+ *   colors.exito             → #ACCA54  label + separator en Success   (Success/300)
+ *   colors.alerta            → #FFB800  label + separator en Alert     (Alert/300)
+ *   colors.error             → #E24C4C  label + separator + supporting en Error (Error/300)
+ *   colors.negro-textos      → #333333  texto ingresado (Filled/Activated/Focus/states)
+ *   colors.gris-oscuro       → #666666  label Filled · placeholder Default · texto Blocked
+ *   colors.gris-textos       → #999999  separator Default · supporting text · placeholder
+ *   colors.gris-deshabilitado→ #CCCCCC  separator Disabled/Blocked    (Neutral/CC)
+ *   typography.font-size.12  → 12px     label y supporting text
+ *   typography.font-size.16  → 16px     texto del campo
+ *
+ * Sin estado focus visual: el borde completo fue eliminado del diseño.
+ */
+
+/* ─── Wrapper ─────────────────────────────────────────────────────────────── */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 83px;
+  width: 100%;
+  position: relative;
+}
+
+/* ─── Label ───────────────────────────────────────────────────────────────── */
+.label {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;                     /* typography.font-size.12 */
+  font-weight: 400;
+  line-height: 1;
+  color: #999999;                      /* colors.gris-textos — color por defecto, sobreescrito por estado */
+  /* Siempre ocupa espacio (evita layout shift) pero invisible hasta showLabel */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.12s ease, color 0.12s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: text;
+}
+
+.showLabel .label {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ─── Input base (input row + separador) ──────────────────────────────────── */
+.inputBase {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ─── Input row ───────────────────────────────────────────────────────────── */
+.inputRow {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  gap: 8px;
+}
+
+/* ─── Input nativo ────────────────────────────────────────────────────────── */
+.input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;                     /* typography.font-size.16 */
+  font-weight: 400;
+  line-height: 1.3;
+  color: #333333;                      /* colors.negro-textos */
+}
+
+.input::placeholder {
+  color: #666666;                      /* colors.gris-oscuro — placeholder en estado Default */
+  font-weight: 400;
+}
+
+/* ─── Ícono derecho ───────────────────────────────────────────────────────── */
+.icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: #999999;                      /* colors.gris-textos — default */
+  transition: color 0.12s ease;
+}
+
+/* ─── Separador (línea inferior) ──────────────────────────────────────────── */
+.separator {
+  height: 1px;
+  border-radius: 16px;
+  background-color: #999999;          /* colors.gris-textos — default */
+  transition: background-color 0.12s ease;
+}
+
+/* ─── Supporting text ─────────────────────────────────────────────────────── */
+.supportingText {
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;                     /* typography.font-size.12 */
+  font-weight: 400;
+  line-height: 1;
+  color: #999999;                      /* colors.gris-textos */
+  transition: color 0.12s ease;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ESTADOS INTERACTIVOS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Default: campo vacío, sin foco (placeholder visible, sin label) ─────── */
+/* Ya definido como base — sin cambios adicionales */
+
+/* ─── Activated: con foco, campo VACÍO (azul cyan / importante) ────────────── */
+/* colors.importante → #00B4FF */
+.activated .label {
+  color: #00B4FF;
+}
+.activated .separator {
+  background-color: #00B4FF;
+}
+.activated .icon {
+  color: #00B4FF;
+}
+
+/* ─── Filled: sin foco, tiene valor ─────────────────────────────────────────  */
+/* colors.gris-oscuro → #666666 */
+.filled .label {
+  color: #666666;
+}
+/* Separator mantiene #999 (gris-textos) — ya definido como base */
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ESTADOS EXTERNOS
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Success ──────────────────────────────────────────────────────────────── */
+/* colors.exito → #ACCA54 (Success/300) */
+.success .label {
+  color: #ACCA54;
+}
+.success .separator {
+  background-color: #ACCA54;
+}
+.success .icon {
+  color: #ACCA54;
+}
+
+/* ─── Alert ────────────────────────────────────────────────────────────────── */
+/* colors.alerta → #FFB800 (Alert/300) */
+.alert .label {
+  color: #FFB800;
+}
+.alert .separator {
+  background-color: #FFB800;
+}
+.alert .icon {
+  color: #FFB800;
+}
+
+/* ─── Error ────────────────────────────────────────────────────────────────── */
+/* colors.error → #E24C4C (Error/300) */
+.error .label {
+  color: #E24C4C;
+}
+.error .separator {
+  background-color: #E24C4C;
+}
+.error .icon {
+  color: #E24C4C;
+}
+.error .supportingText {
+  color: #E24C4C;                      /* ÚNICO estado donde el supporting text es de color */
+}
+
+/* ─── Disabled ─────────────────────────────────────────────────────────────── */
+/* Label #666, separator #CCC, input text #999 */
+.disabled .label {
+  color: #666666;                      /* colors.gris-oscuro */
+}
+.disabled .separator {
+  background-color: #CCCCCC;           /* colors.gris-deshabilitado */
+}
+.disabled .input {
+  color: #999999;                      /* colors.gris-textos */
+}
+.disabled .icon {
+  color: #CCCCCC;
+}
+
+/* ─── Blocked ──────────────────────────────────────────────────────────────── */
+/* Label #999, separator #CCC, input text #666 */
+.blocked .label {
+  color: #999999;                      /* colors.gris-textos */
+}
+.blocked .separator {
+  background-color: #CCCCCC;           /* colors.gris-deshabilitado */
+}
+.blocked .input {
+  color: #666666;                      /* colors.gris-oscuro */
+}
+.blocked .icon {
+  color: #CCCCCC;
+}
+
+/* ─── isDisabled (disabled + blocked): sin interacción ──────────────────────  */
+.isDisabled {
+  pointer-events: none;
+  cursor: not-allowed;
+}
+.isDisabled .input {
+  cursor: not-allowed;
+}

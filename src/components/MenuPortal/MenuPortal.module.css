@@ -1,0 +1,290 @@
+/*
+ * MenuPortal — Zafiro Design System (Rex+)
+ *
+ * Tokens usados (src/tokens/tokens.json):
+ *   colors.primario          → #1E5591  (fondo del sidebar)
+ *   colors.panel             → #5780AD  (fondo avatar, separadores, toggle bg)
+ *   colors.blanco            → #FFFFFF  (texto de menú)
+ *   colors.exito             → #ACCA54  (texto "¡Hola!")
+ *   colors.general           → #B2E5FF  (texto del nombre de usuario)
+ *   typography.font-size.14  → 14px     (texto de ítems de menú)
+ *   typography.font-size.12  → 12px     (subtexto greeting)
+ *   typography.font-size.14  → 14px     (texto greeting nombre)
+ *   zafiro.padding.p-4       → 16px     (padding logo cerrado)
+ *   zafiro.padding.p-5       → 24px     (padding logo abierto, padding-left ítems)
+ */
+
+/* ─── Root ────────────────────────────────────────────────────────────────── */
+.root {
+  position: relative;
+  height: 1024px;
+  font-family: 'Roboto', sans-serif;
+  flex-shrink: 0;
+}
+
+.root.open {
+  width: 272px;
+}
+
+.root.closed {
+  width: 77px; /* 64px sidebar + 13px toggle overflow */
+}
+
+/* ─── Sidebar ─────────────────────────────────────────────────────────────── */
+.sidebar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: #1E5591; /* colors.primario */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.open .sidebar {
+  right: 0;
+}
+
+.closed .sidebar {
+  width: 64px;
+}
+
+/* ─── Logo ────────────────────────────────────────────────────────────────── */
+.logoSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.logoSection.logoOpen {
+  padding: 16px 24px; /* p-4 vertical, p-5 horizontal */
+}
+
+.logoSection.logoClosed {
+  padding: 16px; /* p-4 */
+}
+
+.logoFull {
+  width: 57px;
+  height: 22px;
+  object-fit: contain;
+  display: block;
+}
+
+.logoIconWrapper {
+  position: relative;
+  width: 30px;
+  height: 30px;
+}
+
+.logoIconLayer {
+  position: absolute;
+  display: block;
+}
+
+/* ─── Avatar ──────────────────────────────────────────────────────────────── */
+.avatarSection {
+  background-color: #5780AD; /* colors.panel */
+  flex-shrink: 0;
+  /* overflow: hidden; */ /* avatar.overflow → visible */
+}
+
+.avatarSection.avatarOpen {
+  position: relative;
+  height: 56px; /* avatar.open-height → 56px */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 12px; /* avatar.open-padding-bottom → 12px */
+}
+
+.avatarSection.avatarClosed {
+  width: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 12px;
+}
+
+.avatarPhotoOpen {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #5780AD; /* colors.panel */
+  margin-top: -24px;
+}
+
+.avatarPhotoSmall {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.avatarImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatarGreeting {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px; /* typography.font-size.14 */
+  font-weight: 500;
+  line-height: 1;
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  padding: 0 8px;
+}
+
+.hola {
+  color: #ACCA54; /* colors.exito */
+}
+
+.userName {
+  color: #B2E5FF; /* colors.general */
+}
+
+/* ─── Menu list ───────────────────────────────────────────────────────────── */
+.menuList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.menuItem {
+  flex-shrink: 0;
+  width: 100%;
+}
+
+/* Open state menu item */
+.menuItemButton {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* menu-item.button-gap → 16px */
+  width: 100%;
+  padding-left: 24px; /* p-5 */
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  color: #FFFFFF; /* colors.blanco */
+}
+
+.menuItemContent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px; /* menu-item.content-gap → 16px */
+  padding: 12px 24px 12px 0; /* p-5 right */
+  border-bottom: 1px solid #5780AD; /* colors.panel */
+  min-width: 0;
+}
+
+.menuItemLabel {
+  flex: 1;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px; /* typography.font-size.14 */
+  font-weight: 400;
+  line-height: 1.3;
+  color: #FFFFFF; /* colors.blanco */
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Closed state menu item */
+.menuItemClosed {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 56px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px;
+}
+
+/* Icon sizing */
+.menuItemIcon {
+  width: 18px;  /* menu-item.icon-width → 18px */
+  height: 18px; /* menu-item.icon-height → 18px */
+  flex-shrink: 0;
+  display: block;
+}
+
+.chevronIcon {
+  width: 12px;  /* icon-size.chevron-width → 12px */
+  height: 8px;  /* icon-size.chevron-height → 8px */
+  flex-shrink: 0;
+  display: block;
+}
+
+/* ─── Toggle button ───────────────────────────────────────────────────────── */
+.toggleButton {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.open .toggleButton {
+  top: 70px;   /* toggle.open-top → 70px */
+  right: -12px; /* toggle.open-right → -12px */
+}
+
+.closed .toggleButton {
+  top: 78px;
+  right: 0;
+}
+
+.toggleCircle {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggleBg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.toggleIcon {
+  position: absolute;
+  width: 8px;   /* toggle.icon-width → 8px */
+  height: 12px; /* toggle.icon-height → 12px */
+  display: block;
+}

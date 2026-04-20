@@ -1,0 +1,132 @@
+/*
+ * FilterApp — Zafiro Design System (Rex+)
+ * Fuente: Figma WgljvPA598MTRm4p5tREGr · nodo 11680:4031
+ *
+ * Variante Default — trigger compacto:
+ *   [label 16px Roboto Regular] [icono filtro 24×24]
+ *   gap: 8px · color: gris-oscuro (#666)
+ *
+ * Variante Expanded — panel:
+ *   bg blanco · border-radius 16px · padding 24px · gap 24px
+ *   sombra: effects.elevation-3
+ *   [título 14px Roboto Medium negro] → [campos filtro × N]
+ *   Campo filtro: 189px · h 24px · border-bottom 1px #666 · padding 0 8px
+ *   Texto campo: 14px Roboto Regular #333 · chevron 24×24
+ *
+ * Tokens usados (src/tokens/tokens.json):
+ *   colors.gris-oscuro       → #666666  label trigger · border-bottom campo
+ *   colors.negro-textos      → #333333  texto campos de filtro
+ *   colors.negro-8           → #000000  título panel
+ *   colors.blanco            → #FFFFFF  fondo panel
+ *   effects.elevation-3      → 0px 4px 16px 0px rgba(0,0,0,0.15)  sombra panel
+ *   zafiro.border-radius.br-4→ 16px     border-radius panel
+ *   typography.font-size.16  → 16px     label trigger
+ *   typography.font-size.14  → 14px     título panel y texto campos
+ *   typography.font-weight.medium → 500 título panel
+ */
+
+/* ══════════════════════════════════════════════════════════════════════════
+   VARIANTE DEFAULT — Trigger compacto
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.triggerLabel {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;              /* typography.font-size.16 */
+  font-weight: 400;
+  line-height: 1.3;
+  color: #666666;               /* colors.gris-oscuro */
+  white-space: nowrap;
+}
+
+.triggerIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #666666;               /* colors.gris-oscuro */
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   VARIANTE EXPANDED — Panel
+   ══════════════════════════════════════════════════════════════════════════ */
+
+.panel {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  background-color: #FFFFFF;                          /* colors.blanco */
+  border-radius: 16px;                                /* zafiro.border-radius.br-4 */
+  box-shadow: 0px 4px 16px 0px rgba(0, 0, 0, 0.15);  /* effects.elevation-3 */
+}
+
+.panelTitle {
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;              /* typography.font-size.14 */
+  font-weight: 500;             /* typography.font-weight.medium */
+  line-height: 1;
+  color: #000000;               /* colors.negro-8 */
+  white-space: nowrap;
+}
+
+/* ─── Lista de campos ─────────────────────────────────────────────────────── */
+
+.fieldList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ─── Campo de filtro individual ──────────────────────────────────────────── */
+
+.filterField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 189px;
+  height: 24px;
+  padding: 0 8px;
+  border: none;
+  border-bottom: 1px solid #666666;  /* colors.gris-oscuro */
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+
+.filterFieldLabel {
+  flex: 1;
+  min-width: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;              /* typography.font-size.14 */
+  font-weight: 400;
+  line-height: 1;
+  color: #333333;               /* colors.negro-textos */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.filterFieldIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: #666666;               /* colors.gris-oscuro */
+}

@@ -1,0 +1,222 @@
+/*
+ * Button — Zafiro Design System (Rex+)
+ *
+ * Tokens usados (src/tokens/tokens.json):
+ *   colors.primario            → #1E5591
+ *   colors.primario-oscuro     → #0A396C
+ *   colors.blanco              → #FFFFFF
+ *   colors.gris-deshabilitado  → #CCCCCC
+ *   colors.gris-textos         → #999999
+ *   colors.importante          → #00B4FF  (variant ia)
+ *   colors.intermedio          → #0069FF  (variant ia gradient)
+ *   colors.importante-oscuro   → #019BE5  (variant ia hover)
+ *   zafiro.padding.p-2         → 11px  (padding-x sm)
+ *   zafiro.padding.p-4         → 16px  (padding-x md)
+ *   zafiro.padding.p-5         → 24px  (padding-x lg)
+ *   zafiro.padding.p-0         → 4px   (padding-y sm)
+ *   zafiro.padding.p-1-5       → 8px   (padding-y md / lg)
+ *   typography.font-size.12    → 12px  (size sm)
+ *   typography.font-size.14    → 14px  (size md)
+ *   typography.font-size.16    → 16px  (size lg)
+ *   zafiro.border-radius br-5  → 24px  (rounded — sm y md)
+ */
+
+/* ─── Base ─────────────────────────────────────────────────────────────── */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+  white-space: nowrap;
+  user-select: none;
+  outline-offset: 2px;
+}
+
+.button:focus-visible {
+  outline: 3px solid #5780AD; /* colors.panel — contraste accesible */
+}
+
+/* ─── Border-radius ────────────────────────────────────────────────────── */
+/* br-5 = 24px según tokens.json zafiro.border-radius.p-5 */
+.rounded {
+  border-radius: 24px;
+}
+
+/* pill: size lg + variant ia */
+.pill {
+  border-radius: 9999px;
+}
+
+/* ─── Sizes ────────────────────────────────────────────────────────────── */
+/* sm: font-size 12px · padding 4px 11px */
+.size_sm {
+  font-size: 12px;
+  padding: 4px 11px;
+  min-height: 28px;
+}
+
+/* md: font-size 14px · padding 8px 16px */
+.size_md {
+  font-size: 14px;
+  padding: 8px 16px;
+  min-height: 36px;
+}
+
+/* lg: font-size 16px · padding 8px 24px */
+.size_lg {
+  font-size: 16px;
+  padding: 8px 24px;
+  min-height: 44px;
+}
+
+/* ─── Variant: primary ─────────────────────────────────────────────────── */
+.variant_primary {
+  background-color: #1E5591; /* colors.primario */
+  border-color: #1E5591;
+  color: #FFFFFF; /* colors.blanco */
+}
+
+.variant_primary:hover:not(:disabled) {
+  background-color: #0A396C; /* colors.primario-oscuro */
+  border-color: #0A396C;
+}
+
+.variant_primary:active:not(:disabled) {
+  background-color: #072d55;
+  border-color: #072d55;
+}
+
+/* ─── Variant: secondary ───────────────────────────────────────────────── */
+.variant_secondary {
+  background-color: transparent;
+  border-color: #1E5591; /* colors.primario */
+  color: #1E5591;
+}
+
+.variant_secondary:hover:not(:disabled) {
+  background-color: rgba(30, 85, 145, 0.06);
+}
+
+.variant_secondary:active:not(:disabled) {
+  background-color: rgba(30, 85, 145, 0.14);
+}
+
+/* ─── Variant: tertiary ────────────────────────────────────────────────── */
+.variant_tertiary {
+  background-color: transparent;
+  border-color: transparent;
+  color: #1E5591; /* colors.primario */
+}
+
+.variant_tertiary:hover:not(:disabled) {
+  background-color: rgba(30, 85, 145, 0.06);
+}
+
+.variant_tertiary:active:not(:disabled) {
+  background-color: rgba(30, 85, 145, 0.14);
+}
+
+/* ─── Variant: link ────────────────────────────────────────────────────── */
+.variant_link {
+  background-color: transparent;
+  border-color: transparent;
+  color: #1E5591; /* colors.primario */
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.variant_link .label {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.variant_link:hover:not(:disabled) {
+  color: #0A396C; /* colors.primario-oscuro */
+}
+
+.variant_link:active:not(:disabled) {
+  color: #072d55;
+}
+
+/* ─── Variant: ia ──────────────────────────────────────────────────────── */
+/* Smart Rex — siempre pill, gradiente azul */
+.variant_ia {
+  background: linear-gradient(90deg, #00B4FF 0%, #0069FF 100%); /* importante → intermedio */
+  border-color: transparent;
+  color: #FFFFFF; /* colors.blanco */
+}
+
+.variant_ia:hover:not(:disabled) {
+  background: linear-gradient(90deg, #019BE5 0%, #0055d4 100%); /* importante-oscuro */
+}
+
+.variant_ia:active:not(:disabled) {
+  background: linear-gradient(90deg, #0184c4 0%, #0044b0 100%);
+}
+
+/* ─── Estado: disabled ─────────────────────────────────────────────────── */
+.disabled,
+.button:disabled {
+  background-color: #CCCCCC; /* colors.gris-deshabilitado */
+  background-image: none;
+  border-color: #CCCCCC;
+  color: #999999; /* colors.gris-textos */
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Para variantes sin fondo (tertiary, link) en disabled */
+.variant_tertiary.disabled,
+.variant_tertiary:disabled,
+.variant_link.disabled,
+.variant_link:disabled {
+  background-color: transparent;
+  border-color: transparent;
+  color: #999999; /* colors.gris-textos */
+}
+
+/* ─── Estado: loading ──────────────────────────────────────────────────── */
+.loading {
+  cursor: wait;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* ─── Spinner ──────────────────────────────────────────────────────────── */
+.spinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.65s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Íconos ───────────────────────────────────────────────────────────── */
+.iconLeft,
+.iconRight {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  font-size: 1em;
+  line-height: 1;
+}
+
+.label {
+  display: inline-block;
+}

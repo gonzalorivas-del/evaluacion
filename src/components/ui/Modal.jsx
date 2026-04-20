@@ -1,43 +1,98 @@
 import { useEffect } from 'react';
 
+/*
+ * Tokens Zafiro usados:
+ *   primario:    #1E5591  — título
+ *   auxiliar:    #B6CEE7  — borde separador
+ *   panel:       #5780AD  — botón cerrar
+ *   elevation-2: 0px 5px 8px 0px rgba(0,0,0,0.15)
+ */
+
+const sizeMap = {
+  sm:  '480px',
+  md:  '672px',
+  lg:  '896px',
+  xl: '1120px',
+};
+
 export default function Modal({ isOpen, onClose, title, children, size = 'md', hideClose = false }) {
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
+    document.body.style.overflow = isOpen ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  const sizeClasses = {
-    sm: 'max-w-md',
-    md: 'max-w-2xl',
-    lg: 'max-w-4xl',
-    xl: 'max-w-6xl',
-  };
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.45)' }}>
+    <div
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 50,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '16px',
+        background: 'rgba(0,0,0,0.45)',
+      }}
+      onClick={onClose}
+    >
       <div
-        className={`bg-white w-full ${sizeClasses[size]} max-h-[90vh] overflow-y-auto border border-gray-400`}
+        style={{
+          background: '#FFFFFF',
+          borderRadius: '16px',
+          boxShadow: '0px 5px 8px 0px rgba(0,0,0,0.15)',
+          width: '100%',
+          maxWidth: sizeMap[size] || sizeMap.md,
+          maxHeight: '90vh',
+          overflowY: 'auto',
+          boxSizing: 'border-box',
+        }}
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-300">
-          <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
+        {/* Cabecera */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '20px 24px 16px',
+          borderBottom: '1px solid #B6CEE7',
+        }}>
+          <h2 style={{
+            fontFamily: 'Roboto, sans-serif',
+            fontWeight: 500,
+            fontSize: '16px',
+            lineHeight: '1.3',
+            color: '#1E5591',
+            margin: 0,
+          }}>
+            {title}
+          </h2>
           {!hideClose && (
             <button
+              type="button"
               onClick={onClose}
-              className="text-gray-500 hover:text-gray-900 text-xl font-bold leading-none"
               aria-label="Cerrar"
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#5780AD',
+                fontSize: '22px',
+                lineHeight: 1,
+              }}
             >
               ×
             </button>
           )}
         </div>
-        <div className="px-6 py-5">
+
+        {/* Cuerpo */}
+        <div style={{ padding: '24px' }}>
           {children}
         </div>
       </div>

@@ -1,0 +1,106 @@
+/*
+ * Chip.module.css — Sistema de diseño Zafiro (Rex+)
+ * Fuente: Figma 83u3jh4oyEwvJ2MtoH7L2o · nodo 1214:20435
+ *
+ * Tokens referenciados:
+ *   dash:               #5780AD  ← color default (borde + texto). Alias semántico de panel.
+ *   primario:           #1E5591  ← hover del estado default
+ *   importante:         #00B4FF  ← ícono (siempre) + estado activo (borde + texto)
+ *   importante-oscuro:  #019BE5  ← hover del estado activo
+ *   gris-deshabilitado: #CCCCCC  ← estado disabled
+ */
+
+/* ── Chip base (button pill) ─────────────────────────────────────────────── */
+
+.chip {
+  /* Layout */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  /* Tamaño fiel al Figma */
+  height: 24px;
+  padding: 0 4px 0 8px;
+  border-radius: 16px;
+
+  /* Apariencia — estado default */
+  border: 1px solid #5780ad; /* dash */
+  background: transparent;
+  color: #5780ad; /* dash */
+
+  /* Tipografía */
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  white-space: nowrap;
+
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+/* ── Hover — estado default ──────────────────────────────────────────────── */
+
+.chip:not(.isDisabled):not(.active):hover {
+  border-color: #1e5591; /* primario — hover sobre dash */
+  color: #1e5591; /* primario */
+}
+
+/* ── Estado activo ───────────────────────────────────────────────────────── */
+
+.chip.active {
+  border-color: #00b4ff; /* importante */
+  color: #00b4ff; /* importante */
+}
+
+.chip.active:not(.isDisabled):hover {
+  border-color: #019be5; /* importante-oscuro */
+  color: #019be5; /* importante-oscuro */
+}
+
+/* ── Estado disabled ─────────────────────────────────────────────────────── */
+
+.chip.isDisabled,
+.chip:disabled {
+  border-color: #cccccc; /* gris-deshabilitado */
+  color: #cccccc; /* gris-deshabilitado */
+  cursor: not-allowed;
+}
+
+/* ── Etiqueta de texto ───────────────────────────────────────────────────── */
+
+.labelText {
+  /* hereda color del .chip */
+  color: inherit;
+}
+
+.count {
+  font-weight: 700;
+  color: inherit;
+}
+
+/* ── Contenedor del ícono (24×24, fiel al Figma) ─────────────────────────── */
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: #00b4ff; /* importante — siempre, independiente del estado del chip */
+}
+
+/* ── Chevron ─────────────────────────────────────────────────────────────── */
+
+.chevron {
+  display: block;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+/* Chevron apunta hacia arriba cuando el panel está expandido */
+.chip.expanded .chevron {
+  transform: rotate(180deg);
+}

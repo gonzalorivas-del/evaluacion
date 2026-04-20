@@ -1,12 +1,127 @@
 import { useState } from 'react';
 import { useEvaluation } from '../../../context/EvaluationContext';
+import { ResumenSeccion, ResumenSeccionContent, ResumenCampo } from '../../ResumenSeccion';
+import { GrupoEvaluacion } from '../../GrupoEvaluacion';
+import { Chip } from '../../Chip';
+import { Button } from '../../Button';
 import ActivationModal from '../../modals/ActivationModal';
 import { TEMPLATE_CONFIGS, DIRECTION_LABELS, SCALE_OPTIONS } from '../../../data/constants';
+import { CheckFillIcon } from '../../../assets/icons/CheckFillIcon';
+import { XIcon } from '../../../assets/icons/XIcon';
 
-const DIRECTION_KEYS = ['descendente', 'autoEvaluacion', 'ascendente', 'pares', 'autodiseno', 'descendenteDiseno'];
+/*
+ * Tokens Zafiro usados (src/tokens/tokens.json):
+ *   panel:       #5780AD  — títulos de sección y texto alerta
+ *   auxiliar:    #B6CEE7  — borde InfoPill
+ *   fondo:       #F6F9FA  — banner participantes, notif-cards, expand-area
+ *   alerta:      #FFB800  — ícono triángulo de advertencia
+ *   exito:       #ACCA54  — botón Activar evaluación
+ *   error:       #E24C4C  — botón Eliminar formularios
+ *   negro-textos:#333333  — valores en ResumenCampo
+ *   gris-oscuro: #666666  — descripción notificaciones, tabla participantes
+ *   blanco:      #FFFFFF  — fondo modal eliminar
+ *   elevation-2: 0px 5px 8px 0px rgba(0,0,0,0.15)
+ */
+
+const DIRECTION_KEYS = [
+  'descendente', 'autoEvaluacion', 'ascendente',
+  'pares', 'autodiseno', 'descendenteDiseno',
+];
+
+const JUSTIF_LABELS = {
+  none:     'No requerida',
+  optional: 'Opcional',
+  required: 'Requerida',
+};
+
+const TEXT_FIELD_LABELS = {
+  strengths:     'Fortalezas',
+  improvements:  'Oportunidades de mejora',
+  achievements:  'Logros',
+  trainingNeeds: 'Necesidades de capacitación',
+};
+
+/* ── Íconos inline ────────────────────────────────────────────────────────── */
+
+function CheckCircleIcon({ size = 20, color = '#333333' }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" stroke={color} strokeWidth="1.5" />
+      <path
+        d="M8 12l3 3 5-5"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function AlertTriangleIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
+        stroke="#FFB800"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path d="M12 9v4" stroke="#FFB800" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="12" cy="17" r="0.8" fill="#FFB800" />
+    </svg>
+  );
+}
+
+/* ── InfoPill — chip de solo lectura ─────────────────────────────────────── */
+
+function InfoPill({ children }) {
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        border: '1px solid #B6CEE7',
+        borderRadius: '20px',
+        padding: '2px 12px',
+        fontFamily: 'Roboto, sans-serif',
+        fontSize: '13px',
+        fontWeight: 400,
+        color: '#333333',
+      }}
+    >
+      {children}
+    </span>
+  );
+}
+
+/* ── Mock data participantes ──────────────────────────────────────────────── */
+
+const MOCK_PARTICIPANTS_TABLE = [
+  { id: 1, name: 'María González',   rut: '12.345.678-9', empresa: 'Empresa A', cargo: 'Analista',      familia: 'Análisis',      status: 'No iniciada' },
+  { id: 2, name: 'Juan Pérez',       rut: '11.234.567-8', empresa: 'Empresa A', cargo: 'Jefe de Área',  familia: 'Gestión',       status: 'Borrador' },
+  { id: 3, name: 'Ana López',        rut: '13.456.789-0', empresa: 'Empresa B', cargo: 'Coordinadora',  familia: 'Coordinación',  status: 'No iniciada' },
+  { id: 4, name: 'Carlos Rodríguez', rut: '14.567.890-1', empresa: 'Empresa A', cargo: 'Gerente',       familia: 'Dirección',     status: 'Enviada' },
+  { id: 5, name: 'Sofía Martínez',   rut: '15.678.901-2', empresa: 'Empresa B', cargo: 'Analista Senior', familia: 'Análisis',   status: 'No iniciada' },
+  { id: 6, name: 'Pedro Castillo',   rut: '16.789.012-3', empresa: 'Empresa A', cargo: 'Desarrollador', familia: 'TI',           status: 'No iniciada' },
+  { id: 7, name: 'Laura Figueroa',   rut: '17.890.123-4', empresa: 'Empresa B', cargo: 'Diseñadora',    familia: 'Diseño',       status: 'No iniciada' },
+];
+
+/* ── Helpers ─────────────────────────────────────────────────────────────── */
+
+function formatDate(d) {
+  if (!d) return '—';
+  if (d.includes('/')) return d;
+  const [year, month, day] = d.split('-');
+  return `${day}/${month}/${year}`;
+}
+
+/* ── Step 4: Resumen y activación ────────────────────────────────────────── */
 
 export default function Step4Summary() {
-  const { currentEval, setActiveStep, saveDraft, addToast, updateCurrentEval } = useEvaluation();
+  const { currentEval, setActiveStep, saveDraft, addToast } = useEvaluation();
+
   const [showActivationModal, setShowActivationModal] = useState(
     new URLSearchParams(window.location.search).get('modal') === '1'
   );
@@ -17,311 +132,431 @@ export default function Step4Summary() {
   if (!currentEval) return null;
   const ev = currentEval;
 
-  const templateInfo = ev.template ? TEMPLATE_CONFIGS[ev.template] : null;
+  const templateInfo     = ev.template ? TEMPLATE_CONFIGS[ev.template] : null;
   const activeDirections = DIRECTION_KEYS.filter(k => ev.directions[k]?.active);
-  const scaleLabel = SCALE_OPTIONS.find(s => s.value === ev.scale)?.label || ev.scale;
+  const scaleLabel       = SCALE_OPTIONS.find(s => s.value === ev.scale)?.label || ev.scale;
   const participantCount = ev.scope === 'all' ? 7 : ev.participants.length;
+  const isMultipleForm   = ev.formType !== 'single';
 
-  const MOCK_PARTICIPANTS_TABLE = [
-    { id: 1, name: 'María González', rut: '12.345.678-9', empresa: 'Empresa A', cargo: 'Analista', familia: 'Análisis', status: 'No iniciada' },
-    { id: 2, name: 'Juan Pérez', rut: '11.234.567-8', empresa: 'Empresa A', cargo: 'Jefe de Área', familia: 'Gestión', status: 'Borrador' },
-    { id: 3, name: 'Ana López', rut: '13.456.789-0', empresa: 'Empresa B', cargo: 'Coordinadora', familia: 'Coordinación', status: 'No iniciada' },
-    { id: 4, name: 'Carlos Rodríguez', rut: '14.567.890-1', empresa: 'Empresa A', cargo: 'Gerente', familia: 'Dirección', status: 'Enviada' },
-    { id: 5, name: 'Sofía Martínez', rut: '15.678.901-2', empresa: 'Empresa B', cargo: 'Analista Senior', familia: 'Análisis', status: 'No iniciada' },
-    { id: 6, name: 'Pedro Castillo', rut: '16.789.012-3', empresa: 'Empresa A', cargo: 'Desarrollador', familia: 'TI', status: 'No iniciada' },
-    { id: 7, name: 'Laura Figueroa', rut: '17.890.123-4', empresa: 'Empresa B', cargo: 'Diseñadora', familia: 'Diseño', status: 'No iniciada' },
-  ];
+  const additionalStages = [
+    ev.hasCalibration && 'Calibración',
+    ev.hasFeedback    && 'Retroalimentación',
+    ev.hasPotential   && 'Potencial',
+  ].filter(Boolean);
 
-  const handleGoToNotifications = () => {
-    updateCurrentEval({ notificationsVisited: true });
-    // Find the notifications tab index
-    const tabs = buildTabList(ev);
-    const notifIdx = tabs.findIndex(t => t.key === 'step7');
-    if (notifIdx !== -1) setActiveStep(tabs[notifIdx].step);
-  };
+  const activeTextFields = Object.entries(ev.textFields || {})
+    .filter(([, v]) => v)
+    .map(([k]) => TEXT_FIELD_LABELS[k])
+    .filter(Boolean);
+
+  const grupoItems = activeDirections.map(k => ({
+    name:          DIRECTION_LABELS[k],
+    weight:        `${ev.directions[k].percentage}%`,
+    justification: 'No',
+  }));
 
   return (
-    <div className="space-y-6">
-      {/* Block 1: Process data */}
-      <SummaryBlock title="Datos del proceso" onEdit={() => setActiveStep(1)}>
-        <dl className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
-          <div><dt className="text-gray-500 text-xs">Nombre</dt><dd className="font-medium text-gray-900">{ev.name || '—'}</dd></div>
-          <div><dt className="text-gray-500 text-xs">Período</dt><dd className="text-gray-800">{ev.startDate} → {ev.endDate}</dd></div>
-          <div><dt className="text-gray-500 text-xs">Plantilla</dt><dd className="text-gray-800">{templateInfo ? `${templateInfo.label}${templateInfo.subtitle ? ` — ${templateInfo.subtitle}` : ''}` : '—'}</dd></div>
-          <div>
-            <dt className="text-gray-500 text-xs">Privacidad</dt>
-            <dd>{ev.isPrivate
-              ? <span className="border border-gray-900 px-2 py-0.5 text-xs">🔒 Privada</span>
-              : <span className="text-gray-600 text-xs">Estándar</span>
-            }</dd>
+    <>
+      {/* ── 1. Datos del proceso ─────────────────────────────────────────── */}
+      <ResumenSeccion title="Datos del proceso" onEdit={() => setActiveStep(1)}>
+        <ResumenSeccionContent>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <ResumenCampo label="Nombre">{ev.name || '—'}</ResumenCampo>
+            <ResumenCampo label="Período">
+              {ev.startDate && ev.endDate
+                ? `${formatDate(ev.startDate)} → ${formatDate(ev.endDate)}`
+                : '—'}
+            </ResumenCampo>
+            <ResumenCampo label="Plantilla">
+              {templateInfo ? `Evaluación "${templateInfo.label}"` : '—'}
+            </ResumenCampo>
+            <ResumenCampo label="Privacidad">
+              {ev.isPrivate ? 'Privada' : 'Estándar'}
+            </ResumenCampo>
+            <ResumenCampo label="Alcance">
+              {ev.scope === 'all'
+                ? 'Toda la organización'
+                : `${ev.participants.length} personas seleccionadas`}
+            </ResumenCampo>
+            <ResumenCampo label="Responsables">
+              {ev.responsibles.length > 0
+                ? ev.responsibles.map(r => r.name).join(', ')
+                : '—'}
+            </ResumenCampo>
           </div>
-          <div>
-            <dt className="text-gray-500 text-xs">Alcance</dt>
-            <dd className="text-gray-800">{ev.scope === 'all' ? 'Toda la organización' : `${ev.participants.length} personas seleccionadas`}</dd>
-          </div>
-          <div>
-            <dt className="text-gray-500 text-xs">Responsables</dt>
-            <dd className="text-gray-800">{ev.responsibles.length > 0 ? ev.responsibles.map(r => r.name).join(', ') : <span className="text-yellow-600 text-xs">⚠️ Sin asignar</span>}</dd>
-          </div>
-          {!ev.isPrivate && ev.managers.length > 0 && (
-            <div><dt className="text-gray-500 text-xs">Encargados</dt><dd className="text-gray-800">{ev.managers.map(m => m.name).join(', ')}</dd></div>
-          )}
-          {!ev.isPrivate && ev.viewers.length > 0 && (
-            <div><dt className="text-gray-500 text-xs">Visualizadores</dt><dd className="text-gray-800">{ev.viewers.map(v => v.name).join(', ')}</dd></div>
-          )}
-        </dl>
-      </SummaryBlock>
+        </ResumenSeccionContent>
+      </ResumenSeccion>
 
-      {/* Block 2: Structure */}
-      <SummaryBlock title="Estructura" onEdit={() => setActiveStep(2)}>
-        <div className="space-y-3 text-sm">
-          <div>
-            <p className="text-xs text-gray-500 mb-1">Evaluadores</p>
-            <div className="flex flex-wrap gap-2">
-              {activeDirections.map(k => (
-                <div key={k} className="flex items-center gap-1 border border-gray-300 px-2 py-1 text-xs">
-                  <span className="font-medium">{DIRECTION_LABELS[k]}</span>
-                  <span className="text-gray-500">{ev.directions[k].percentage}%</span>
-                  {ev.directions[k].isPrivate && <span className="border border-gray-400 px-1 text-gray-500">Privada</span>}
-                  {ev.directions[k].scheduled && <span className="text-gray-400">⏱</span>}
+      {/* ── 2. Estructura ────────────────────────────────────────────────── */}
+      <ResumenSeccion title="Estructura" onEdit={() => setActiveStep(2)}>
+        <ResumenSeccionContent>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <ResumenCampo label="Evaluadores">
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
+                {activeDirections.length > 0
+                  ? activeDirections.map(k => (
+                    <InfoPill key={k}>
+                      {DIRECTION_LABELS[k]}: {ev.directions[k].percentage}%
+                    </InfoPill>
+                  ))
+                  : <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: '13px', color: '#999999' }}>Sin configurar</span>
+                }
+              </div>
+            </ResumenCampo>
+            <ResumenCampo label="Tipo formulario">
+              <InfoPill>{isMultipleForm ? 'Formulario múltiple' : 'Formulario único'}</InfoPill>
+            </ResumenCampo>
+            <ResumenCampo label="Escala">{scaleLabel || '—'}</ResumenCampo>
+            <ResumenCampo label="Objetivos">{ev.weighting.objectives}%</ResumenCampo>
+            <ResumenCampo label="Competencias">{ev.weighting.competencies}%</ResumenCampo>
+            {additionalStages.length > 0 && (
+              <ResumenCampo label="Etapas adicionales">
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
+                  {additionalStages.map(s => <InfoPill key={s}>{s}</InfoPill>)}
                 </div>
-              ))}
-              {activeDirections.length === 0 && <span className="text-yellow-600 text-xs">⚠️ Sin configurar</span>}
-            </div>
+              </ResumenCampo>
+            )}
           </div>
+        </ResumenSeccionContent>
+      </ResumenSeccion>
 
-          <dl className="grid grid-cols-2 gap-x-8 gap-y-2">
-            <div><dt className="text-xs text-gray-500">Escala</dt><dd className="text-gray-800">{scaleLabel || '—'}</dd></div>
-            <div><dt className="text-xs text-gray-500">Tipo formulario</dt><dd className="text-gray-800">{ev.formType === 'single' ? 'Único' : 'Múltiple'}</dd></div>
-            <div><dt className="text-xs text-gray-500">Competencias</dt><dd className="text-gray-800">{ev.weighting.competencies}%</dd></div>
-            <div><dt className="text-xs text-gray-500">Objetivos</dt><dd className="text-gray-800">{ev.weighting.objectives}%</dd></div>
-            {(ev.weighting.additionalSections || []).map(s => (
-              <div key={s.id}><dt className="text-xs text-gray-500">{s.name}</dt><dd className="text-gray-800">{s.percentage}%</dd></div>
-            ))}
-            <div>
-              <dt className="text-xs text-gray-500">Etapas adicionales</dt>
-              <dd className="text-gray-800">
-                {[ev.hasCalibration && 'Calibración ✅', ev.hasFeedback && 'Retroalimentación ✅']
-                  .filter(Boolean).join(' · ') || 'Sin etapas adicionales'}
-              </dd>
+      {/* ── 3. Formulario ────────────────────────────────────────────────── */}
+      <ResumenSeccion
+        title="Formulario"
+        onPreview={() => {}}
+        onEdit={() => setActiveStep(3)}
+      >
+        {isMultipleForm ? (
+          /* Formulario múltiple: tipo + grupos colapsables dentro del contenedor bordeado */
+          <ResumenSeccionContent>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <ResumenCampo label="Tipo formulario">
+                <InfoPill>Formulario múltiple</InfoPill>
+              </ResumenCampo>
+              <GrupoEvaluacion
+                title="Grupo evaluación 1"
+                competencyWeight={ev.weighting.competencies}
+                competencias={grupoItems}
+                objectiveWeight={ev.weighting.objectives}
+                objetivos={ev.weighting.objectives > 0 ? grupoItems : []}
+                defaultExpanded={true}
+              />
+              <GrupoEvaluacion
+                title="Grupo evaluación 2"
+                competencyWeight={ev.weighting.competencies}
+                competencias={grupoItems}
+                objectiveWeight={ev.weighting.objectives}
+                objetivos={ev.weighting.objectives > 0 ? grupoItems : []}
+                defaultExpanded={false}
+              />
             </div>
-          </dl>
-        </div>
-      </SummaryBlock>
-
-      {/* Block 3: Form */}
-      <SummaryBlock title="Formulario" onEdit={() => setActiveStep(3)}>
-        <dl className="grid grid-cols-2 gap-x-8 gap-y-2 text-sm">
-          <div><dt className="text-xs text-gray-500">Nombre</dt><dd className="font-medium text-gray-900">{ev.formName || '—'}</dd></div>
-          <div>
-            <dt className="text-xs text-gray-500">Competencias funcionales</dt>
-            <dd className="text-gray-800">{ev.selectedFunctionalCompetencies.length} seleccionadas</dd>
-          </div>
-          <div>
-            <dt className="text-xs text-gray-500">Competencias transversales</dt>
-            <dd className="text-gray-800">{ev.selectedTransversalCompetencies.length} seleccionadas</dd>
-          </div>
-          {ev.weighting.objectives > 0 && (
-            <div><dt className="text-xs text-gray-500">Período objetivos</dt><dd className="text-gray-800">{ev.objectivesPeriod?.name || '—'}</dd></div>
-          )}
-          {Object.values(ev.textFields).some(Boolean) && (
-            <div>
-              <dt className="text-xs text-gray-500">Campos adicionales</dt>
-              <dd className="text-gray-800">
-                {[
-                  ev.textFields.strengths && 'Fortalezas',
-                  ev.textFields.improvements && 'Oportunidades',
-                  ev.textFields.achievements && 'Logros',
-                  ev.textFields.trainingNeeds && 'Capacitación',
-                ].filter(Boolean).join(', ')}
-              </dd>
+          </ResumenSeccionContent>
+        ) : (
+          /* Formulario único: grilla de campos */
+          <ResumenSeccionContent>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <ResumenCampo label="Tipo formulario">
+                <InfoPill>Formulario único</InfoPill>
+              </ResumenCampo>
+              <ResumenCampo label="Justificación por objetivos">
+                {JUSTIF_LABELS[ev.objectiveJustification] ?? 'No requerida'}
+              </ResumenCampo>
+              <ResumenCampo label="Justificación por competencia">
+                {JUSTIF_LABELS[ev.competencyJustification] ?? 'No requerida'}
+              </ResumenCampo>
+              {ev.weighting.objectives > 0 && (
+                <ResumenCampo label="Peso objetivos individuales">
+                  {ev.individualObjectivesWeight}%
+                </ResumenCampo>
+              )}
+              {ev.weighting.competencies > 0 && (
+                <ResumenCampo label="Funcionales">{ev.functionalPercentage}%</ResumenCampo>
+              )}
+              {activeTextFields.length > 0 && (
+                <ResumenCampo label={`Campos adicionales (${activeTextFields.length})`}>
+                  <ul style={{ margin: '4px 0 0', paddingLeft: '18px' }}>
+                    {activeTextFields.map(f => (
+                      <li key={f} style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 500, fontSize: '14px', color: '#333333' }}>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </ResumenCampo>
+              )}
+              {ev.weighting.competencies > 0 && (
+                <ResumenCampo label="Transversales">{ev.transversalPercentage}%</ResumenCampo>
+              )}
+              {ev.selectedTransversalCompetencies.length > 0 && (
+                <ResumenCampo label={`Competencias transversales seleccionadas (${ev.selectedTransversalCompetencies.length})`}>
+                  <ul style={{ margin: '4px 0 0', paddingLeft: '18px' }}>
+                    {ev.selectedTransversalCompetencies.map(c => (
+                      <li key={c.id} style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 500, fontSize: '14px', color: '#333333' }}>
+                        {c.name}: {c.percentage}% — Escala: {SCALE_OPTIONS.find(s => s.value === c.scale)?.label || c.scale}
+                      </li>
+                    ))}
+                  </ul>
+                </ResumenCampo>
+              )}
             </div>
-          )}
-        </dl>
-      </SummaryBlock>
-
-      {/* Participants */}
-      <section className="border border-gray-300 p-5">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-gray-900">Participantes</h3>
-          <button
-            onClick={() => setShowDeleteConfirm(true)}
-            className="text-xs text-red-600 border border-red-300 px-3 py-1 hover:bg-red-50"
-          >
-            Eliminar formularios masivamente
-          </button>
-        </div>
-        <div className="border border-gray-200 px-4 py-2 bg-gray-50 text-sm text-gray-700 mb-3">
-          <strong>{participantCount}</strong> colaboradores incluidos
-        </div>
-        <button
-          onClick={() => setShowParticipants(p => !p)}
-          className="text-xs text-gray-600 border-b border-gray-400"
-        >
-          {showParticipants ? 'Ocultar lista ▲' : 'Ver lista completa ▼'}
-        </button>
-        {showParticipants && (
-          <table className="w-full text-xs border border-gray-200 mt-3">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left px-3 py-2 text-gray-600">Nombre</th>
-                <th className="text-left px-3 py-2 text-gray-600">RUT</th>
-                <th className="text-left px-3 py-2 text-gray-600">Empresa</th>
-                <th className="text-left px-3 py-2 text-gray-600">Cargo</th>
-                <th className="text-left px-3 py-2 text-gray-600">Familia</th>
-                <th className="text-left px-3 py-2 text-gray-600">Estado formulario</th>
-              </tr>
-            </thead>
-            <tbody>
-              {MOCK_PARTICIPANTS_TABLE.map(p => (
-                <tr key={p.id} className="border-b border-gray-100">
-                  <td className="px-3 py-2 font-medium text-gray-900">{p.name}</td>
-                  <td className="px-3 py-2 text-gray-500">{p.rut}</td>
-                  <td className="px-3 py-2 text-gray-500">{p.empresa}</td>
-                  <td className="px-3 py-2 text-gray-500">{p.cargo}</td>
-                  <td className="px-3 py-2 text-gray-500">{p.familia}</td>
-                  <td className="px-3 py-2">
-                    <span className={`text-xs border px-1.5 py-0.5 ${
-                      p.status === 'Enviada' ? 'border-gray-900 text-gray-900' :
-                      p.status === 'Borrador' ? 'border-gray-400 text-gray-500' :
-                      'border-gray-200 text-gray-400'
-                    }`}>{p.status}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          </ResumenSeccionContent>
         )}
-      </section>
+      </ResumenSeccion>
 
-      {/* Notifications preview */}
-      <section className="border border-gray-300 p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-1">Notificaciones configuradas</h3>
-        <p className="text-xs text-gray-500 mb-4">Al activar el proceso se enviarán las siguientes notificaciones.</p>
-        <div className="flex flex-wrap gap-3 mb-4">
+      {/* ── 4. Participantes ─────────────────────────────────────────────── */}
+      <ResumenSeccion
+        title="Participantes"
+        onDelete={() => setShowDeleteConfirm(true)}
+        deleteLabel="Eliminar formularios masivamente"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {/* Banner conteo */}
+          <div style={{ background: '#F6F9FA', borderRadius: '8px', padding: '12px 16px' }}>
+            <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: '14px', color: '#333333' }}>
+              <strong>({participantCount})</strong> colaboradores incluidos en el proceso
+            </span>
+          </div>
+
+          {/* Chip expandible lista */}
+          <div style={{ display: 'inline-block' }}>
+            <Chip
+              label="Ver lista completa"
+              expanded={showParticipants}
+              onClick={() => setShowParticipants(p => !p)}
+            />
+          </div>
+
+          {/* Tabla de participantes */}
+          {showParticipants && (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <thead>
+                  <tr style={{ background: '#F6F9FA' }}>
+                    {['Nombre', 'RUT', 'Empresa', 'Cargo', 'Familia', 'Estado formulario'].map(h => (
+                      <th
+                        key={h}
+                        style={{
+                          textAlign: 'left',
+                          padding: '10px 12px',
+                          fontFamily: 'Roboto, sans-serif',
+                          fontWeight: 500,
+                          fontSize: '12px',
+                          color: '#666666',
+                          borderBottom: '1px solid #E5E5E5',
+                        }}
+                      >
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {MOCK_PARTICIPANTS_TABLE.map((p, i) => (
+                    <tr key={p.id} style={{ borderTop: i > 0 ? '1px solid #E5E5E5' : undefined }}>
+                      <td style={{ padding: '10px 12px', fontFamily: 'Roboto, sans-serif', fontWeight: 500, fontSize: '13px', color: '#333333' }}>
+                        {p.name}
+                      </td>
+                      <td style={{ padding: '10px 12px', fontFamily: 'Roboto, sans-serif', fontSize: '13px', color: '#666666' }}>{p.rut}</td>
+                      <td style={{ padding: '10px 12px', fontFamily: 'Roboto, sans-serif', fontSize: '13px', color: '#666666' }}>{p.empresa}</td>
+                      <td style={{ padding: '10px 12px', fontFamily: 'Roboto, sans-serif', fontSize: '13px', color: '#666666' }}>{p.cargo}</td>
+                      <td style={{ padding: '10px 12px', fontFamily: 'Roboto, sans-serif', fontSize: '13px', color: '#666666' }}>{p.familia}</td>
+                      <td style={{ padding: '10px 12px' }}>
+                        <span style={{
+                          fontFamily: 'Roboto, sans-serif',
+                          fontSize: '12px',
+                          border: `1px solid ${p.status === 'Enviada' ? '#333333' : p.status === 'Borrador' ? '#999999' : '#CCCCCC'}`,
+                          color: p.status === 'Enviada' ? '#333333' : '#999999',
+                          borderRadius: '4px',
+                          padding: '2px 6px',
+                        }}>
+                          {p.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </ResumenSeccion>
+
+      {/* ── 5. Notificaciones configuradas ───────────────────────────────── */}
+      <ResumenSeccion
+        title="Notificaciones configuradas"
+        subtitle="Al activar el proceso se enviarán las siguientes notificaciones."
+        onEdit={() => setActiveStep(7)}
+      >
+        <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap' }}>
           {ev.notifications.map(n => (
-            <div key={n.id} className="border border-gray-300 p-3 text-xs w-64">
-              <p className="font-medium text-gray-900 mb-1">{n.name}</p>
-              <div className="border-t border-gray-200 pt-2 text-gray-500">{n.condition}</div>
+            <div
+              key={n.id}
+              style={{
+                background: '#F6F9FA',
+                borderRadius: '12px',
+                padding: '16px',
+                flex: '1 1 200px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px',
+              }}
+            >
+              <p style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 500, fontSize: '14px', color: '#333333', margin: 0 }}>
+                {n.name}
+              </p>
+              <p style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 400, fontSize: '12px', color: '#666666', margin: 0 }}>
+                {n.condition || n.description}
+              </p>
             </div>
           ))}
         </div>
-        <button
-          onClick={handleGoToNotifications}
-          className="text-xs text-gray-700 border-b border-gray-500 hover:text-gray-900"
-        >
-          Revisar y editar notificaciones →
-        </button>
-      </section>
+      </ResumenSeccion>
 
-      {/* Activation section */}
-      <section className="border border-gray-300 p-5">
-        <div className="border border-gray-200 bg-gray-50 px-4 py-3 mb-5 text-sm text-gray-700">
-          <p className="font-medium mb-2">⚠️ Una vez activado, algunos parámetros no podrán modificarse.</p>
-          <button
+      {/* ── 6. Alerta pre-activación + botones ───────────────────────────── */}
+      <div style={{
+        background: '#FFFFFF',
+        borderRadius: '16px',
+        boxShadow: '0px 5px 8px 0px rgba(0,0,0,0.15)',
+        padding: '24px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px',
+      }}>
+        {/* Aviso */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <AlertTriangleIcon size={20} />
+          <p style={{
+            fontFamily: 'Roboto, sans-serif',
+            fontWeight: 400,
+            fontSize: '14px',
+            color: '#5780AD',
+            margin: 0,
+          }}>
+            Una vez activado, algunos parámetros no podrán modificarse
+          </p>
+        </div>
+
+        {/* Chip expandible "Ver qué puede editarse" */}
+        <div style={{ display: 'inline-block' }}>
+          <Chip
+            label="Ver que puede editarse después de activar o guardar"
+            expanded={showEditable}
             onClick={() => setShowEditable(e => !e)}
-            className="text-xs text-gray-500 border-b border-gray-400"
-          >
-            {showEditable ? 'Ocultar ▲' : 'Ver qué puede editarse después de activar ▼'}
-          </button>
-          {showEditable && (
-            <div className="mt-3 grid grid-cols-2 gap-4 text-xs">
-              <div>
-                <p className="font-semibold text-gray-700 mb-1">✅ Editable después de activar:</p>
-                <ul className="space-y-0.5 text-gray-600">
-                  <li>· Nombre del proceso</li>
-                  <li>· Fechas del proceso</li>
-                  <li>· Colaboradores incluidos</li>
-                  <li>· Responsables</li>
-                  <li>· Notificaciones</li>
-                </ul>
-              </div>
-              <div>
-                <p className="font-semibold text-gray-700 mb-1">❌ No editable después de activar:</p>
-                <ul className="space-y-0.5 text-gray-600">
-                  <li>· Tipos de dirección y %</li>
-                  <li>· Ponderaciones</li>
-                  <li>· Escala de calificación</li>
-                  <li>· Formulario</li>
-                  <li>· Tipo de formulario</li>
-                </ul>
+          />
+        </div>
+
+        {showEditable && (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '16px',
+            padding: '16px',
+            background: '#F6F9FA',
+            borderRadius: '8px',
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <p style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 500, fontSize: '13px', color: '#333333', margin: 0 }}>
+                Editable después de activar:
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {['Nombre del proceso', 'Fechas del proceso', 'Colaboradores incluidos', 'Responsables', 'Notificaciones'].map(item => (
+                  <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <CheckFillIcon size={16} style={{ flexShrink: 0 }} />
+                    <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: '13px', color: '#666666' }}>{item}</span>
+                  </div>
+                ))}
               </div>
             </div>
-          )}
-        </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <p style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 500, fontSize: '13px', color: '#333333', margin: 0 }}>
+                No editable después de activar:
+              </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                {['Tipos de dirección y %', 'Ponderaciones', 'Escala de calificación', 'Formulario', 'Tipo de formulario'].map(item => (
+                  <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <XIcon size={16} style={{ flexShrink: 0 }} />
+                    <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: '13px', color: '#666666' }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
-        <div className="flex items-center gap-4">
-          <button
+        {/* Botones de acción */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '24px',
+          paddingTop: '8px',
+        }}>
+          <Button variant="secondary" size="lg" onClick={saveDraft}>
+            Guardar como borrador
+          </Button>
+          <Button
+            variant="primary"
+            size="lg"
+            style={{ background: '#ACCA54', borderColor: '#ACCA54', color: '#333333' }}
+            icon={<CheckCircleIcon size={20} color="#333333" />}
+            iconPosition="right"
             onClick={() => setShowActivationModal(true)}
-            className="px-6 py-3 bg-gray-900 text-white text-sm font-semibold border border-gray-900 hover:bg-gray-700"
           >
             Activar evaluación
-          </button>
-          <button
-            onClick={saveDraft}
-            className="px-4 py-3 text-sm border border-gray-400 text-gray-700 hover:bg-gray-50"
-          >
-            Guardar como borrador
-          </button>
+          </Button>
         </div>
-      </section>
+      </div>
 
-      {/* Delete confirmation */}
+      {/* ── Modal confirmar eliminar formularios ──────────────────────────── */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.4)' }}>
-          <div className="bg-white border border-gray-400 p-6 max-w-md w-full mx-4">
-            <h3 className="font-semibold text-gray-900 mb-2">¿Eliminar todos los formularios?</h3>
-            <p className="text-sm text-gray-600 mb-5">
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 50,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'rgba(0,0,0,0.45)',
+          padding: '16px',
+        }}>
+          <div style={{
+            background: '#FFFFFF',
+            borderRadius: '16px',
+            boxShadow: '0px 5px 8px 0px rgba(0,0,0,0.15)',
+            padding: '32px',
+            maxWidth: '480px',
+            width: '100%',
+          }}>
+            <p style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 500, fontSize: '16px', color: '#333333', margin: '0 0 12px' }}>
+              ¿Eliminar todos los formularios?
+            </p>
+            <p style={{ fontFamily: 'Roboto, sans-serif', fontWeight: 400, fontSize: '14px', color: '#666666', margin: '0 0 24px' }}>
               Esta acción eliminará los formularios de {participantCount} colaboradores.
               Perderán cualquier avance guardado. No se puede deshacer.
             </p>
-            <div className="flex justify-end gap-3">
-              <button onClick={() => setShowDeleteConfirm(false)} className="px-4 py-2 text-sm border border-gray-300">Cancelar</button>
-              <button
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+              <Button variant="secondary" size="md" onClick={() => setShowDeleteConfirm(false)}>
+                Cancelar
+              </Button>
+              <Button
+                variant="primary"
+                size="md"
+                style={{ background: '#E24C4C', borderColor: '#E24C4C' }}
                 onClick={() => {
                   setShowDeleteConfirm(false);
                   addToast('Formularios eliminados correctamente.');
                 }}
-                className="px-4 py-2 text-sm border border-red-600 bg-red-600 text-white hover:bg-red-700"
               >
                 Sí, eliminar formularios
-              </button>
+              </Button>
             </div>
           </div>
         </div>
       )}
 
-      <ActivationModal isOpen={showActivationModal} onClose={() => setShowActivationModal(false)} />
-    </div>
+      <ActivationModal
+        isOpen={showActivationModal}
+        onClose={() => setShowActivationModal(false)}
+      />
+    </>
   );
-}
-
-function SummaryBlock({ title, onEdit, children }) {
-  return (
-    <section className="border border-gray-300 p-5">
-      <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-200">
-        <h3 className="text-sm font-semibold text-gray-900">{title}</h3>
-        <button
-          onClick={onEdit}
-          className="text-xs text-gray-600 border border-gray-300 px-3 py-1 hover:bg-gray-50"
-        >
-          ✏️ Editar
-        </button>
-      </div>
-      {children}
-    </section>
-  );
-}
-
-function buildTabList(ev) {
-  const tabs = [
-    { key: 'step1', step: 1 },
-    { key: 'step2', step: 2 },
-    { key: 'step3', step: 3 },
-    { key: 'step4', step: 4 },
-  ];
-  if (ev?.hasCalibration) tabs.push({ key: 'step5', step: 5 });
-  if (ev?.hasFeedback) tabs.push({ key: 'step6', step: 6 });
-  tabs.push({ key: 'step7', step: 7 });
-  return tabs;
 }

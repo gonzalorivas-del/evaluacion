@@ -16,3 +16,19 @@ body {
 * {
   box-sizing: border-box;
 }
+
+*:focus,
+*:focus-visible {
+  outline: none;
+}
+
+/* Oculta el ícono nativo del calendario en inputs type="date".
+   El ícono Zafiro (CalendarIcon SVG) se muestra en su lugar. */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none;
+  -webkit-appearance: none;
+}
+input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+}

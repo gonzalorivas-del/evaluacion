@@ -1,0 +1,165 @@
+/*
+ * Textarea.module.css — Sistema de diseño Zafiro (Rex+)
+ * Fuente: Figma 83u3jh4oyEwvJ2MtoH7L2o · nodo 1194:6707
+ *
+ * Tokens referenciados:
+ *   fondo:             #F6F9FA  ← fondo del área textarea
+ *   negro-textos:      #333333  ← label y texto ingresado
+ *   gris-textos:       #999999  ← placeholder
+ *   gris-oscuro:       #666666  ← contador y supporting text default
+ *   gris-deshabilitado:#CCCCCC  ← label en disabled/blocked
+ *   importante:        #00B4FF  ← borde en estado activo (click)
+ *   exito:             #ACCA54  ← borde/texto en success
+ *   alerta:            #FFB800  ← borde/texto en alert
+ *   error:             #E24C4C  ← borde/texto en error
+ */
+
+/* ── Wrapper externo ────────────────────────────────────────────────────────── */
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* padding/button/p-0 = 4px */
+  width: 100%;
+  position: relative;
+}
+
+/* ── Label ──────────────────────────────────────────────────────────────────── */
+
+.label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #333333; /* negro-textos */
+  margin: 0;
+  width: 100%;
+  transition: color 0.15s ease;
+}
+
+.wrapper.stateDisabled .label,
+.wrapper.stateBlocked .label {
+  color: #cccccc; /* gris-deshabilitado */
+}
+
+/* ── Campo textarea ──────────────────────────────────────────────────────────── */
+
+.field {
+  background: #f6f9fa; /* fondo */
+  border-radius: 16px;
+  border: 1.5px solid transparent; /* reserva espacio para evitar layout shift */
+  padding: 16px;
+  width: 100%;
+  min-height: 96px;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease, background 0.15s ease;
+  position: relative;
+}
+
+/* Estados de validación */
+.field.stateActive {
+  border-color: #00b4ff; /* importante */
+}
+
+.field.stateSuccess {
+  border-color: #acca54; /* exito */
+}
+
+.field.stateAlert {
+  border-color: #ffb800; /* alerta */
+}
+
+.field.stateError {
+  border-color: #e24c4c; /* error */
+}
+
+.field.stateDisabled {
+  background: #f6f9fa;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.field.stateBlocked {
+  background: #e5e5e5; /* gris-secundario */
+  cursor: not-allowed;
+}
+
+/* ── Elemento textarea nativo ────────────────────────────────────────────────── */
+
+.textarea {
+  width: 100%;
+  height: 100%;
+  min-height: 64px; /* espacio mínimo para escribir */
+  background: transparent;
+  border: none;
+  outline: none;
+  resize: vertical;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #333333; /* negro-textos */
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  display: block;
+}
+
+.textarea::placeholder {
+  color: #999999; /* gris-textos */
+}
+
+.textarea:disabled,
+.textarea:read-only {
+  cursor: not-allowed;
+  color: #999999;
+}
+
+/* ── Footer (supporting text + contador) ──────────────────────────────────────── */
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-height: 16px; /* evita salto de layout si no hay supporting text */
+}
+
+.supportingText {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1;
+  color: #666666; /* gris-oscuro */
+  margin: 0;
+  flex: 1;
+  transition: color 0.15s ease;
+}
+
+.wrapper.stateSuccess .supportingText {
+  color: #acca54; /* exito */
+}
+
+.wrapper.stateAlert .supportingText {
+  color: #ffb800; /* alerta */
+}
+
+.wrapper.stateError .supportingText {
+  color: #e24c4c; /* error */
+}
+
+.counter {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 1;
+  color: #666666; /* gris-oscuro */
+  margin: 0;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.counter.overLimit {
+  color: #e24c4c; /* error — cuando se supera el límite */
+}

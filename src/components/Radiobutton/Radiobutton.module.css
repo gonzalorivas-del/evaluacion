@@ -1,0 +1,131 @@
+/*
+ * Radiobutton.module.css — Sistema de diseño Zafiro (Rex+)
+ * Fuente: Figma 83u3jh4oyEwvJ2MtoH7L2o · nodo 1194:6715
+ *
+ * Tokens referenciados:
+ *   primario:          #1E5591  ← borde y punto del radio
+ *   primario-oscuro:   #0A396C  ← hover del borde
+ *   negro-textos:      #333333  ← texto del label
+ *   gris-deshabilitado:#CCCCCC  ← estado disabled
+ *   intermedio:        #0069FF  ← anillo de focus accesible
+ */
+
+/* ── Contenedor raíz (label clickable) ──────────────────────────────────────── */
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  position: relative;
+  user-select: none;
+}
+
+.root.isDisabled {
+  cursor: not-allowed;
+}
+
+/* ── Input nativo oculto (accesible) ─────────────────────────────────────────── */
+
+.input {
+  /* Visualmente oculto pero legible por lectores de pantalla */
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  pointer-events: none;
+}
+
+/* ── Wrapper del círculo (24×24, padding 2px — fiel al Figma) ───────────────── */
+
+.radioWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  padding: 2px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ── Círculo visual (20×20) ──────────────────────────────────────────────────── */
+
+.circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #1e5591; /* primario */
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s ease;
+  position: relative;
+}
+
+/* Punto interior (estado checked) */
+.circle::after {
+  content: '';
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #1e5591; /* primario */
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+/* ── Estado checked ──────────────────────────────────────────────────────────── */
+
+.input:checked + .radioWrap .circle::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ── Estado hover (solo si no disabled) ─────────────────────────────────────── */
+
+.root:not(.isDisabled):hover .circle {
+  border-color: #0a396c; /* primario-oscuro */
+}
+
+.root:not(.isDisabled):hover .input:checked + .radioWrap .circle::after {
+  background: #0a396c; /* primario-oscuro */
+}
+
+/* ── Focus visible accesible ─────────────────────────────────────────────────── */
+
+.input:focus-visible + .radioWrap .circle {
+  outline: 2px solid #0069ff; /* intermedio */
+  outline-offset: 2px;
+}
+
+/* ── Estado disabled ─────────────────────────────────────────────────────────── */
+
+.input:disabled + .radioWrap .circle {
+  border-color: #cccccc; /* gris-deshabilitado */
+}
+
+.input:disabled:checked + .radioWrap .circle::after {
+  background: #cccccc; /* gris-deshabilitado */
+}
+
+/* ── Texto del label ─────────────────────────────────────────────────────────── */
+
+.labelText {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1;
+  color: #333333; /* negro-textos */
+}
+
+.isDisabled .labelText {
+  color: #cccccc; /* gris-deshabilitado */
+}

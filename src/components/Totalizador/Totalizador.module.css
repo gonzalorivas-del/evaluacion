@@ -1,0 +1,79 @@
+/*
+ * Totalizador.module.css — Sistema de diseño Zafiro (Rex+)
+ * Fuente: Figma 83u3jh4oyEwvJ2MtoH7L2o · nodo 1196:18821
+ *
+ * Tokens referenciados:
+ *   error:              #E24C4C  ← borde y texto variante default
+ *   dark-success:       #6C7E01  ← borde variante 100%
+ *   exito:              #ACCA54  ← número variante 100%
+ *   negro-textos:       #333333  ← texto "Total:" variante 100%
+ *   blanco:             #FFFFFF  ← fondo + relleno de iconos
+ */
+
+/* ── Contenedor ──────────────────────────────────────────────────────────── */
+
+.container {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  background: #ffffff; /* blanco */
+  white-space: nowrap;
+}
+
+/* ── Variantes ───────────────────────────────────────────────────────────── */
+
+/* Totalizador-default — suma incorrecta */
+.error {
+  border-color: #e24c4c; /* error */
+}
+
+.error .label {
+  color: #e24c4c; /* error */
+}
+
+.error .number {
+  color: #e24c4c; /* error */
+}
+
+/* Totalizador-100% — suma correcta */
+.success {
+  border-color: #6c7e01; /* dark-success */
+}
+
+.success .label {
+  color: #333333; /* negro-textos */
+}
+
+.success .number {
+  color: #acca54; /* exito */
+}
+
+/* ── Texto principal ─────────────────────────────────────────────────────── */
+
+.label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500; /* Medium */
+  font-size: 14px;
+  line-height: 20px;
+  margin: 0;
+}
+
+/* ── Grupo número + ícono ────────────────────────────────────────────────── */
+
+.numberGroup {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.number {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500; /* Medium */
+  font-size: 18px;
+  line-height: normal;
+}

@@ -1,0 +1,200 @@
+/*
+ * Card — Zafiro Design System (Rex+)
+ *
+ * Tokens usados (src/tokens/tokens.json):
+ *   colors.blanco          → #FFFFFF   fondo de la card
+ *   colors.fondo           → #F6F9FA   fondo del área que contiene las cards
+ *   colors.gris-secundario → #E5E5E5   borde sutil
+ *   colors.negro-textos    → #333333   títulos y valores
+ *   colors.gris-textos     → #999999   descripciones y labels secundarios
+ *   colors.gris-oscuro     → #666666   descripción platform
+ *   colors.primario        → #1E5591   ícono KPI
+ *   colors.exito           → #ACCA54   tendencia positiva
+ *   colors.error           → #E24C4C   tendencia negativa
+ *   colors.gris-deshabilitado → #CCCCCC  tendencia plana
+ *   zafiro.border-radius.br-3  → 8px   border-radius md
+ *   zafiro.padding.p-4         → 16px  padding interno
+ *   zafiro.margin.m-3          → 8px   separación interna
+ *
+ * Efectos (manifest Card):
+ *   shadow-1: 0px 2px 4px rgba(0,0,0,0.15)   reposo  [user spec]
+ *   shadow-2: 0px 4px 16px rgba(0,0,0,0.12)  hover
+ */
+
+/* ─── Base ────────────────────────────────────────────────────────────────── */
+.card {
+  background-color: #FFFFFF;                       /* colors.blanco */
+  border-radius: 8px;                              /* zafiro.border-radius.br-3 */
+  padding: 16px;                                   /* zafiro.padding.p-4 */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);    /* shadow-1 */
+  border: 1px solid #E5E5E5;                       /* colors.gris-secundario */
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  box-sizing: border-box;
+  /* Resetear estilos de button cuando el Tag es <button> */
+  font-family: 'Roboto', sans-serif;
+  text-align: left;
+  width: 100%;
+  cursor: default;
+}
+
+.card:hover {
+  box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.12);   /* shadow-2 */
+}
+
+/* Card interactiva (tiene onClick o es platform) */
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:hover {
+  transform: translateY(-1px);
+}
+
+.interactive:focus-visible {
+  outline: 3px solid #5780AD;                      /* colors.panel */
+  outline-offset: 2px;
+}
+
+.interactive:active {
+  transform: translateY(0);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15);    /* vuelve a shadow-1 */
+}
+
+/* ─── Variante: default ───────────────────────────────────────────────────── */
+.defaultTitle {
+  margin: 0 0 8px 0;                               /* zafiro.margin.m-3 */
+  font-size: 16px;
+  font-weight: 500;
+  color: #333333;                                  /* colors.negro-textos */
+  font-family: 'Roboto', sans-serif;
+}
+
+/* ─── Variante: platform ──────────────────────────────────────────────────── */
+.platformLayout {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;                                       /* zafiro.padding.p-4 */
+}
+
+.platformLogoWrap {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;                              /* circular */
+  overflow: hidden;
+  background-color: #F6F9FA;                       /* colors.fondo */
+  border: 1px solid #E5E5E5;                       /* colors.gris-secundario */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1E5591;                                  /* colors.primario */
+}
+
+.platformLogoWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.platformBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.platformTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333333;                                  /* colors.negro-textos */
+  font-family: 'Roboto', sans-serif;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.platformDesc {
+  margin: 0;
+  font-size: 13px;
+  color: #666666;                                  /* colors.gris-oscuro */
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ─── Variante: kpi ───────────────────────────────────────────────────────── */
+.kpiLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kpiHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;                                        /* zafiro.margin.m-3 */
+}
+
+.kpiIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: #F6F9FA;                       /* colors.fondo */
+  color: #1E5591;                                  /* colors.primario */
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.kpiTitle {
+  font-size: 13px;
+  font-weight: 400;
+  color: #999999;                                  /* colors.gris-textos */
+  font-family: 'Roboto', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.kpiValue {
+  font-size: 32px;                                 /* typography.font-size.32 — Heading 4 */
+  font-weight: 700;
+  color: #333333;                                  /* colors.negro-textos */
+  font-family: 'Montserrat', 'Roboto', sans-serif; /* Heading → Montserrat */
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+.kpiTrend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;                                 /* typography.font-size.12 */
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.trendUp {
+  color: #6C7E01;                                  /* colors.dark-success — más legible que exito */
+}
+
+.trendDown {
+  color: #E24C4C;                                  /* colors.error */
+}
+
+.trendFlat {
+  color: #CCCCCC;                                  /* colors.gris-deshabilitado */
+}
+
+.kpiTrendLabel {
+  font-weight: 400;
+  color: #999999;                                  /* colors.gris-textos */
+}

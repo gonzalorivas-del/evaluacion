@@ -1,0 +1,143 @@
+/*
+ * Tabs.module.css — Sistema de diseño Zafiro (Rex+)
+ *
+ * Tokens referenciados:
+ *   blanco:            #FFFFFF
+ *   importante:        #00B4FF   ← indicador activo
+ *   gris-deshabilitado:#CCCCCC   ← tab default y disabled
+ *   panel:             #5780AD   ← texto en variante icon
+ *   auxiliar:          #B6CEE7   ← línea separadora inferior
+ *   exito:             #ACCA54   ← fondo del ícono check
+ */
+
+/* ── Contenedor barra ──────────────────────────────────────────────────────── */
+
+.bar {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch; /* tabs se estiran al alto del bar para que el indicator llegue al fondo */
+  justify-content: center;
+  width: 100%;
+  background: #ffffff; /* blanco */
+  box-shadow: inset 0px -1px 0px 0px #b6cee7; /* separador auxiliar */
+  overflow: hidden; /* evita cualquier desborde de los indicators */
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* ── Tab — variante TEXT ───────────────────────────────────────────────────── */
+
+.tab {
+  position: relative; /* contexto para el indicator absoluto */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* padding-bottom = gap visual (16px) + alto del indicator (5px)
+     así el label queda centrado y el indicator ocupa los últimos 5px */
+  padding: 12px 8px 21px;
+  flex-shrink: 0;
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  color: inherit;
+  font-family: inherit;
+}
+
+.tab:focus-visible {
+  outline: 2px solid #0069ff;
+  outline-offset: -2px;
+}
+
+.tab.disabled {
+  cursor: default;
+  pointer-events: none;
+}
+
+/* Etiqueta del tab */
+.label {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 25px;
+  white-space: nowrap;
+  margin: 0;
+  transition: color 0.15s ease;
+}
+
+.tab.active .label {
+  color: #00b4ff; /* importante */
+}
+
+.tab.default .label {
+  color: #cccccc; /* gris-deshabilitado */
+}
+
+.tab.disabled .label {
+  color: #cccccc; /* gris-deshabilitado */
+}
+
+/* Indicador inferior — anclado al fondo del tab con posición absoluta */
+.indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  border-radius: 24px;
+  background: transparent;
+  transition: background 0.15s ease;
+}
+
+.tab.active .indicator {
+  background: #00b4ff; /* importante */
+}
+
+/* ── Tab — variante ICON ───────────────────────────────────────────────────── */
+
+.tabIcon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px 21px;
+  flex-shrink: 0;
+  background: transparent;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+  color: inherit;
+  font-family: inherit;
+  align-self: stretch;
+}
+
+.tabIcon:focus-visible {
+  outline: 2px solid #0069ff;
+  outline-offset: -2px;
+}
+
+.tabIcon.disabled {
+  cursor: default;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.iconWrap {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconLabel {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 25px;
+  white-space: nowrap;
+  color: #5780ad; /* panel */
+  margin: 0;
+}

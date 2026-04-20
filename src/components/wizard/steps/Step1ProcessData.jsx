@@ -1,9 +1,141 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useEvaluation } from '../../../context/EvaluationContext';
-import Toggle from '../../ui/Toggle';
+import { Switch } from '../../Switch';
 import Tooltip from '../../ui/Tooltip';
 import { MOCK_PARTICIPANTS, MOCK_USERS } from '../../../data/constants';
+import { InputField } from '../../InputField';
+import { Textarea } from '../../Textarea';
+import { Selector } from '../../Selector';
+import { Radiobutton } from '../../Radiobutton';
+import { Checkbox } from '../../Checkbox';
+import { Chip } from '../../Chip';
+import { Button } from '../../Button';
+import { Uploader } from '../../Uploader';
+import { ArrowRightIcon } from '../../../assets/icons/ArrowRightIcon';
 
+/* ── Estilos de tokens Zafiro ───────────────────────────────────────── */
+const TOKEN = {
+  panel:         '#5780AD',
+  primarioOscuro:'#0A396C',
+  grisOscuro:    '#666666',
+  grisTextos:    '#999999',
+  grisSecundario:'#E5E5E5',
+  error:         '#E24C4C',
+  fondo:         '#F6F9FA',
+  negro:         '#333333',
+};
+
+const CARD_SECTION = {
+  background:   '#ffffff',
+  borderRadius: '16px',
+  boxShadow:    '0px 5px 8px 0px rgba(0,0,0,0.15)',
+  padding:      '24px',
+  display:      'flex',
+  flexDirection:'column',
+  gap:          '24px',
+};
+
+const SECTION_TITLE = {
+  fontFamily: 'Roboto, sans-serif',
+  fontWeight: 500,
+  fontSize:   '16px',
+  color:      TOKEN.panel,
+  margin:     0,
+};
+
+const HELPER_TEXT = {
+  fontFamily: 'Roboto, sans-serif',
+  fontWeight: 400,
+  fontSize:   '12px',
+  color:      TOKEN.grisTextos,
+  margin:     0,
+};
+
+const PRIVACY_CARD = {
+  background:   '#ffffff',
+  borderRadius: '16px',
+  boxShadow:    '0px 2px 4px 0px rgba(0,0,0,0.15)',
+  padding:      '16px',
+  display:      'flex',
+  flexDirection:'column',
+  gap:          '16px',
+};
+
+/* ── Íconos tabla ───────────────────────────────────────────────────── */
+function More2Icon({ color = '#00B4FF' }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="5.5" cy="12" r="1.75" fill={color} />
+      <circle cx="12" cy="12" r="1.75" fill={color} />
+      <circle cx="18.5" cy="12" r="1.75" fill={color} />
+    </svg>
+  );
+}
+
+function TrashIcon({ color = '#E24C4C' }) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M3 6h18" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M10 11v6M14 11v6" stroke={color} strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function SearchIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" stroke="#CCCCCC" strokeWidth="1.5" />
+      <path d="M16.5 16.5L21 21" stroke="#CCCCCC" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ChevronDownSmall() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 9l6 6 6-6" stroke="#333333" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ChevronPrevIcon({ disabled }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M15 18l-6-6 6-6" stroke={disabled ? '#CCCCCC' : '#333333'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ChevronNextIcon({ disabled }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M9 18l6-6-6-6" stroke={disabled ? '#CCCCCC' : '#333333'} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/* Genera el array de páginas a mostrar en el paginador */
+function getPaginationPages(current, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  if (current <= 4) return [1, 2, 3, 4, 5, '...', total];
+  if (current >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+  return [1, '...', current - 1, current, current + 1, '...', total];
+}
+
+/* ── Ícono Calendario ──────────────────────────────────────────────── */
+function CalendarIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="1.5"/>
+      <path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
+
+/* ── CSV helpers ────────────────────────────────────────────────────── */
 const CSV_TEMPLATE_HEADERS = 'nombre;rut;empresa;cargo;familia_cargo';
 const CSV_TEMPLATE_ROWS = [
   'María González;12.345.678-9;Empresa A;Analista;Análisis',
@@ -15,14 +147,13 @@ function parseCSV(text) {
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
   if (lines.length < 2) return { rows: [], errors: ['El archivo no contiene datos.'] };
 
-  // Auto-detect separator: semicolon or comma
   const sep = lines[0].includes(';') ? ';' : ',';
   const headers = lines[0].split(sep).map(h => h.trim().toLowerCase().replace(/"/g, '').replace(/\s+/g, '_'));
 
-  const nameCol   = headers.findIndex(h => ['nombre', 'name', 'nombre_completo'].includes(h));
-  const rutCol    = headers.findIndex(h => ['rut', 'rut_colaborador'].includes(h));
+  const nameCol    = headers.findIndex(h => ['nombre', 'name', 'nombre_completo'].includes(h));
+  const rutCol     = headers.findIndex(h => ['rut', 'rut_colaborador'].includes(h));
   const empresaCol = headers.findIndex(h => ['empresa', 'company'].includes(h));
-  const cargoCol  = headers.findIndex(h => ['cargo', 'puesto', 'position'].includes(h));
+  const cargoCol   = headers.findIndex(h => ['cargo', 'puesto', 'position'].includes(h));
   const familiaCol = headers.findIndex(h => ['familia_cargo', 'familia'].includes(h));
 
   if (nameCol === -1) {
@@ -42,14 +173,13 @@ function parseCSV(text) {
     rows.push({
       id: `csv-${i}-${Date.now()}`,
       name: nombre,
-      rut: rutCol !== -1 ? (cols[rutCol] || '—') : '—',
+      rut:     rutCol     !== -1 ? (cols[rutCol]     || '—') : '—',
       empresa: empresaCol !== -1 ? (cols[empresaCol] || '—') : '—',
-      cargo: cargoCol !== -1 ? (cols[cargoCol] || '—') : '—',
+      cargo:   cargoCol   !== -1 ? (cols[cargoCol]   || '—') : '—',
       familia: familiaCol !== -1 ? (cols[familiaCol] || '—') : '—',
       _rowIndex: i,
     });
   }
-
   return { rows, errors };
 }
 
@@ -63,20 +193,34 @@ function downloadTemplate() {
   URL.revokeObjectURL(url);
 }
 
+/* ════════════════════════════════════════════════════════════════════ */
 export default function Step1ProcessData() {
   const { currentEval, updateCurrentEval, saveCurrentEval, setActiveStep, addToast } = useEvaluation();
-  const [errors, setErrors] = useState({});
-  const [userSearch, setUserSearch] = useState({ responsibles: '', managers: '', viewers: '' });
+
+  const [errors, setErrors]                   = useState({});
   const [showPrivacyWarning, setShowPrivacyWarning] = useState(false);
-  const [pendingPrivacy, setPendingPrivacy] = useState(null);
-  const [csvFileName, setCsvFileName] = useState('');
-  const [csvErrors, setCsvErrors] = useState([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef(null);
-  const _urlParams = new URLSearchParams(window.location.search);
-  const _isolateSection = _urlParams.get('section');
-  const [showOrgTable, setShowOrgTable] = useState(_urlParams.get('orgTable') === 'open');
+  const [pendingPrivacy, setPendingPrivacy]   = useState(null);
+  const [csvFileName, setCsvFileName]         = useState('');
+  const [csvFileSize, setCsvFileSize]         = useState('');
+  const [csvErrors, setCsvErrors]             = useState([]);
+  const [showOrgTable, setShowOrgTable]       = useState(false);
   const [orgParticipants, setOrgParticipants] = useState(MOCK_PARTICIPANTS);
+  const [orgSearchText, setOrgSearchText]     = useState('');
+  const [orgPage, setOrgPage]                 = useState(1);
+  const [orgRowsPerPage, setOrgRowsPerPage]   = useState(8);
+  const [openMenuId, setOpenMenuId]           = useState(null);
+
+  /* Cierra el menú contextual al hacer click fuera */
+  useEffect(() => {
+    const close = () => setOpenMenuId(null);
+    document.addEventListener('click', close);
+    return () => document.removeEventListener('click', close);
+  }, []);
+  /* selector keys — fuerzan re-mount para resetear valor tras selección */
+  const [managerSelKey, setManagerSelKey]     = useState(0);
+  const [viewerSelKey, setViewerSelKey]       = useState(0);
+  const [responsibleSelKey, setResponsibleSelKey] = useState(0);
+
 
   if (!currentEval) return null;
   const ev = currentEval;
@@ -88,12 +232,14 @@ export default function Step1ProcessData() {
 
   const validate = () => {
     const errs = {};
-    if (!ev.name.trim()) errs.name = 'El proceso necesita un nombre.';
-    if (!ev.startDate) errs.startDate = 'Indica la fecha de inicio.';
-    if (!ev.endDate) errs.endDate = 'Indica la fecha de término.';
-    if (ev.startDate && ev.endDate && ev.endDate <= ev.startDate) errs.endDate = 'La fecha de término debe ser posterior a la de inicio.';
-    if (!ev.scope) errs.scope = 'Selecciona el alcance.';
-    if (ev.scope === 'specific' && ev.participants.length === 0) errs.participants = 'Carga un archivo CSV con al menos un colaborador.';
+    if (!ev.name.trim())  errs.name      = 'El proceso necesita un nombre.';
+    if (!ev.startDate)    errs.startDate  = 'Indica la fecha de inicio.';
+    if (!ev.endDate)      errs.endDate    = 'Indica la fecha de término.';
+    if (ev.startDate && ev.endDate && ev.endDate <= ev.startDate)
+      errs.endDate = 'La fecha de término debe ser posterior a la de inicio.';
+    if (!ev.scope)        errs.scope      = 'Selecciona el alcance.';
+    if (ev.scope === 'specific' && ev.participants.length === 0)
+      errs.participants = 'Carga un archivo CSV con al menos un colaborador.';
     return errs;
   };
 
@@ -104,37 +250,26 @@ export default function Step1ProcessData() {
       return;
     }
     setCsvFileName(file.name);
+    setCsvFileSize(`${(file.size / (1024 * 1024)).toFixed(1)} MB`);
     const reader = new FileReader();
     reader.onload = (e) => {
       const { rows, errors: parseErrors } = parseCSV(e.target.result);
       setCsvErrors(parseErrors);
       updateCurrentEval({ participants: rows });
       setErrors(er => ({ ...er, participants: undefined }));
-      if (rows.length > 0) {
-        addToast(`${rows.length} colaboradores cargados correctamente.`);
-      }
+      if (rows.length > 0) addToast(`${rows.length} colaboradores cargados correctamente.`);
     };
     reader.readAsText(file, 'UTF-8');
   };
 
-  const handleFileInput = (e) => {
-    handleFile(e.target.files[0]);
-    e.target.value = ''; // allow re-upload same file
-  };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    setIsDragging(false);
-    handleFile(e.dataTransfer.files[0]);
-  };
-
-  const removeParticipant = (id) => {
+  const removeParticipant = (id) =>
     updateCurrentEval({ participants: ev.participants.filter(p => p.id !== id) });
-  };
 
   const clearImport = () => {
     updateCurrentEval({ participants: [] });
     setCsvFileName('');
+    setCsvFileSize('');
     setCsvErrors([]);
   };
 
@@ -165,379 +300,519 @@ export default function Step1ProcessData() {
     setPendingPrivacy(null);
   };
 
-  const filteredUsers = (field) => MOCK_USERS.filter(u =>
-    userSearch[field].length >= 2 &&
-    u.name.toLowerCase().includes(userSearch[field].toLowerCase()) &&
-    !ev[field].find(eu => eu.id === u.id)
-  );
-
   const addUser = (field, u) => {
-    updateCurrentEval({ [field]: [...ev[field], u] });
-    setUserSearch(s => ({ ...s, [field]: '' }));
+    if (u) updateCurrentEval({ [field]: [...ev[field], u] });
   };
 
-  const removeUser = (field, id) => {
+  const removeUser = (field, id) =>
     updateCurrentEval({ [field]: ev[field].filter(u => u.id !== id) });
-  };
 
   const isMeResponsible = ev.responsibles.find(r => r.id === 1);
   const assignMe = () => {
-    if (!isMeResponsible) {
+    if (!isMeResponsible)
       updateCurrentEval({ responsibles: [...ev.responsibles, MOCK_USERS[0]] });
-    }
   };
 
-  if (_isolateSection === 'quienes') {
-    return (
-      <div className="space-y-6">
-        <section className="border border-gray-300 p-5">
-          <h3 className="text-sm font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-200">¿A quiénes incluye?</h3>
-          <div className="space-y-3">
-            <label className="flex items-start gap-3 cursor-pointer">
-              <input type="radio" name="scope" value="all" checked readOnly className="mt-0.5" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">A toda la organización</p>
-                <p className="text-xs text-gray-500">Todos los colaboradores activos serán incluidos.</p>
-                <span className="inline-block mt-1 px-2 py-0.5 text-xs border border-gray-300 text-gray-600">
-                  {orgParticipants.length} colaboradores activos incluidos
-                </span>
-              </div>
-            </label>
-            <div className="ml-6">
-              <button
-                type="button"
-                onClick={() => setShowOrgTable(v => !v)}
-                className="flex items-center gap-1.5 text-xs text-gray-600 border border-gray-300 px-3 py-1.5 hover:bg-gray-50"
-              >
-                <span>{showOrgTable ? '▲' : '▼'}</span>
-                {showOrgTable ? 'Ocultar' : 'Ver'} listado de colaboradores ({orgParticipants.length})
-              </button>
-              {showOrgTable && (
-                <div className="mt-2 border border-gray-200 max-h-64 overflow-y-auto">
-                  <table className="w-full text-xs">
-                    <thead className="sticky top-0 bg-gray-50 border-b border-gray-200">
-                      <tr>
-                        <th className="text-left px-3 py-2 text-gray-600 font-medium whitespace-nowrap">Identificador Nacional</th>
-                        <th className="text-left px-3 py-2 text-gray-600 font-medium">Nombre</th>
-                        <th className="text-left px-3 py-2 text-gray-600 font-medium">Empresa</th>
-                        <th className="text-left px-3 py-2 text-gray-600 font-medium">Email</th>
-                        <th className="text-left px-3 py-2 text-gray-600 font-medium">Cargo</th>
-                        <th className="text-left px-3 py-2 text-gray-600 font-medium">Jefatura</th>
-                        <th className="px-3 py-2"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {orgParticipants.map(p => (
-                        <tr key={p.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
-                          <td className="px-3 py-2 text-gray-500 font-mono">{p.rut}</td>
-                          <td className="px-3 py-2 font-medium text-gray-900 whitespace-nowrap">{p.name}</td>
-                          <td className="px-3 py-2 text-gray-500">{p.empresa}</td>
-                          <td className="px-3 py-2 text-gray-500">{p.email}</td>
-                          <td className="px-3 py-2 text-gray-500 whitespace-nowrap">{p.cargo}</td>
-                          <td className="px-3 py-2 text-gray-500 whitespace-nowrap">{p.jefatura}</td>
-                          <td className="px-3 py-2 text-right">
-                            <button type="button" onClick={() => setOrgParticipants(prev => prev.filter(x => x.id !== p.id))} className="text-gray-300 hover:text-red-500" title="Excluir">✕</button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-            <label className="flex items-start gap-3 cursor-pointer opacity-40">
-              <input type="radio" name="scope" value="specific" readOnly className="mt-0.5" />
-              <div>
-                <p className="text-sm font-medium text-gray-900">Carga masiva desde archivo</p>
-                <p className="text-xs text-gray-500">Importa el listado de colaboradores desde un archivo .csv.</p>
-              </div>
-            </label>
-          </div>
-        </section>
-      </div>
-    );
-  }
+  /* ── opciones para selectores de usuarios ───────────────────────── */
+  const managerOptions = MOCK_USERS
+    .filter(u => !ev.managers.find(m => m.id === u.id))
+    .map(u => ({ value: String(u.id), label: u.name }));
 
+  const viewerOptions = MOCK_USERS
+    .filter(u => !ev.viewers.find(v => v.id === u.id))
+    .map(u => ({ value: String(u.id), label: u.name }));
+
+  const responsibleOptions = MOCK_USERS
+    .filter(u => !ev.responsibles.find(r => r.id === u.id))
+    .map(u => ({ value: String(u.id), label: u.name }));
+
+  /* ════════════════════════════════════════════════════════════════════ */
   return (
-    <div className="space-y-6">
-      {/* Privacy warning modal */}
+    <>
+      {/* ── Modal advertencia privacidad ─────────────────────────────── */}
       {showPrivacyWarning && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.4)' }}>
-          <div className="bg-white border border-gray-400 p-6 max-w-md w-full mx-4">
-            <h3 className="font-semibold text-gray-900 mb-2">¿Activar privacidad?</h3>
-            <p className="text-sm text-gray-600 mb-5">
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 50,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(0,0,0,0.4)',
+        }}>
+          <div style={{
+            background: '#fff', borderRadius: '16px', padding: '32px',
+            maxWidth: '480px', width: '100%', margin: '0 16px',
+            boxShadow: '0px 8px 24px rgba(0,0,0,0.2)',
+          }}>
+            <h3 style={{ fontFamily:'Roboto,sans-serif', fontWeight:500, fontSize:'18px', color:TOKEN.primarioOscuro, margin:'0 0 12px' }}>
+              ¿Activar privacidad?
+            </h3>
+            <p style={{ fontFamily:'Roboto,sans-serif', fontSize:'14px', color:TOKEN.grisOscuro, margin:'0 0 24px' }}>
               Activar la privacidad eliminará los Encargados y Visualizadores asignados. ¿Continuar?
             </p>
-            <div className="flex justify-end gap-3">
-              <button onClick={() => setShowPrivacyWarning(false)} className="px-4 py-2 text-sm border border-gray-300">Cancelar</button>
-              <button onClick={confirmPrivacy} className="px-4 py-2 text-sm border border-gray-900 bg-gray-900 text-white">Continuar</button>
+            <div style={{ display:'flex', justifyContent:'flex-end', gap:'12px' }}>
+              <Button variant="secondary" onClick={() => setShowPrivacyWarning(false)}>
+                Cancelar
+              </Button>
+              <Button variant="primary" onClick={confirmPrivacy}>
+                Continuar
+              </Button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Section: General info */}
-      <section className="border border-gray-300 p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-200">Información general</h3>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-900 mb-1">
-              Nombre de la evaluación <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              value={ev.name}
-              onChange={e => update('name', e.target.value)}
-              className={`w-full border px-3 py-2 text-sm focus:outline-none ${errors.name ? 'border-red-400' : 'border-gray-300'}`}
-            />
-            {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
-          </div>
+      {/* ══ Sección 1: Información general ═══════════════════════════ */}
+      <section style={CARD_SECTION}>
+        <p style={SECTION_TITLE}>Información general</p>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1">
-                Fecha estimada de inicio <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="date"
-                value={ev.startDate}
-                onChange={e => update('startDate', e.target.value)}
-                className={`w-full border px-3 py-2 text-sm focus:outline-none ${errors.startDate ? 'border-red-400' : 'border-gray-300'}`}
-              />
-              {errors.startDate && <p className="text-xs text-red-600 mt-1">{errors.startDate}</p>}
-              <p className="text-xs text-gray-400 mt-1">Estas fechas son orientativas. Las fechas de apertura de cada etapa se programan por separado.</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-1">
-                Fecha estimada de cierre <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="date"
-                value={ev.endDate}
-                onChange={e => update('endDate', e.target.value)}
-                className={`w-full border px-3 py-2 text-sm focus:outline-none ${errors.endDate ? 'border-red-400' : 'border-gray-300'}`}
-              />
-              {errors.endDate && <p className="text-xs text-red-600 mt-1">{errors.endDate}</p>}
-            </div>
-          </div>
+        {/* Nombre */}
+        <InputField
+          label="Nombre de la evaluación *"
+          value={ev.name}
+          onChange={e => update('name', e.target.value)}
+          fieldState={errors.name ? 'error' : 'default'}
+          supportingText={errors.name}
+          hideIcon
+        />
 
-          <div>
-            <label className="block text-sm font-medium text-gray-900 mb-1">
-              Descripción del proceso
-              <span className="text-gray-400 font-normal ml-1">(opcional)</span>
-            </label>
-            <textarea
-              value={ev.description}
-              onChange={e => update('description', e.target.value.slice(0, 1000))}
-              placeholder="¿Para qué sirve esta evaluación? (opcional)"
-              rows={3}
-              className="w-full border border-gray-300 px-3 py-2 text-sm focus:outline-none resize-none"
+        {/* Fechas */}
+        <div>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'24px' }}>
+            <DateField
+              label="Fecha de inicio *"
+              value={ev.startDate}
+              onChange={v => update('startDate', v)}
+              error={errors.startDate}
             />
-            <p className="text-xs text-gray-400 text-right mt-0.5">{ev.description.length}/1000</p>
-            <p className="text-xs text-gray-400">Visible internamente para los administradores del proceso.</p>
+            <DateField
+              label="Fecha de término *"
+              value={ev.endDate}
+              onChange={v => update('endDate', v)}
+              error={errors.endDate}
+            />
           </div>
+          <p style={{ ...HELPER_TEXT, marginTop:'8px' }}>
+            Fecha estimada. Las fechas de cada etapa se configuran por separado.
+          </p>
+        </div>
+
+        {/* Descripción */}
+        <div>
+          <Textarea
+            label="Descripción del proceso"
+            placeholder="Describe el proceso aquí"
+            value={ev.description}
+            onChange={(value) => update('description', value.slice(0, 1000))}
+            maxLength={1000}
+          />
+          <p style={{ ...HELPER_TEXT, marginTop:'8px' }}>
+            La descripción y el nombre del proceso, serán visibles en la portada del formulario del colaborador.
+          </p>
         </div>
       </section>
 
-      {/* Section: Scope */}
-      <section className="border border-gray-300 p-5">
-        <h3 className="text-sm font-semibold text-gray-900 mb-4 pb-2 border-b border-gray-200">¿A quiénes incluye?</h3>
-        <div className="space-y-3">
+      {/* ══ Sección 2: ¿A quiénes incluye? ══════════════════════════ */}
+      <section style={CARD_SECTION}>
+        <p style={SECTION_TITLE}>¿A quiénes incluye?</p>
 
-          {/* Option A: All organization */}
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="radio"
-              name="scope"
-              value="all"
-              checked={ev.scope === 'all'}
-              onChange={() => { update('scope', 'all'); clearImport(); }}
-              className="mt-0.5"
-            />
-            <div>
-              <p className="text-sm font-medium text-gray-900">A toda la organización</p>
-              <p className="text-xs text-gray-500">Todos los colaboradores activos serán incluidos.</p>
-              {ev.scope === 'all' && (
-                <span className="inline-block mt-1 px-2 py-0.5 text-xs border border-gray-300 text-gray-600">
-                  {orgParticipants.length} colaboradores activos incluidos
-                </span>
-              )}
-            </div>
-          </label>
-
-          {/* Collapsible org table */}
+        {/* Opción A: Toda la organización */}
+        <div style={{ display:'flex', flexDirection:'column', gap:'8px' }}>
+          <Radiobutton
+            label="A toda la organización"
+            name="scope"
+            value="all"
+            checked={ev.scope === 'all'}
+            onChange={() => { update('scope', 'all'); clearImport(); }}
+          />
           {ev.scope === 'all' && (
-            <div className="ml-6">
-              <button
-                type="button"
+            <div style={{ paddingLeft:'32px', display:'flex', flexDirection:'column', gap:'12px', alignItems:'flex-start' }}>
+              <p style={{ ...HELPER_TEXT }}>
+                Todos los colaboradores activos serán incluidos.
+              </p>
+              <Chip
+                label="Ver listado de colaboradores incluidos"
+                count={orgParticipants.length}
+                expanded={showOrgTable}
                 onClick={() => setShowOrgTable(v => !v)}
-                className="flex items-center gap-1.5 text-xs text-gray-600 border border-gray-300 px-3 py-1.5 hover:bg-gray-50"
-              >
-                <span>{showOrgTable ? '▲' : '▼'}</span>
-                {showOrgTable ? 'Ocultar' : 'Ver'} listado de colaboradores ({orgParticipants.length})
-              </button>
+              />
+              {showOrgTable && (() => {
+                /* ── Derivados ── */
+                const filtered = orgParticipants.filter(p =>
+                  !orgSearchText.trim() ||
+                  [p.rut, p.name, p.empresa, p.email, p.cargo, p.jefatura]
+                    .some(v => (v || '').toLowerCase().includes(orgSearchText.toLowerCase()))
+                );
+                const totalPages  = Math.max(1, Math.ceil(filtered.length / orgRowsPerPage));
+                const safePage    = Math.min(orgPage, totalPages);
+                const paginated   = filtered.slice((safePage - 1) * orgRowsPerPage, safePage * orgRowsPerPage);
+                const pages       = getPaginationPages(safePage, totalPages);
 
-              {showOrgTable && (
-                <div className="mt-2 border border-gray-200 max-h-64 overflow-y-auto">
-                  <table className="w-full text-xs">
-                    <thead className="sticky top-0 bg-gray-50 border-b border-gray-200">
-                      <tr>
-                        <th className="text-left px-3 py-2 text-gray-600 font-medium whitespace-nowrap">Identificador Nacional</th>
-                        <th className="text-left px-3 py-2 text-gray-600 font-medium">Nombre</th>
-                        <th className="text-left px-3 py-2 text-gray-600 font-medium">Empresa</th>
-                        <th className="text-left px-3 py-2 text-gray-600 font-medium">Email</th>
-                        <th className="text-left px-3 py-2 text-gray-600 font-medium">Cargo</th>
-                        <th className="text-left px-3 py-2 text-gray-600 font-medium">Jefatura</th>
-                        <th className="px-3 py-2"></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {orgParticipants.map(p => (
-                        <tr key={p.id} className="border-b border-gray-100 last:border-0 hover:bg-gray-50">
-                          <td className="px-3 py-2 text-gray-500 font-mono">{p.rut}</td>
-                          <td className="px-3 py-2 font-medium text-gray-900 whitespace-nowrap">{p.name}</td>
-                          <td className="px-3 py-2 text-gray-500">{p.empresa}</td>
-                          <td className="px-3 py-2 text-gray-500">{p.email}</td>
-                          <td className="px-3 py-2 text-gray-500 whitespace-nowrap">{p.cargo}</td>
-                          <td className="px-3 py-2 text-gray-500 whitespace-nowrap">{p.jefatura}</td>
-                          <td className="px-3 py-2 text-right">
-                            <button
-                              type="button"
-                              onClick={() => setOrgParticipants(prev => prev.filter(x => x.id !== p.id))}
-                              className="text-gray-300 hover:text-red-500"
-                              title="Excluir colaborador"
-                            >
-                              ✕
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
+                /* ── Estilos compartidos ── */
+                const CELL_BASE = {
+                  fontFamily: 'Roboto, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 400,
+                  color: '#333333',           /* Neutral/33 */
+                  padding: '12px 8px 12px 8px',
+                  borderBottom: '1px solid #B6CEE7', /* auxiliar */
+                  verticalAlign: 'middle',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '160px',
+                };
+                const TH_BASE = {
+                  fontFamily: 'Roboto, sans-serif',
+                  fontSize: '14px',
+                  fontWeight: 500,
+                  color: '#000000',
+                  padding: '8px 8px 12px 8px',
+                  borderBottom: '1px solid #B6CEE7',
+                  textAlign: 'left',
+                  whiteSpace: 'nowrap',
+                  background: '#FFFFFF',
+                };
+
+                return (
+                  <div style={{
+                    background: '#FFFFFF',
+                    borderRadius: '16px',
+                    width: '100%',
+                    overflow: 'hidden',
+                    boxSizing: 'border-box',
+                  }}>
+
+                    {/* ── Cabecera: buscador ── */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'flex-end',
+                      height: '66px',
+                      padding: '0 24px 0 8px',
+                      background: '#FFFFFF',
+                    }}>
+                      <div style={{ position: 'relative', width: '280px' }}>
+                        <input
+                          type="text"
+                          placeholder="Buscar contenido"
+                          value={orgSearchText}
+                          onChange={e => { setOrgSearchText(e.target.value); setOrgPage(1); }}
+                          style={{
+                            width: '100%',
+                            border: 'none',
+                            borderBottom: '1px solid #B6CEE7',
+                            outline: 'none',
+                            fontFamily: 'Roboto, sans-serif',
+                            fontSize: '16px',
+                            fontWeight: 400,
+                            color: '#333333',
+                            background: 'transparent',
+                            padding: '0 32px 8px 0',
+                            boxSizing: 'border-box',
+                          }}
+                        />
+                        <span style={{ position: 'absolute', right: 0, top: 0, pointerEvents: 'none' }}>
+                          <SearchIcon />
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* ── Tabla ── */}
+                    <div style={{ overflowX: 'auto' }}>
+                      <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
+                        <colgroup>
+                          <col style={{ width: '150px' }} />
+                          <col />
+                          <col />
+                          <col />
+                          <col />
+                          <col />
+                          <col style={{ width: '56px' }} />
+                        </colgroup>
+                        <thead>
+                          <tr>
+                            {['Identificador nacional','Nombre','Empresa','Email','Cargo','Jefatura'].map(h => (
+                              <th key={h} style={TH_BASE}>{h}</th>
+                            ))}
+                            <th style={{ ...TH_BASE, textAlign: 'center', padding: '8px 16px 12px' }} />
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {paginated.length === 0 ? (
+                            <tr>
+                              <td colSpan={7} style={{ ...CELL_BASE, textAlign: 'center', color: '#999999', padding: '24px', maxWidth: 'none' }}>
+                                Sin resultados para «{orgSearchText}»
+                              </td>
+                            </tr>
+                          ) : paginated.map(p => (
+                            <tr key={p.id}>
+                              <td style={CELL_BASE}>{p.rut}</td>
+                              <td style={CELL_BASE}>{p.name}</td>
+                              <td style={CELL_BASE}>{p.empresa}</td>
+                              <td style={CELL_BASE}>{p.email}</td>
+                              <td style={CELL_BASE}>{p.cargo}</td>
+                              <td style={CELL_BASE}>{p.jefatura}</td>
+                              <td style={{ ...CELL_BASE, position: 'relative', textAlign: 'center', padding: '12px 16px', maxWidth: 'none', overflow: 'visible' }}>
+                                {/* Botón More2 */}
+                                <button
+                                  type="button"
+                                  aria-label="Opciones"
+                                  onClick={e => { e.stopPropagation(); setOpenMenuId(openMenuId === p.id ? null : p.id); }}
+                                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                                >
+                                  <More2Icon color="#00B4FF" />
+                                </button>
+
+                                {/* Menú contextual */}
+                                {openMenuId === p.id && (
+                                  <div
+                                    onClick={e => e.stopPropagation()}
+                                    style={{
+                                      position: 'absolute',
+                                      top: '100%',
+                                      right: 0,
+                                      zIndex: 100,
+                                      background: '#FFFFFF',
+                                      borderRadius: '16px',
+                                      padding: '16px',
+                                      boxShadow: '0px 5px 8px 0px rgba(0,0,0,0.15)',
+                                      minWidth: '200px',
+                                    }}
+                                  >
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setOrgParticipants(prev => prev.filter(x => x.id !== p.id));
+                                        setOpenMenuId(null);
+                                      }}
+                                      style={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '16px',
+                                        background: 'none',
+                                        border: 'none',
+                                        padding: 0,
+                                        cursor: 'pointer',
+                                        fontFamily: 'Roboto, sans-serif',
+                                        fontSize: '14px',
+                                        fontWeight: 400,
+                                        color: '#333333',
+                                        whiteSpace: 'nowrap',
+                                        width: '100%',
+                                        textAlign: 'left',
+                                      }}
+                                    >
+                                      <TrashIcon color="#E24C4C" />
+                                      Quitar colaborador
+                                    </button>
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* ── Footer: total + paginador ── */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      padding: '0 24px',
+                      height: '69px',
+                      background: '#FFFFFF',
+                      borderRadius: '0 0 16px 16px',
+                    }}>
+                      {/* Total */}
+                      <p style={{
+                        fontFamily: 'Roboto, sans-serif',
+                        fontSize: '12px',
+                        fontWeight: 500,
+                        color: '#999999',
+                        margin: 0,
+                      }}>
+                        {`Total de colaboradores: ${filtered.length}`}
+                      </p>
+
+                      {/* Paginador */}
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                        {/* Selector filas */}
+                        <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: '16px', color: '#333333' }}>Filas</span>
+                        <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
+                          <select
+                            value={orgRowsPerPage}
+                            onChange={e => { setOrgRowsPerPage(Number(e.target.value)); setOrgPage(1); }}
+                            style={{
+                              appearance: 'none',
+                              WebkitAppearance: 'none',
+                              border: 'none',
+                              borderBottom: '1px solid #B6CEE7',
+                              background: 'transparent',
+                              fontFamily: 'Roboto, sans-serif',
+                              fontSize: '16px',
+                              color: '#333333',
+                              paddingRight: '28px',
+                              paddingBottom: '4px',
+                              outline: 'none',
+                              cursor: 'pointer',
+                            }}
+                          >
+                            {[5, 8, 10, 20].map(n => <option key={n} value={n}>{n}</option>)}
+                          </select>
+                          <span style={{ position: 'absolute', right: 0, pointerEvents: 'none', display: 'flex', alignItems: 'center' }}>
+                            <ChevronDownSmall />
+                          </span>
+                        </div>
+
+                        {/* Prev */}
+                        <button
+                          type="button"
+                          disabled={safePage === 1}
+                          onClick={() => setOrgPage(p => Math.max(1, p - 1))}
+                          style={{ background: 'none', border: 'none', padding: 0, cursor: safePage === 1 ? 'default' : 'pointer', display: 'flex' }}
+                          aria-label="Página anterior"
+                        >
+                          <ChevronPrevIcon disabled={safePage === 1} />
+                        </button>
+
+                        {/* Números */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          {pages.map((pg, i) =>
+                            pg === '...' ? (
+                              <span key={`dots-${i}`} style={{ fontFamily: 'Roboto, sans-serif', fontSize: '14px', color: '#333333', padding: '4px' }}>...</span>
+                            ) : (
+                              <button
+                                key={pg}
+                                type="button"
+                                onClick={() => setOrgPage(pg)}
+                                style={{
+                                  width: '24px',
+                                  height: '24px',
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  background: 'none',
+                                  border: 'none',
+                                  padding: '4px',
+                                  cursor: 'pointer',
+                                  fontFamily: 'Roboto, sans-serif',
+                                  fontSize: '14px',
+                                  fontWeight: 400,
+                                  lineHeight: '24px',
+                                  color: pg === safePage ? '#00B4FF' : '#333333',
+                                }}
+                              >
+                                {pg}
+                              </button>
+                            )
+                          )}
+                        </div>
+
+                        {/* Next */}
+                        <button
+                          type="button"
+                          disabled={safePage === totalPages}
+                          onClick={() => setOrgPage(p => Math.min(totalPages, p + 1))}
+                          style={{ background: 'none', border: 'none', padding: 0, cursor: safePage === totalPages ? 'default' : 'pointer', display: 'flex' }}
+                          aria-label="Página siguiente"
+                        >
+                          <ChevronNextIcon disabled={safePage === totalPages} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
           )}
+        </div>
 
-          {/* Option B: CSV import */}
-          <label className="flex items-start gap-3 cursor-pointer">
-            <input
-              type="radio"
-              name="scope"
-              value="specific"
-              checked={ev.scope === 'specific'}
-              onChange={() => update('scope', 'specific')}
-              className="mt-0.5"
-            />
-            <div>
-              <p className="text-sm font-medium text-gray-900">Carga masiva desde archivo</p>
-              <p className="text-xs text-gray-500">Importa el listado de colaboradores desde un archivo .csv.</p>
-            </div>
-          </label>
+        {/* Separador */}
+        <div style={{ height:'1px', background:TOKEN.grisSecundario }} />
 
-          {/* CSV importer panel */}
+        {/* Opción B: Carga masiva */}
+        <div style={{ display:'flex', flexDirection:'column', gap:'8px' }}>
+          <Radiobutton
+            label="Carga masiva desde archivo"
+            name="scope"
+            value="specific"
+            checked={ev.scope === 'specific'}
+            onChange={() => update('scope', 'specific')}
+          />
+          <div style={{ paddingLeft:'32px' }}>
+            <p style={HELPER_TEXT}>
+              Importa el listado de colaboradores desde un archivo .csv
+            </p>
+          </div>
+
           {ev.scope === 'specific' && (
-            <div className="ml-6 space-y-4">
+            <div style={{ paddingLeft:'32px', display:'flex', flexDirection:'column', gap:'16px' }}>
+              {/* Uploader — carga de archivo CSV */}
+              <Uploader
+                accept=".csv"
+                file={csvFileName ? { name: csvFileName, size: csvFileSize } : null}
+                onFileChange={handleFile}
+                onFileRemove={clearImport}
+                onDownloadTemplate={downloadTemplate}
+                description={[
+                  'Columnas requeridas: nombre · Opcionales: rut empresa cargo familia_cargo',
+                  'Separador: punto y coma (;) o coma (,) · Codificación: UTF-8',
+                ]}
+                supportText="Solo archivos .csv · máx. 5 MB"
+              />
 
-              {/* Format info + template download */}
-              <div className="border border-gray-200 bg-gray-50 px-4 py-3 text-xs text-gray-600 flex items-start justify-between gap-4">
-                <div>
-                  <p className="font-medium text-gray-800 mb-1">Formato esperado del archivo</p>
-                  <p>Columnas requeridas: <code className="bg-gray-200 px-1">nombre</code> · Opcionales: <code className="bg-gray-200 px-1">rut</code> <code className="bg-gray-200 px-1">empresa</code> <code className="bg-gray-200 px-1">cargo</code> <code className="bg-gray-200 px-1">familia_cargo</code></p>
-                  <p className="mt-0.5 text-gray-500">Separador: punto y coma (;) o coma (,) · Codificación: UTF-8</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={downloadTemplate}
-                  className="shrink-0 text-xs border border-gray-400 px-3 py-1.5 text-gray-700 hover:bg-white whitespace-nowrap"
-                >
-                  ↓ Descargar plantilla
-                </button>
-              </div>
-
-              {/* Drop zone */}
-              <div
-                onDragOver={e => { e.preventDefault(); setIsDragging(true); }}
-                onDragLeave={() => setIsDragging(false)}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed px-6 py-8 text-center cursor-pointer transition-colors ${
-                  isDragging ? 'border-gray-900 bg-gray-100' : 'border-gray-300 hover:border-gray-500 hover:bg-gray-50'
-                }`}
-              >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept=".csv"
-                  onChange={handleFileInput}
-                  className="hidden"
-                />
-                {csvFileName ? (
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium text-gray-900">📄 {csvFileName}</p>
-                    <p className="text-xs text-gray-500">Haz clic para reemplazar el archivo</p>
-                  </div>
-                ) : (
-                  <div className="space-y-1">
-                    <p className="text-sm text-gray-700">Arrastra tu archivo aquí o <span className="underline">haz clic para seleccionarlo</span></p>
-                    <p className="text-xs text-gray-400">Solo archivos .csv · máx. 5 MB</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Parse errors */}
+              {/* Errores de parseo */}
               {csvErrors.length > 0 && (
-                <div className="border border-red-200 bg-red-50 px-4 py-3 space-y-1">
-                  <p className="text-xs font-semibold text-red-700">Advertencias al procesar el archivo:</p>
+                <div style={{ background:'#FEF2F2', borderRadius:'8px', padding:'12px 16px' }}>
+                  <p style={{ fontFamily:'Roboto,sans-serif', fontWeight:500, fontSize:'12px', color:TOKEN.error, margin:'0 0 4px' }}>
+                    Advertencias al procesar el archivo:
+                  </p>
                   {csvErrors.map((e, i) => (
-                    <p key={i} className="text-xs text-red-600">· {e}</p>
+                    <p key={i} style={{ fontFamily:'Roboto,sans-serif', fontSize:'12px', color:TOKEN.error, margin:0 }}>
+                      · {e}
+                    </p>
                   ))}
                 </div>
               )}
 
-              {/* Results summary + table */}
+              {/* Tabla de participantes cargados */}
               {ev.participants.length > 0 && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-gray-700">
+                <div>
+                  <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:'8px' }}>
+                    <p style={{ fontFamily:'Roboto,sans-serif', fontWeight:500, fontSize:'13px', color:TOKEN.negro, margin:0 }}>
                       ✅ {ev.participants.length} colaboradores cargados
                       {csvErrors.length > 0 && (
-                        <span className="ml-2 text-yellow-700">· {csvErrors.length} filas omitidas</span>
+                        <span style={{ color:'#B45309', marginLeft:'8px' }}>· {csvErrors.length} filas omitidas</span>
                       )}
-                    </span>
+                    </p>
                     <button
                       type="button"
                       onClick={clearImport}
-                      className="text-xs text-gray-500 border-b border-gray-400 hover:text-red-600"
+                      style={{ background:'none', border:'none', cursor:'pointer', fontFamily:'Roboto,sans-serif', fontSize:'12px', color:TOKEN.error, textDecoration:'underline' }}
                     >
                       Limpiar importación
                     </button>
                   </div>
-
-                  <div className="border border-gray-200 max-h-56 overflow-y-auto">
-                    <table className="w-full text-xs">
-                      <thead className="sticky top-0 bg-gray-50 border-b border-gray-200">
+                  <div style={{ border:`1px solid ${TOKEN.grisSecundario}`, borderRadius:'8px', maxHeight:'224px', overflowY:'auto' }}>
+                    <table style={{ width:'100%', fontSize:'12px', borderCollapse:'collapse' }}>
+                      <thead style={{ position:'sticky', top:0, background:'#FAFAFA', borderBottom:`1px solid ${TOKEN.grisSecundario}` }}>
                         <tr>
-                          <th className="text-left px-3 py-2 text-gray-600 font-medium">#</th>
-                          <th className="text-left px-3 py-2 text-gray-600 font-medium">Nombre</th>
-                          <th className="text-left px-3 py-2 text-gray-600 font-medium">RUT</th>
-                          <th className="text-left px-3 py-2 text-gray-600 font-medium">Empresa</th>
-                          <th className="text-left px-3 py-2 text-gray-600 font-medium">Cargo</th>
-                          <th className="px-3 py-2"></th>
+                          {['#','Nombre','RUT','Empresa','Cargo',''].map((h,i) => (
+                            <th key={i} style={{ textAlign:'left', padding:'8px 12px', color:TOKEN.grisOscuro, fontWeight:500 }}>{h}</th>
+                          ))}
                         </tr>
                       </thead>
                       <tbody>
                         {ev.participants.map((p, i) => (
-                          <tr key={p.id} className="border-b border-gray-100 last:border-0">
-                            <td className="px-3 py-2 text-gray-400">{i + 1}</td>
-                            <td className="px-3 py-2 font-medium text-gray-900">{p.name}</td>
-                            <td className="px-3 py-2 text-gray-500">{p.rut}</td>
-                            <td className="px-3 py-2 text-gray-500">{p.empresa}</td>
-                            <td className="px-3 py-2 text-gray-500">{p.cargo}</td>
-                            <td className="px-3 py-2 text-right">
+                          <tr key={p.id} style={{ borderBottom:`1px solid ${TOKEN.grisSecundario}` }}>
+                            <td style={{ padding:'8px 12px', color:TOKEN.grisTextos }}>{i + 1}</td>
+                            <td style={{ padding:'8px 12px', fontWeight:500, color:TOKEN.negro }}>{p.name}</td>
+                            <td style={{ padding:'8px 12px', color:TOKEN.grisTextos }}>{p.rut}</td>
+                            <td style={{ padding:'8px 12px', color:TOKEN.grisTextos }}>{p.empresa}</td>
+                            <td style={{ padding:'8px 12px', color:TOKEN.grisTextos }}>{p.cargo}</td>
+                            <td style={{ padding:'8px 12px', textAlign:'right' }}>
                               <button
                                 onClick={() => removeParticipant(p.id)}
-                                className="text-gray-300 hover:text-red-500"
+                                style={{ background:'none', border:'none', cursor:'pointer', color:TOKEN.grisTextos, fontSize:'14px' }}
                                 title="Eliminar fila"
                               >
                                 ✕
@@ -552,177 +827,289 @@ export default function Step1ProcessData() {
               )}
 
               {errors.participants && (
-                <p className="text-xs text-red-600 border border-red-200 bg-red-50 px-3 py-2">{errors.participants}</p>
+                <p style={{ fontFamily:'Roboto,sans-serif', fontSize:'12px', color:TOKEN.error, margin:0 }}>
+                  {errors.participants}
+                </p>
               )}
             </div>
           )}
-
-          {errors.scope && <p className="text-xs text-red-600">{errors.scope}</p>}
         </div>
+
+        {errors.scope && (
+          <p style={{ fontFamily:'Roboto,sans-serif', fontSize:'12px', color:TOKEN.error, margin:0 }}>
+            {errors.scope}
+          </p>
+        )}
       </section>
 
-      {/* Section: Roles / Privacy */}
-      <section className="border border-gray-300 p-5">
-        <div className="flex items-start justify-between mb-1">
-          <h3 className="text-sm font-semibold text-gray-900">¿Quién gestiona este proceso?</h3>
+      {/* ══ Sección 3: ¿Quién gestiona este proceso? ════════════════ */}
+      <section style={CARD_SECTION}>
+        <div>
+          <p style={SECTION_TITLE}>¿Quién gestiona este proceso?</p>
+          <p style={{ ...HELPER_TEXT, marginTop:'8px' }}>
+            Define quién puede administrar esta evaluación y si quieres proteger su confidencialidad.
+          </p>
         </div>
-        <p className="text-sm text-gray-600 mb-5">
-          Define quién puede administrar esta evaluación y si quieres proteger su confidencialidad.
-        </p>
 
-        {/* Privacy toggle */}
-        <div className="border border-gray-200 p-4 mb-5">
-          <div className="flex items-start justify-between">
-            <div className="flex-1 pr-4">
-              <div className="flex items-center gap-2 mb-1">
-                <p className="text-sm font-medium text-gray-900">Hacer esta evaluación privada</p>
+        {/* Card: Evaluación privada */}
+        <div style={{ ...PRIVACY_CARD, boxShadow: ev.isPrivate ? 'none' : PRIVACY_CARD.boxShadow }}>
+          <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', gap:'16px' }}>
+            <div style={{ flex:1 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:'8px', marginBottom:'8px' }}>
+                <p style={{ fontFamily:'Roboto,sans-serif', fontWeight:500, fontSize:'16px', color:TOKEN.primarioOscuro, margin:0 }}>
+                  Hacer esta evaluación privada
+                </p>
                 <Tooltip text="Una evaluación privada protege la confidencialidad del proceso. Úsala cuando solo ciertos administradores deben tener acceso, independientemente de sus permisos generales en la plataforma." />
               </div>
-              <p className="text-xs text-gray-500">
+              <p style={{ fontFamily:'Roboto,sans-serif', fontSize:'12px', color:TOKEN.grisOscuro, margin:0 }}>
                 Solo los usuarios designados como Responsables podrán ver, editar y gestionar este proceso.
                 Los demás administradores no tendrán acceso.
               </p>
             </div>
-            <Toggle checked={ev.isPrivate} onChange={handlePrivacyToggle} />
+            <Switch
+                checked={ev.isPrivate}
+                onChange={handlePrivacyToggle}
+                aria-label="Hacer esta evaluación privada"
+              />
           </div>
+
           {ev.isPrivate && (
-            <div className="mt-3 px-3 py-2 bg-gray-50 border border-gray-200 text-xs text-gray-600">
-              En una evaluación privada, solo los Responsables asignados tienen acceso a este proceso.
+            <div style={{ background:TOKEN.fondo, borderRadius:'8px', padding:'10px 16px' }}>
+              <p style={{ fontFamily:'Roboto,sans-serif', fontSize:'12px', color:TOKEN.grisOscuro, margin:0 }}>
+                En una evaluación privada, solo los Responsables asignados tienen acceso a este proceso.
+              </p>
             </div>
           )}
         </div>
 
-        {/* Private: only Responsibles */}
+        {/* ── Evaluación privada: solo Responsables ─────────────────── */}
         {ev.isPrivate && (
-          <UserRoleSection
-            title="Responsables"
-            tooltip={null}
-            users={ev.responsibles}
-            searchValue={userSearch.responsibles}
-            onSearchChange={v => setUserSearch(s => ({ ...s, responsibles: v }))}
-            filteredUsers={filteredUsers('responsibles')}
-            onAdd={u => addUser('responsibles', u)}
-            onRemove={id => removeUser('responsibles', id)}
-            extra={
+          <div style={{ display:'flex', flexDirection:'column', gap:'16px' }}>
+            <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
+              <p style={{ fontFamily:'Roboto,sans-serif', fontWeight:500, fontSize:'14px', color:TOKEN.negro, margin:0 }}>
+                Responsables
+              </p>
               <button
                 onClick={assignMe}
-                className={`text-xs px-3 py-1 border ${isMeResponsible ? 'border-gray-200 text-gray-400 cursor-not-allowed' : 'border-gray-400 hover:bg-gray-50 text-gray-700'}`}
                 disabled={!!isMeResponsible}
+                style={{
+                  marginLeft:'auto',
+                  background:'none',
+                  border:`1px solid ${isMeResponsible ? TOKEN.grisSecundario : TOKEN.panel}`,
+                  borderRadius:'24px',
+                  padding:'4px 12px',
+                  fontFamily:'Roboto,sans-serif',
+                  fontSize:'12px',
+                  color: isMeResponsible ? TOKEN.grisTextos : TOKEN.panel,
+                  cursor: isMeResponsible ? 'not-allowed' : 'pointer',
+                }}
               >
                 {isMeResponsible ? '✅ Ya estás asignado' : 'Asignarme como responsable'}
               </button>
-            }
-          />
+            </div>
+            <Selector
+              key={responsibleSelKey}
+              label="Responsables"
+              options={responsibleOptions}
+              placeholder="-- Seleccionar responsable --"
+              onChange={(value) => {
+                const user = MOCK_USERS.find(u => String(u.id) === value);
+                if (user) { addUser('responsibles', user); setResponsibleSelKey(k => k + 1); }
+              }}
+              style={{ width: '100%' }}
+            />
+            {ev.responsibles.length > 0 && (
+              <div style={{ display:'flex', flexWrap:'wrap', gap:'8px' }}>
+                {ev.responsibles.map(u => (
+                  <UserTag key={u.id} name={u.name} onRemove={() => removeUser('responsibles', u.id)} />
+                ))}
+              </div>
+            )}
+          </div>
         )}
 
-        {/* Standard (non-private): Encargados, Visualizadores, Supervisores */}
+        {/* ── Evaluación no privada: Encargados + Visualizadores ─────── */}
         {!ev.isPrivate && (
-          <>
-            <UserRoleSection
-              title="Encargados"
-              tooltip="Acceso completo para editar y gestionar el proceso."
-              users={ev.managers}
-              searchValue={userSearch.managers}
-              onSearchChange={v => setUserSearch(s => ({ ...s, managers: v }))}
-              filteredUsers={filteredUsers('managers')}
-              onAdd={u => addUser('managers', u)}
-              onRemove={id => removeUser('managers', id)}
-            />
-            <UserRoleSection
-              title="Visualizadores"
-              tooltip="Solo lectura: pueden ver el proceso y sus reportes."
-              users={ev.viewers}
-              searchValue={userSearch.viewers}
-              onSearchChange={v => setUserSearch(s => ({ ...s, viewers: v }))}
-              filteredUsers={filteredUsers('viewers')}
-              onAdd={u => addUser('viewers', u)}
-              onRemove={id => removeUser('viewers', id)}
-            />
+          <div style={{ display:'flex', flexDirection:'column', gap:'24px' }}>
 
-            <div className="border-t border-gray-200 pt-4 mt-4">
-              <label className="flex items-start gap-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={ev.supervisorsAccess}
-                  onChange={e => update('supervisorsAccess', e.target.checked)}
-                  className="mt-0.5"
-                />
-                <div>
-                  <div className="flex items-center gap-1">
-                    <p className="text-sm text-gray-900">
-                      Todos los jefes directos podrán monitorear y visualizar los reportes de sus equipos
-                    </p>
-                    <Tooltip text="Los jefes directos acceden a los reportes de sus propios equipos sin ser asignados individualmente." />
-                  </div>
+            {/* Encargados */}
+            <div style={{ display:'flex', flexDirection:'column', gap:'8px' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:'6px' }}>
+                <p style={{ fontFamily:'Roboto,sans-serif', fontWeight:500, fontSize:'14px', color:TOKEN.negro, margin:0 }}>
+                  Encargados
+                </p>
+                <Tooltip text="Acceso completo para editar y gestionar el proceso." />
+              </div>
+              <Selector
+                key={managerSelKey}
+                label="Encargados"
+                options={managerOptions}
+                placeholder="-- Seleccionar --"
+                onChange={(value) => {
+                  const user = MOCK_USERS.find(u => String(u.id) === value);
+                  if (user) { addUser('managers', user); setManagerSelKey(k => k + 1); }
+                }}
+                style={{ width: '100%' }}
+              />
+              {ev.managers.length > 0 && (
+                <div style={{ display:'flex', flexWrap:'wrap', gap:'8px', marginTop:'4px' }}>
+                  {ev.managers.map(u => (
+                    <UserTag key={u.id} name={u.name} onRemove={() => removeUser('managers', u.id)} />
+                  ))}
                 </div>
-              </label>
+              )}
             </div>
-          </>
+
+            {/* Visualizadores */}
+            <div style={{ display:'flex', flexDirection:'column', gap:'8px' }}>
+              <div style={{ display:'flex', alignItems:'center', gap:'6px' }}>
+                <p style={{ fontFamily:'Roboto,sans-serif', fontWeight:500, fontSize:'14px', color:TOKEN.negro, margin:0 }}>
+                  Visualizadores
+                </p>
+                <Tooltip text="Solo lectura: pueden ver el proceso y sus reportes." />
+              </div>
+              <Selector
+                key={viewerSelKey}
+                label="Visualizadores"
+                options={viewerOptions}
+                placeholder="-- Seleccionar --"
+                onChange={(value) => {
+                  const user = MOCK_USERS.find(u => String(u.id) === value);
+                  if (user) { addUser('viewers', user); setViewerSelKey(k => k + 1); }
+                }}
+                style={{ width: '100%' }}
+              />
+              {ev.viewers.length > 0 && (
+                <div style={{ display:'flex', flexWrap:'wrap', gap:'8px', marginTop:'4px' }}>
+                  {ev.viewers.map(u => (
+                    <UserTag key={u.id} name={u.name} onRemove={() => removeUser('viewers', u.id)} />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Supervisores */}
+            <div style={{ borderTop:`1px solid ${TOKEN.grisSecundario}`, paddingTop:'16px' }}>
+              <Checkbox
+                label={
+                  <span style={{ display:'flex', alignItems:'center', gap:'6px' }}>
+                    Todos los jefes directos podrán monitorear y visualizar los reportes de sus equipos
+                    <Tooltip text="Los jefes directos acceden a los reportes de sus propios equipos sin ser asignados individualmente." />
+                  </span>
+                }
+                checked={ev.supervisorsAccess}
+                onChange={(checked) => update('supervisorsAccess', checked)}
+              />
+            </div>
+          </div>
         )}
       </section>
 
-      {/* Actions */}
-      <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-        <button
-          onClick={handleSaveDraft}
-          className="px-4 py-2 text-sm border border-gray-400 text-gray-700 hover:bg-gray-50"
-        >
+      {/* ══ Acciones ════════════════════════════════════════════════ */}
+      <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:'16px', paddingTop:'8px', paddingBottom:'8px' }}>
+        <Button variant="secondary" onClick={handleSaveDraft}>
           Guardar borrador
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="primary"
+          size="md"
+          icon={<ArrowRightIcon color="#B6CEE7" size={16} />}
+          iconPosition="right"
           onClick={handleSaveAndContinue}
-          className="px-5 py-2 text-sm font-medium bg-gray-900 text-white border border-gray-900 hover:bg-gray-700"
         >
-          Guardar y continuar →
-        </button>
+          Guardar y continuar
+        </Button>
       </div>
+    </>
+  );
+}
+
+/* ── Campo de fecha con estilo Zafiro ──────────────────────────────── */
+function DateField({ label, value, onChange, error }) {
+  const inputRef = useRef(null);
+
+  const openPicker = () => {
+    try {
+      inputRef.current?.showPicker();
+    } catch {
+      // fallback para navegadores sin soporte de showPicker
+      inputRef.current?.click();
+    }
+  };
+
+  return (
+    <div style={{ display:'flex', flexDirection:'column', gap:'4px' }}>
+      <label style={{
+        fontFamily:'Roboto,sans-serif', fontSize:'12px', fontWeight:400,
+        color: error ? '#E24C4C' : '#666666', lineHeight:'16px',
+      }}>
+        {label}
+      </label>
+      <div style={{
+        display:'flex', alignItems:'center', gap:'8px',
+        borderBottom:`1px solid ${error ? '#E24C4C' : '#999999'}`,
+        paddingBottom:'4px',
+      }}>
+        <input
+          ref={inputRef}
+          type="date"
+          value={value}
+          onChange={e => onChange(e.target.value)}
+          style={{
+            flex:1, border:'none', outline:'none', background:'transparent',
+            fontFamily:'Roboto,sans-serif', fontSize:'16px',
+            color: value ? '#333333' : '#999999',
+          }}
+        />
+        <span
+          style={{ color:'#00B4FF', flexShrink:0, cursor:'pointer' }}
+          onClick={openPicker}
+          aria-label="Abrir calendario"
+          role="button"
+        >
+          <CalendarIcon />
+        </span>
+      </div>
+      {error && (
+        <p style={{ fontFamily:'Roboto,sans-serif', fontSize:'12px', color:'#E24C4C', margin:0 }}>
+          {error}
+        </p>
+      )}
     </div>
   );
 }
 
-function UserRoleSection({ title, tooltip, users, searchValue, onSearchChange, filteredUsers, onAdd, onRemove, extra }) {
+/* ── Etiqueta de usuario seleccionado ──────────────────────────────── */
+function UserTag({ name, onRemove }) {
   return (
-    <div className="mb-4">
-      <div className="flex items-center gap-2 mb-2">
-        <p className="text-sm font-medium text-gray-800">{title}</p>
-        {tooltip && <Tooltip text={tooltip} />}
-        {extra && <span className="ml-auto">{extra}</span>}
-      </div>
-      <div className="relative mb-2">
-        <input
-          type="text"
-          value={searchValue}
-          onChange={e => onSearchChange(e.target.value)}
-          placeholder="Buscar usuario (mín. 2 caracteres)..."
-          className="w-full border border-gray-300 px-3 py-1.5 text-sm focus:outline-none"
-        />
-        {filteredUsers.length > 0 && (
-          <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 border-t-0 z-20">
-            {filteredUsers.map(u => (
-              <button
-                key={u.id}
-                onClick={() => onAdd(u)}
-                className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 border-b border-gray-100 last:border-0"
-              >
-                {u.name} <span className="text-gray-500 text-xs">— {u.email}</span>
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
-      {users.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {users.map(u => (
-            <span key={u.id} className="flex items-center gap-1.5 px-2 py-1 border border-gray-300 text-xs text-gray-700 bg-gray-50">
-              <span className="w-5 h-5 bg-gray-300 border border-gray-400 flex items-center justify-center text-xs font-bold uppercase">
-                {u.name[0]}
-              </span>
-              {u.name}
-              <button onClick={() => onRemove(u.id)} className="text-gray-400 hover:text-red-500 ml-1">✕</button>
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
+    <span style={{
+      display:'inline-flex', alignItems:'center', gap:'6px',
+      padding:'4px 10px 4px 6px',
+      background:'#F0F5FA',
+      border:`1px solid #B6CEE7`,
+      borderRadius:'24px',
+      fontFamily:'Roboto,sans-serif', fontSize:'13px', color:'#1E5591',
+    }}>
+      <span style={{
+        width:'20px', height:'20px', borderRadius:'50%',
+        background:'#B6CEE7', display:'flex', alignItems:'center', justifyContent:'center',
+        fontWeight:500, fontSize:'11px', color:'#1E5591',
+      }}>
+        {name[0].toUpperCase()}
+      </span>
+      {name}
+      <button
+        type="button"
+        onClick={onRemove}
+        style={{
+          background:'none', border:'none', cursor:'pointer',
+          color:'#999999', fontSize:'12px', padding:'0', lineHeight:1,
+          display:'flex', alignItems:'center',
+        }}
+        aria-label={`Quitar ${name}`}
+      >
+        ✕
+      </button>
+    </span>
   );
 }

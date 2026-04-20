@@ -260,7 +260,7 @@ export const createInitialEvaluation = () => ({
     participantCanSeePartialResults: true,
     evaluatorSeesAccumulatedScore: false,
     enableGeneralComments: false,
-    requireDigitalSignature: false,
+    requireDigitalSignature: true,
     hideQualitativeFromPDF: false,
     hidePotentialFromPDF: false,
     showOnlyAggregateResult: true,
@@ -290,6 +290,7 @@ export const createInitialEvaluation = () => ({
   },
   feedbackOptions: {
     collaboratorMustConfirmReading: true,
+    collaboratorAccessesResults: false,
   },
   notifications: JSON.parse(JSON.stringify(DEFAULT_NOTIFICATIONS)),
   tabStates: {

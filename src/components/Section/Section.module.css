@@ -1,0 +1,197 @@
+/*
+ * Section.module.css — Sistema de diseño Zafiro (Rex+)
+ * Fuente: Figma 83u3jh4oyEwvJ2MtoH7L2o · nodo 1196:18742
+ *
+ * Tokens referenciados:
+ *   primario-oscuro:     #0A396C  ← título
+ *   gris-oscuro:         #666666  ← descripción y label input
+ *   gris-deshabilitado:  #CCCCCC  ← track switch OFF
+ *   gris-textos:         #999999  ← underline del input
+ *   negro-textos:        #333333  ← valor del input
+ *   exito:               #ACCA54  ← track switch ON
+ *   importante:          #00B4FF  ← botón "Programar apertura" y reloj
+ *   importante-oscuro:   #019BE5  ← hover de "Programar apertura"
+ *   panel:               #5780AD  ← ícono info
+ *   blanco:              #FFFFFF  ← fondo tarjeta y thumb del switch
+ *   Elevación 1:         box-shadow 0px 2px 4px rgba(0,0,0,0.15)
+ */
+
+/* ── Tarjeta contenedora ─────────────────────────────────────────────────── */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+  border-radius: 16px;
+  background: #ffffff; /* blanco */
+  box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.15); /* Elevación 1 */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card.isDisabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ── Encabezado ──────────────────────────────────────────────────────────── */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+/* ── Textos del encabezado ───────────────────────────────────────────────── */
+
+.title {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500; /* Medium */
+  font-size: 16px;
+  line-height: 1.3;
+  color: #0a396c; /* primario-oscuro */
+}
+
+/* padding-left = ancho del switch (40px) + gap (8px) = 48px */
+.descriptionRow {
+  padding-left: 48px;
+}
+
+.description {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: normal;
+  color: #666666; /* gris-oscuro */
+  margin: 0;
+  white-space: nowrap;
+}
+
+/* ── Contenido expandido ─────────────────────────────────────────────────── */
+
+.expandedContent {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  min-height: 62px;
+  padding: 19px 0 19px 48px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ── Input Porcentaje ────────────────────────────────────────────────────── */
+
+.percentageInput {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 83px;
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.inputLabel {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: normal;
+  color: #666666; /* gris-oscuro */
+}
+
+.inputBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.inputField {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.3;
+  color: #333333; /* negro-textos */
+  border: none;
+  outline: none;
+  background: transparent;
+  width: 100%;
+  padding: 0;
+}
+
+.inputField:focus-visible {
+  outline: none;
+}
+
+.inputUnderline {
+  background: #999999; /* gris-textos */
+  height: 1px;
+  border-radius: 16px;
+  width: 100%;
+}
+
+.inputField:focus ~ .inputUnderline {
+  background: #1e5591; /* primario */
+}
+
+/* ── Privada + ícono info ────────────────────────────────────────────────── */
+
+.privateGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.infoBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+
+.infoBtn:hover:not(:disabled) {
+  opacity: 0.75;
+}
+
+/* ── Botón "Programar apertura" ──────────────────────────────────────────── */
+
+.scheduleBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.scheduleBtn span {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: normal;
+  color: #00b4ff; /* importante */
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+.scheduleBtn:hover:not(:disabled) span {
+  color: #019be5; /* importante-oscuro */
+}
