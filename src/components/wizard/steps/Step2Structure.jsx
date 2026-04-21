@@ -287,12 +287,18 @@ export default function Step2Structure() {
           padding: '10px 16px',
         }}>
           <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 14, color: '#333333' }}>
-            Configuración aplicada desde{' '}
-            <strong>
-              "{templateInfo.label}
-              {templateInfo.subtitle ? ` — ${templateInfo.subtitle}` : ''}"
-            </strong>
-            . Puedes ajustar cualquier valor.
+            {ev.template === '180' ? (
+              <>Configuración aplicada desde: <strong>Evaluación 180°</strong>. Puedes ajustar cualquier valor.</>
+            ) : (
+              <>
+                Configuración aplicada desde{' '}
+                <strong>
+                  "{templateInfo.label}
+                  {templateInfo.subtitle ? ` — ${templateInfo.subtitle}` : ''}"
+                </strong>
+                . Puedes ajustar cualquier valor.
+              </>
+            )}
           </span>
         </div>
       )}
