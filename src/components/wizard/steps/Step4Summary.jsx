@@ -208,8 +208,19 @@ export default function Step4Summary() {
               <InfoPill>{isMultipleForm ? 'Formulario múltiple' : 'Formulario único'}</InfoPill>
             </ResumenCampo>
             <ResumenCampo label="Escala">{scaleLabel || '—'}</ResumenCampo>
-            <ResumenCampo label="Objetivos">{ev.weighting.objectives}%</ResumenCampo>
-            <ResumenCampo label="Competencias">{ev.weighting.competencies}%</ResumenCampo>
+            <ResumenCampo label="Ámbitos de evaluación">
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
+                {ev.weighting.competencies > 0 && (
+                  <InfoPill>Competencias: {ev.weighting.competencies}%</InfoPill>
+                )}
+                {ev.weighting.objectives > 0 && (
+                  <InfoPill>Objetivos: {ev.weighting.objectives}%</InfoPill>
+                )}
+                {ev.weighting.competencies === 0 && ev.weighting.objectives === 0 && (
+                  <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: '13px', color: '#999999' }}>Sin configurar</span>
+                )}
+              </div>
+            </ResumenCampo>
             {additionalStages.length > 0 && (
               <ResumenCampo label="Etapas adicionales">
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '4px' }}>
